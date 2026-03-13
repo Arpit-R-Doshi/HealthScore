@@ -1,0 +1,196 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "id": 1,
+      "title": "HTTP Request Rate (req/s)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "sum(rate(healthscore_http_requests_total[1m])) by (route)",
+          "legendFormat": "{{route}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 15, "lineWidth": 2, "pointSize": 4, "showPoints": "auto" },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } }
+    },
+    {
+      "id": 2,
+      "title": "Request Latency P95 (s)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, route))",
+          "legendFormat": "p95 {{route}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 10, "lineWidth": 2 },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } }
+    },
+    {
+      "id": 3,
+      "title": "Prescription Activity",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        { "expr": "healthscore_prescriptions_total{action=\"created\"}", "legendFormat": "Created", "refId": "A" },
+        { "expr": "healthscore_prescriptions_total{action=\"dispensed\"}", "legendFormat": "Dispensed", "refId": "B" },
+        { "expr": "healthscore_prescriptions_total{action=\"revoked\"}", "legendFormat": "Revoked", "refId": "C" }
+      ],
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "thresholds": { "steps": [{ "color": "green", "value": null }] } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Revoked" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+        ]
+      },
+      "options": { "graphMode": "area", "colorMode": "background", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "id": 4,
+      "title": "Appointment Activity",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        { "expr": "healthscore_appointments_total{action=\"booked\"}", "legendFormat": "Booked", "refId": "A" },
+        { "expr": "healthscore_appointments_total{action=\"completed\"}", "legendFormat": "Completed", "refId": "B" },
+        { "expr": "healthscore_appointments_total{action=\"cancelled\"}", "legendFormat": "Cancelled", "refId": "C" },
+        { "expr": "healthscore_appointments_total{action=\"rescheduled\"}", "legendFormat": "Rescheduled", "refId": "D" }
+      ],
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "thresholds": { "steps": [{ "color": "blue", "value": null }] } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Cancelled" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+        ]
+      },
+      "options": { "graphMode": "area", "colorMode": "background", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "id": 5,
+      "title": "Active Users by Role",
+      "type": "piechart",
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        { "expr": "healthscore_active_users", "legendFormat": "{{role}}", "refId": "A" }
+      ],
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" } }, "overrides": [] },
+      "options": { "legendValues": ["value"], "reduceOptions": { "calcs": ["lastNotNull"] }, "pieType": "donut" }
+    },
+    {
+      "id": 6,
+      "title": "Fabric Transactions by Org",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 13 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "sum(rate(healthscore_fabric_tx_total{status=\"success\"}[1m])) by (org)",
+          "legendFormat": "{{org}} (ok)",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(healthscore_fabric_tx_total{status=\"error\"}[1m])) by (org)",
+          "legendFormat": "{{org}} (err)",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 20, "lineWidth": 2, "stacking": { "mode": "normal" } },
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi" } }
+    },
+    {
+      "id": 7,
+      "title": "Node.js Memory Usage",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 13 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        { "expr": "process_resident_memory_bytes{job=\"healthscore_backend\"}", "legendFormat": "RSS", "refId": "A" },
+        { "expr": "nodejs_heap_size_used_bytes{job=\"healthscore_backend\"}", "legendFormat": "Heap Used", "refId": "B" }
+      ],
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "fillOpacity": 10, "lineWidth": 2 }, "unit": "bytes" },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } }
+    },
+    {
+      "id": 8,
+      "title": "Event Loop Lag",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 13 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        { "expr": "nodejs_eventloop_lag_seconds{job=\"healthscore_backend\"}", "legendFormat": "Lag", "refId": "A" },
+        { "expr": "nodejs_eventloop_lag_p99_seconds{job=\"healthscore_backend\"}", "legendFormat": "p99", "refId": "B" }
+      ],
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "fillOpacity": 10, "lineWidth": 2 }, "unit": "s" },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } }
+    },
+    {
+      "id": 9,
+      "title": "Fabric Peer Ledger Height",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 21 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "ledger_blockchain_height",
+          "legendFormat": "{{peer}} / {{channel}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "color": { "fixedColor": "purple", "mode": "fixed" }, "thresholds": { "steps": [{ "color": "green", "value": null }] } },
+        "overrides": []
+      },
+      "options": { "graphMode": "none", "colorMode": "value", "textMode": "value_and_name", "reduceOptions": { "calcs": ["lastNotNull"] } }
+    }
+  ],
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["healthscore", "fabric", "monitoring"],
+  "templating": { "list": [] },
+  "time": { "from": "now-30m", "to": "now" },
+  "title": "HealthScore Monitoring",
+  "uid": "healthscore",
+  "version": 1,
+  "refresh": "5s"
+}

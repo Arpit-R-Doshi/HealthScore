@@ -1,0 +1,241 @@
+---
+################################################################################
+#  HealthScore Network — configtx.yaml
+#  5 peer organizations + 1 orderer org
+#  Each org maps to a real-world actor with distinct MSP permissions
+################################################################################
+
+Organizations:
+  - &OrdererOrg
+    Name: OrdererOrg
+    ID: OrdererMSP
+    MSPDir: ../organizations/ordererOrganizations/healthscore.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+    OrdererEndpoints:
+      - orderer.healthscore.com:7050
+
+  # ── Org 1: Hospitals / Doctors ───────────────────────────────────────────────
+  - &HospitalOrg
+    Name: HospitalOrgMSP
+    ID: HospitalOrgMSP
+    MSPDir: ../organizations/peerOrganizations/hospital.healthscore.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('HospitalOrgMSP.admin', 'HospitalOrgMSP.peer', 'HospitalOrgMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('HospitalOrgMSP.admin', 'HospitalOrgMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('HospitalOrgMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('HospitalOrgMSP.peer')"
+    AnchorPeers:
+      - Host: peer0.hospital.healthscore.com
+        Port: 7051
+
+  # ── Org 2: Patients ──────────────────────────────────────────────────────────
+  - &PatientOrg
+    Name: PatientOrgMSP
+    ID: PatientOrgMSP
+    MSPDir: ../organizations/peerOrganizations/patient.healthscore.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('PatientOrgMSP.admin', 'PatientOrgMSP.peer', 'PatientOrgMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('PatientOrgMSP.admin', 'PatientOrgMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('PatientOrgMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('PatientOrgMSP.peer')"
+    AnchorPeers:
+      - Host: peer0.patient.healthscore.com
+        Port: 8051
+
+  # ── Org 3: Pharmacies ────────────────────────────────────────────────────────
+  - &PharmacyOrg
+    Name: PharmacyOrgMSP
+    ID: PharmacyOrgMSP
+    MSPDir: ../organizations/peerOrganizations/pharmacy.healthscore.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('PharmacyOrgMSP.admin', 'PharmacyOrgMSP.peer', 'PharmacyOrgMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('PharmacyOrgMSP.admin', 'PharmacyOrgMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('PharmacyOrgMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('PharmacyOrgMSP.peer')"
+    AnchorPeers:
+      - Host: peer0.pharmacy.healthscore.com
+        Port: 9051
+
+  # ── Org 4: Diagnostic Labs ───────────────────────────────────────────────────
+  - &LabOrg
+    Name: LabOrgMSP
+    ID: LabOrgMSP
+    MSPDir: ../organizations/peerOrganizations/lab.healthscore.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('LabOrgMSP.admin', 'LabOrgMSP.peer', 'LabOrgMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('LabOrgMSP.admin', 'LabOrgMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('LabOrgMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('LabOrgMSP.peer')"
+    AnchorPeers:
+      - Host: peer0.lab.healthscore.com
+        Port: 10051
+
+  # ── Org 5: Insurance Providers ──────────────────────────────────────────────
+  - &InsuranceOrg
+    Name: InsuranceOrgMSP
+    ID: InsuranceOrgMSP
+    MSPDir: ../organizations/peerOrganizations/insurance.healthscore.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('InsuranceOrgMSP.admin', 'InsuranceOrgMSP.peer', 'InsuranceOrgMSP.client')"
+      Writers:
+        Type: Signature
+        # Insurance is read-only — only admins can write (admin ops only)
+        Rule: "OR('InsuranceOrgMSP.admin')"
+      Admins:
+        Type: Signature
+        Rule: "OR('InsuranceOrgMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('InsuranceOrgMSP.peer')"
+    AnchorPeers:
+      - Host: peer0.insurance.healthscore.com
+        Port: 11051
+
+################################################################################
+#  Capabilities
+################################################################################
+Capabilities:
+  Channel: &ChannelCapabilities
+    V2_0: true
+  Orderer: &OrdererCapabilities
+    V2_0: true
+  Application: &ApplicationCapabilities
+    V2_5: true
+
+################################################################################
+#  Application Defaults
+################################################################################
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Endorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+################################################################################
+#  Orderer Defaults
+################################################################################
+Orderer: &OrdererDefaults
+  Addresses:
+    - orderer.healthscore.com:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+################################################################################
+#  Channel Defaults
+################################################################################
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ChannelCapabilities
+
+################################################################################
+#  Profiles
+################################################################################
+Profiles:
+  HealthScoreChannel:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      OrdererType: etcdraft
+      EtcdRaft:
+        Consenters:
+          - Host: orderer.healthscore.com
+            Port: 7050
+            ClientTLSCert: ../organizations/ordererOrganizations/healthscore.com/orderers/orderer.healthscore.com/tls/server.crt
+            ServerTLSCert: ../organizations/ordererOrganizations/healthscore.com/orderers/orderer.healthscore.com/tls/server.crt
+      Organizations:
+        - *OrdererOrg
+      Capabilities: *OrdererCapabilities
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *HospitalOrg
+        - *PatientOrg
+        - *PharmacyOrg
+        - *LabOrg
+        - *InsuranceOrg
+      Capabilities: *ApplicationCapabilities

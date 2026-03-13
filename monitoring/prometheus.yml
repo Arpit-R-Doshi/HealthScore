@@ -1,0 +1,41 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'healthscore_backend'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:5001']
+        labels:
+          service: 'backend'
+
+  - job_name: 'fabric_peers'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:9444']
+        labels:
+          peer: 'peer0.hospital'
+          org: 'HospitalOrg'
+      - targets: ['host.docker.internal:9445']
+        labels:
+          peer: 'peer0.patient'
+          org: 'PatientOrg'
+      - targets: ['host.docker.internal:9446']
+        labels:
+          peer: 'peer0.pharmacy'
+          org: 'PharmacyOrg'
+      - targets: ['host.docker.internal:9447']
+        labels:
+          peer: 'peer0.lab'
+          org: 'LabOrg'
+      - targets: ['host.docker.internal:9448']
+        labels:
+          peer: 'peer0.insurance'
+          org: 'InsuranceOrg'
+
+  - job_name: 'fabric_orderer'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:9443']
+        labels:
+          service: 'orderer'

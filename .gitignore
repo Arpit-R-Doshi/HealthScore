@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+build/
+coverage/
+*.log
+database.json
+uploads/
+/healthscore-network/organizations/
+/healthscore-network/channel-artifacts/
+/healthscore-network/system-genesis-block/
+.DS_Store

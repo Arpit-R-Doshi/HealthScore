@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+/* =====================================================
+   LIGHT MODE TOKENS
+   ===================================================== */
+:root {
+  --bg-body: #f0f4ff;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f8faff;
+  --bg-glass: rgba(255, 255, 255, 0.75);
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --input-bg: #f8fafc;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+  --primary-glow: rgba(79, 70, 229, 0.18);
+  --danger: #ef4444;
+  --danger-light: rgba(239, 68, 68, 0.1);
+  --success: #10b981;
+  --success-light: rgba(16, 185, 129, 0.1);
+  --warning: #f59e0b;
+  --warning-light: rgba(245, 158, 11, 0.12);
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.07);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
+  --shadow-primary: 0 8px 24px rgba(79, 70, 229, 0.22);
+  --sidebar-w: 260px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
+
+/* =====================================================
+   DARK MODE TOKENS
+   ===================================================== */
+.dark {
+  --bg-body: #0b0f1a;
+  --bg-surface: #111827;
+  --bg-elevated: #1a2235;
+  --bg-glass: rgba(17, 24, 39, 0.80);
+  --text-main: #f1f5f9;
+  --text-muted: #8b9cb8;
+  --text-faint: #4b5a72;
+  --border: #1e2d45;
+  --border-strong: #2d3f58;
+  --input-bg: #0d1526;
+  --primary: #818cf8;
+  --primary-hover: #6d76ef;
+  --primary-light: rgba(129, 140, 248, 0.12);
+  --primary-glow: rgba(129, 140, 248, 0.20);
+  --danger: #f87171;
+  --danger-light: rgba(248, 113, 113, 0.12);
+  --success: #34d399;
+  --success-light: rgba(52, 211, 153, 0.12);
+  --warning: #fbbf24;
+  --warning-light: rgba(251, 191, 36, 0.12);
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.5);
+  --shadow-primary: 0 8px 24px rgba(129, 140, 248, 0.25);
+}
+
+/* =====================================================
+   BASE STYLES
+   ===================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  transition: background-color 0.25s ease, border-color 0.25s ease,
+    color 0.25s ease, box-shadow 0.25s ease, opacity 0.2s ease;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =====================================================
+   SCROLLBAR
+   ===================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+}
+
+/* =====================================================
+   FORM ELEMENTS
+   ===================================================== */
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  outline: none;
+}
+
+/* =====================================================
+   UTILITY CLASSES
+   ===================================================== */
+.glass {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+
+.card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* =====================================================
+   ANIMATIONS
+   ===================================================== */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.animate-fadeup {
+  animation: fadeUp 0.4s ease both;
+}
+
+/* Placeholder visibility fix for inputs on gradient / dark backgrounds */
+.gradient-input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+  opacity: 1;
+}
