@@ -1,0 +1,19 @@
+test:
+  name: healthscore-benchmark
+  description: HealthScore Smart Contract Performance Benchmark
+  workers:
+    type: local
+    number: 5
+  rounds:
+    - label: updateHealthScore-200-tps
+      description: Update health scores at 200 TPS.
+      txNumber: 2000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 200
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: updateHealthScore

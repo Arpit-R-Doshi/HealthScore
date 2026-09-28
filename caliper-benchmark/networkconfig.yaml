@@ -1,0 +1,23 @@
+name: healthscore-caliper-network
+version: "2.0.0"
+
+caliper:
+  blockchain: fabric
+
+channels:
+  - channelName: healthscorechannel
+    contracts:
+      - id: healthscore
+
+organizations:
+  - mspid: HospitalOrgMSP
+    identities:
+      certificates:
+        - name: 'HospitalOrgAdmin'
+          clientPrivateKey:
+            path: '../healthscore-network/organizations/peerOrganizations/hospital.healthscore.com/users/Admin@hospital.healthscore.com/msp/keystore/priv_sk'
+          clientSignedCert:
+            path: '../healthscore-network/organizations/peerOrganizations/hospital.healthscore.com/users/Admin@hospital.healthscore.com/msp/signcerts/Admin@hospital.healthscore.com-cert.pem'
+    connectionProfile:
+      path: '../backend/connection-healthscore.json'
+      discover: true

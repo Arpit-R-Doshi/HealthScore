@@ -1,0 +1,109 @@
+test:
+  name: healthscore-network-benchmark
+  description: Benchmarking the HealthScore network's throughput and latency for the academic paper.
+  workers:
+    number: 5
+  rounds:
+    - label: createPatientRecord-50-tps
+      description: Create patient records at 50 TPS.
+      txNumber: 500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 50
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+
+    - label: createPatientRecord-100-tps
+      description: Create patient records at 100 TPS.
+      txNumber: 1000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 100
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+
+    - label: createPatientRecord-200-tps
+      description: Create patient records at 200 TPS.
+      txNumber: 2000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 200
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+
+    - label: createPatientRecord-1000-tps
+      description: Create patient records at 1000 TPS.
+      txNumber: 10000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1000
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+
+    - label: updateHealthScore-200-tps
+      description: Update health scores at 200 TPS.
+      txNumber: 2000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 200
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: updateHealthScore
+
+    - label: createPrescription-200-tps
+      description: Create prescriptions at 200 TPS.
+      txNumber: 2000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 200
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: createPrescription
+
+    - label: requestScan-200-tps
+      description: Request scans at 200 TPS.
+      txNumber: 2000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 200
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: requestScan
+
+    - label: getPatientRecord-500-tps
+      description: Query patient records at 500 TPS.
+      txNumber: 5000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 500
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: getPatientRecord
