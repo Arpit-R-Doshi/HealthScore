@@ -100,7 +100,10 @@ export default function Patient({ user }) {
     setMessages(updated); setChatInput(''); setIsChatLoading(true);
     try {
       const history = updated.slice(-15).map(m => ({ role: m.role, content: m.content }));
-      const res = await axios.post('http://localhost:5001/api/chat', { patientData: liveUser, messages: history });
+      const res = await axios.post('http://localhost:5001/api/chat', { 
+        patientData: { ...liveUser, health_score: healthData ? healthData.health_score : 'Calculating...' }, 
+        messages: history 
+      });
       setMessages(prev => [...prev, { role: 'assistant', content: res.data.reply }]);
     } catch { setMessages(prev => [...prev, { role: 'assistant', content: '⚠️ Lost connection to server.' }]); }
     setIsChatLoading(false);

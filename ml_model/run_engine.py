@@ -1,6 +1,9 @@
 import sys
 import json
 import os
+
+# Add the ml_model directory to path so risk_engine can be imported
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from risk_engine import calculate_risk
 
 def main():
@@ -12,18 +15,12 @@ def main():
         input_data = json.loads(sys.argv[1])
         result = calculate_risk(input_data)
 
-        # Map Risk Score to UI Metrics (0-100 scale)
-        risk = result['risk_score']
-        # PDF Logic: 100 - (Risk * Factor)
-        health_score = max(0, min(100, 100 - (risk * 4)))
-        
-        # Insurance Premium Logic (Base 5000)
-        premium = 5000 * (1 + (risk * 0.1))
-
+        # Output is already in the correct format from risk_engine:
+        # { risk_score, health_score, premium, confidence_interval }
         output = {
-            "risk_score": round(risk, 2),
-            "health_score": round(health_score, 2),
-            "premium": round(premium, 2),
+            "risk_score": result['risk_score'],
+            "health_score": result['health_score'],
+            "premium": result['premium'],
             "confidence": result['confidence_interval']
         }
 

@@ -303,7 +303,7 @@ app.post('/api/chat', async (req, res) => {
         const systemPrompt = {
             role: "system",
             content: `You are HealthScore AI, an empathetic medical and fitness assistant for a patient named ${patientData.name}. 
-            Their profile: Age ${patientData.age}, Weight ${patientData.weight}kg, Height ${patientData.height}cm. 
+            Their profile: Age ${patientData.age}, Weight ${patientData.weight}kg, Height ${patientData.height}cm, HealthScore ${patientData.health_score}.
             Medical History: ${patientData.diseaseInput || 'None reported'}. 
             
             IMPORTANT STRICT INSTRUCTIONS:
