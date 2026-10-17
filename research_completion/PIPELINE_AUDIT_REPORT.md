@@ -4,7 +4,7 @@
 **Evaluation Date:** October 2026
 **Auditor:** Autonomous Senior Healthcare Data Scientist & Research Systems Engineer
 **Branch:** `feature/ml-pipeline-rebuild`
-**Validation Suite:** 76 Passing Automated Tests (`pytest ml_model/tests/`)
+**Validation Suite:** 92 Passing Automated Tests (`pytest ml_model/tests/`)
 
 ---
 
@@ -122,5 +122,5 @@ Calibration curves and diagnostic slopes are evaluated via unpenalized logistic 
 ## 6. Audit Verdict
 
 - **Pipeline Soundness:** Pass (Zero data leakage, deterministic seeds, verified checksums).
-- **Inference Parity:** Pass (76 automated tests passing in `ml_model/tests/`).
+- **Inference Parity:** Pass (92 automated tests passing in `ml_model/tests/`).
 - **Reproducibility Status:** Complete and verified on branch `feature/ml-pipeline-rebuild`.

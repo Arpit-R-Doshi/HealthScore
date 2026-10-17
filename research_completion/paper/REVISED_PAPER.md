@@ -227,7 +227,7 @@ Historical baseline benchmarking conducted via Hyperledger Caliper (preserved in
 
 ## 10. Conclusion
 
-HealthScore provides an audited, reproducible, and decentralized healthcare risk scoring architecture. By pairing an 11-feature observable machine learning pipeline with a 5-organization Hyperledger Fabric network, HealthScore demonstrates robust top-decile discrimination (ROC-AUC $>0.78$), honest dollar-scale expenditure modeling, and high-throughput blockchain auditability ($350$ TPS write saturation, $500$ TPS read). Our findings establish clear empirical boundaries: static diagnosis models are effective ordinal risk rankers, but cannot match historical spending baselines or replace certified actuarial rate-making.
+HealthScore provides an audited, reproducible, and decentralized healthcare risk scoring architecture. By pairing an 11-feature observable machine learning pipeline with a 5-organization Hyperledger Fabric network, HealthScore demonstrates robust top-decile discrimination across cohorts (unweighted ROC-AUC $= 0.7654$ [95% CI: $0.7444, 0.7881$] on 2023 held-out test data, $0.7828$ on 2024 full-year transfer, and $0.7807$ on prospective longitudinal evaluation), honest dollar-scale expenditure modeling, and high-throughput blockchain auditability ($350$ TPS write saturation, $500$ TPS read). Our findings establish clear empirical boundaries: static diagnosis models are effective ordinal risk rankers, but cannot match historical spending baselines or replace certified actuarial rate-making.
 
 ---
 

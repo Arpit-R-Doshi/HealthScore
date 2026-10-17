@@ -4,7 +4,7 @@
 **Date:** October 2026
 **Auditor / Reproducibility Engineer:** Autonomous Research Agent
 **Branch:** `feature/ml-pipeline-rebuild`
-**Expected Test Result:** 76 Passing Unit Tests (`pytest ml_model/tests/`)
+**Expected Test Result:** 92 Passing Python Tests (`pytest ml_model/tests/`) + 50 Passing Node Security Tests (`npm test backend/`)
 
 ---
 
@@ -74,27 +74,27 @@ Expected SHA-256 outputs:
 ## 3. Automated Test Suite Execution
 
 ### 3.1. Machine Learning & Runtime Parity Tests
-To run the complete automated Python ML test suite (clinical semantics, external validation identities, pipeline leakage guards, premium simulation invariants, and runtime model parity):
+To run the complete automated Python ML test suite (clinical semantics, external validation identities, pipeline leakage guards, premium simulation invariants, auxiliary benchmark hash verification, and runtime model parity):
 
 ```bash
 ml_model/venv/bin/pytest ml_model/tests/
 ```
 
-**Expected Result:** **85 passed in ~1.2s**
+**Expected Result:** **92 passed in ~1.2s**
 - `test_phase2_clinical_semantics.py`: 21 passed
 - `test_phase2_external_validation.py`: 22 passed
 - `test_pipeline.py`: 26 passed
 - `test_premium_simulation.py`: 9 passed
-- `test_runtime_parity.py`: 7 passed
+- `test_runtime_parity.py`: 14 passed
 
 ### 3.2. Backend Security & Authorization Tests
-To run the Node.js backend authentication, RBAC, cross-patient isolation, credential redaction, and payload size tests:
+To run the Node.js backend authentication, RBAC, cross-patient isolation, care-relationship enforcement, credential redaction, and payload size tests:
 
 ```bash
 cd backend && npm test
 ```
 
-**Expected Result:** **24 passed in ~0.6s** (0 failed, 0 cancelled)
+**Expected Result:** **50 passed in ~2.0s across 12 suites** (0 failed, 0 cancelled)
 
 ---
 

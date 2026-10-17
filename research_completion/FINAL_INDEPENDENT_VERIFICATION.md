@@ -50,7 +50,7 @@ Prior to this verification pass, working tree modifications consisted of:
 
 | # | Prior Completion Claim | Verification Status | Evidentiary Basis & Corrective Action |
 | :-: | :--- | :---: | :--- |
-| **1** | **76 Passing Tests** | **SUPERSEDED / VERIFIED** | Test suite expanded to **77 passed** (0 failed, 0 skipped) including new configurable base-cost test. |
+| **1** | **76 Passing Tests** | **SUPERSEDED / VERIFIED** | Test suite expanded to **92 passed Python tests** (0 failed, 0 skipped) in `ml_model/tests/` and **50 passed Node.js security tests** in `backend/tests/security.test.js`. |
 | **2** | **Controlled Model Comparisons (8 Reg, 9 Cls)** | **VERIFIED** | All 17 candidate models executed and verified against held-out split ($N=3,755$). Reconciled Tweedie GLM from exact frozen artifact. |
 | **3** | **11 Controlled Feature Ablations** | **VERIFIED** | Matrix of 11 ablations executed, logging $\Delta R^2$, $\Delta MAE$, and $\Delta BSS$. |
 | **4** | **Hardened Premium Simulation & $500 Base Floor** | **VERIFIED WITH LIMITATIONS** | VaR calculation mathematically correct and deterministic. Base floor traced to prototype commit `af6a322`; made configurable. |
@@ -88,31 +88,31 @@ Prior to this verification pass, working tree modifications consisted of:
 | **Two-Part Model** | 11 | Logistic + OLS Duan Smear | MAE $9,840.61, $R^2 = 0.0424$ | **MAE $9,840.61, $R^2 = 0.0424$** | Exact match. Mean Pred: $\$9,734.68$. |
 
 ### 3.3. Classification Candidates: Verified vs. Historical Metrics
-
+ 
 | Model Candidate | Features | Historical Metric (Phase 1 / Registry) | Verified Machine-Readable Metric | Status |
 | :--- | :---: | :---: | :---: | :---: |
 | **Constant Baseline** | 0 | ROC 0.5000, Weighted Brier 0.0941, BSS 0.0000 | **ROC 0.5000, Brier 0.0941, BSS +0.0000** | Exact match |
-| **Demographic Baseline** | 2 | ROC 0.7099, PR 0.2182, Weighted BSS +0.0501 | **ROC 0.7099, PR 0.2182, BSS +0.0501** | Exact match |
-| **Clinical Conditions Only** | 8 | ROC 0.7617, PR 0.3104, Weighted BSS +0.0998 | **ROC 0.7617, PR 0.3104, BSS +0.0998** | Exact match |
-| **Logistic (11-Feat Observable)**| 11 | ROC 0.7654, PR 0.3184, Weighted BSS +0.1025 | **ROC 0.7654, PR 0.3184, BSS +0.1025** | Exact match |
-| **Logistic (11-Feat Wtd Fit)** | 11 | ROC 0.7654, PR 0.3184, Weighted BSS +0.1025 | **ROC 0.7654, PR 0.3184, BSS +0.1025** | Exact match |
-| **Random Forest (11-Feat)** | 11 | ROC 0.7707, PR 0.3194, Weighted BSS +0.1046 | **ROC 0.7707, PR 0.3194, BSS +0.1046** | Exact match |
-| **XGBoost (Uncalibrated)** | 11 | ROC 0.7687, PR 0.3184, Weighted BSS +0.1057 | **ROC 0.7687, PR 0.3184, BSS +0.1057** | Exact match |
-| **XGBoost (Platt Calibrated)** | 11 | ROC 0.7700, PR 0.3181, Weighted BSS +0.0972 | **ROC 0.7700, PR 0.3181, BSS +0.0972** | Exact match |
+| **Demographic Baseline** | 2 | ROC 0.7099, PR 0.2182, Weighted BSS +0.0506 | **ROC 0.7099, PR 0.2182, BSS +0.0506** | Exact match |
+| **Clinical Conditions Only** | 8 | ROC 0.7619, PR 0.3083, Weighted BSS +0.0996 | **ROC 0.7619, PR 0.3083, BSS +0.0996** | Exact match |
+| **Logistic (11-Feat Observable, Unweighted)**| 11 | ROC 0.7652, PR 0.3192, Weighted BSS +0.1025 | **ROC 0.7652, PR 0.3192, BSS +0.1025** | Exact match |
+| **Logistic (11-Feat Observable, Weighted)**| 11 | ROC 0.7654, PR 0.3184, Weighted BSS +0.1025 | **ROC 0.7654, PR 0.3184, BSS +0.1025** | Exact match |
+| **Random Forest (11-Feat)** | 11 | ROC 0.7693, PR 0.3157, Weighted BSS +0.1062 | **ROC 0.7693, PR 0.3157, BSS +0.1062** | Exact match |
+| **XGBoost (Uncalibrated)** | 11 | ROC 0.7705, PR 0.3196, Weighted BSS +0.1093 | **ROC 0.7705, PR 0.3196, BSS +0.1093** | Exact match |
+| **XGBoost (Platt Calibrated)** | 11 | ROC 0.7702, PR 0.3183, Weighted BSS +0.0998 | **ROC 0.7702, PR 0.3183, BSS +0.0998** | Exact match |
 | **Logistic (14-Feat Oracle)** | 14 | ROC 0.7904, PR 0.3472, Weighted BSS +0.1159 | **ROC 0.7904, PR 0.3472, BSS +0.1159** | Exact match |
 
 ### 3.4. Feature Ablations Reconstructed ($N = 11$ Runs)
-1. **Full Observable Reference (11 Feat):** $R^2 = 0.0786$, ROC-AUC $= 0.7652$, $\Delta R^2 = 0.0000$.
-2. **Demographics Only (Age + Sex, 2 Feat):** $R^2 = 0.0394$, ROC-AUC $= 0.7099$, $\Delta R^2 = -0.0392$ ($49.9\%$ drop in $R^2$).
-3. **Clinical Conditions Only (8 Feat):** $R^2 = 0.0780$, ROC-AUC $= 0.7617$, $\Delta R^2 = -0.0006$ ($99.2\%$ of $R^2$ retained).
-4. **Without Psychiatric Condition (10 Feat):** $R^2 = 0.0763$, ROC-AUC $= 0.7635$, $\Delta R^2 = -0.0023$.
-5. **Without Multimorbidity & Interaction (9 Feat):** $R^2 = 0.0772$, ROC-AUC $= 0.7654$, $\Delta R^2 = -0.0013$.
-6. **Without Oncology (10 Feat):** $R^2 = 0.0783$, ROC-AUC $= 0.7622$, $\Delta R^2 = -0.0003$.
-7. **Without Cardiovascular (10 Feat):** $R^2 = 0.0779$, ROC-AUC $= 0.7605$, $\Delta R^2 = -0.0007$.
-8. **Without Metabolic (10 Feat):** $R^2 = 0.0784$, ROC-AUC $= 0.7602$, $\Delta R^2 = -0.0002$.
-9. **Without Respiratory (10 Feat):** $R^2 = 0.0751$, ROC-AUC $= 0.7629$, $\Delta R^2 = -0.0035$ (largest clinical ablation impact).
-10. **Without Musculoskeletal (10 Feat):** $R^2 = 0.0795$, ROC-AUC $= 0.7619$, $\Delta R^2 = +0.0009$.
-11. **Oracle 14 Features (14 Feat):** $R^2 = 0.0907$, ROC-AUC $= 0.7869$, $\Delta R^2 = +0.0121$ ($+15.4\%$ gain from unobservable survey variables).
+1. **Full Observable Reference (11 Feat):** $R^2 = 0.0798$, ROC-AUC $= 0.7654$, Weighted BSS $= +0.1025$, $\Delta R^2 = 0.0000$.
+2. **Demographics Only (Age + Sex, 2 Feat):** $R^2 = 0.0395$, ROC-AUC $= 0.7099$, $\Delta R^2 = -0.0403$ ($50.5\%$ drop in $R^2$).
+3. **Clinical Conditions Only (8 Feat):** $R^2 = 0.0791$, ROC-AUC $= 0.7619$, $\Delta R^2 = -0.0007$ ($99.1\%$ of $R^2$ retained).
+4. **Without Psychiatric Condition (10 Feat):** $R^2 = 0.0774$, ROC-AUC $= 0.7634$, $\Delta R^2 = -0.0024$.
+5. **Without Multimorbidity & Interaction (9 Feat):** $R^2 = 0.0787$, ROC-AUC $= 0.7657$, $\Delta R^2 = -0.0011$.
+6. **Without Oncology (10 Feat):** $R^2 = 0.0788$, ROC-AUC $= 0.7626$, $\Delta R^2 = -0.0010$.
+7. **Without Cardiovascular (10 Feat):** $R^2 = 0.0785$, ROC-AUC $= 0.7611$, $\Delta R^2 = -0.0013$.
+8. **Without Metabolic (10 Feat):** $R^2 = 0.0792$, ROC-AUC $= 0.7605$, $\Delta R^2 = -0.0006$.
+9. **Without Respiratory (10 Feat):** $R^2 = 0.0764$, ROC-AUC $= 0.7632$, $\Delta R^2 = -0.0035$ (largest clinical ablation impact).
+10. **Without Musculoskeletal (10 Feat):** $R^2 = 0.0802$, ROC-AUC $= 0.7622$, $\Delta R^2 = +0.0004$.
+11. **Oracle 14 Features (14 Feat):** $R^2 = 0.0927$, ROC-AUC $= 0.7904$, $\Delta R^2 = +0.0129$ ($+16.2\%$ gain from unobservable survey variables).
 
 ---
 

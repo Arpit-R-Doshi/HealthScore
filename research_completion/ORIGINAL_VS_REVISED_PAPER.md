@@ -79,8 +79,8 @@ Every material modification is categorized by type (Numerical, Methodological, C
 ## 4. Verification Check & Final Integrity Verdict
 
 All numerical values, tables, and figures in the Revised Paper have been cross-checked against:
-1. `ml_model/tests/` (85 passing Python tests).
-2. `backend/tests/` (24 passing Node.js security tests).
+1. `ml_model/tests/` (92 passing Python tests).
+2. `backend/tests/` (50 passing Node.js security tests).
 3. `research_completion/experiments/experiment_registry.json`.
 4. `ml_model/validation/hc256/metrics_hc256.json`.
 5. `ml_model/validation/hc257/metrics_hc257.json`.
