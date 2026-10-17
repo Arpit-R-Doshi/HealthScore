@@ -1,0 +1,12 @@
+Round_Name,Function,Offered_TPS,Configured_Tx,Simulated_Throughput_Median_TPS,Simulated_Throughput_P5_TPS,Simulated_Throughput_P95_TPS,Simulated_Avg_Latency_Median_s,Simulated_Avg_Latency_P5_s,Simulated_Avg_Latency_P95_s,Simulated_Max_Latency_Median_s
+createPatientRecord-50-tps,createPatientRecord,50.0,500,49.99,49.91,50.09,0.133,0.1178,0.1555,0.3626
+createPatientRecord-100-tps,createPatientRecord,100.0,1000,99.98,99.82,100.17,0.0838,0.0743,0.098,0.2285
+createPatientRecord-200-tps,createPatientRecord,200.0,2000,199.96,199.63,200.34,0.0595,0.0528,0.0694,0.1621
+createPatientRecord-350-tps,createPatientRecord,350.0,3500,349.4,326.58,350.5,0.0653,0.0512,0.4044,0.1809
+createPatientRecord-1000-tps,createPatientRecord,1000.0,10000,351.53,326.58,379.06,9.268,8.2288,10.3473,16.6468
+updateHealthScore-200-tps,updateHealthScore,200.0,2000,199.96,199.63,200.34,0.0595,0.0528,0.0694,0.1621
+createPrescription-200-tps,createPrescription,200.0,2000,199.96,199.63,200.34,0.0595,0.0528,0.0694,0.1621
+requestScan-200-tps,requestScan,200.0,2000,199.96,199.63,200.34,0.0595,0.0528,0.0694,0.1621
+getPatientRecord-100-tps,getPatientRecord,100.0,1000,100.0,100.0,100.0,0.0019,0.0015,0.0026,0.0043
+getPatientRecord-250-tps,getPatientRecord,250.0,2500,250.0,250.0,250.0,0.0019,0.0015,0.0026,0.0043
+getPatientRecord-500-tps,getPatientRecord,500.0,5000,500.0,500.0,500.0,0.0019,0.0015,0.0026,0.0043
