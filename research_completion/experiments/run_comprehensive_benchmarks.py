@@ -82,14 +82,18 @@ def compute_calibration_diagnostics(y_true, y_prob, weights=None):
         preds = 1.0 / (1.0 + np.exp(-(alpha + logits)))
         return np.sum(w_arr * (y_arr - preds))
 
+    citl_method = "exact_brentq_root"
+    citl_fallback_reason = None
     try:
         sol = root_scalar(citl_obj, bracket=[-10.0, 10.0], method='brentq')
         citl = float(sol.root)
-    except Exception:
-        # Fallback to empirical log-odds difference
+    except Exception as e:
+        # Fallback to empirical log-odds difference with explicit recording
         mean_y = np.average(y_arr, weights=w_arr)
         mean_p = np.average(probs_clipped, weights=w_arr)
         citl = float(np.log(mean_y / (1.0 - mean_y)) - np.log(mean_p / (1.0 - mean_p)))
+        citl_method = "empirical_log_odds_difference_fallback"
+        citl_fallback_reason = str(e)
 
     # 2. Bivariate logistic calibration: y ~ a + b * logit(p)
     estimator_provenance = "unpenalized_lbfgs"
@@ -110,6 +114,8 @@ def compute_calibration_diagnostics(y_true, y_prob, weights=None):
 
     return {
         "citl": round(citl, 4),
+        "citl_method": citl_method,
+        "citl_fallback_reason": citl_fallback_reason,
         "cal_intercept": round(cal_int, 4),
         "cal_slope": round(cal_slope, 4),
         "calibration_estimator": estimator_provenance
@@ -203,18 +209,36 @@ def main():
     print(f"Target 1 Unw Threshold: ${splits['p90_threshold_unweighted']:,.2f} | Base Brier: {base_brier_tgt1:.4f}")
     print(f"Target 2 Wtd Threshold: ${splits['p90_threshold_weighted']:,.2f} | Base Brier (Wtd): {base_brier_tgt2_wtd:.4f}")
 
-    # Git metadata
+    # Git metadata and execution provenance
     try:
         git_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO_ROOT).decode().strip()
     except Exception:
         git_sha = "unknown"
 
+    try:
+        git_status_raw = subprocess.check_output(["git", "status", "--porcelain"], cwd=REPO_ROOT).decode().strip()
+        git_clean = (len(git_status_raw) == 0)
+    except Exception:
+        git_clean = "unknown"
+
+    script_path = os.path.abspath(__file__)
+    script_sha256 = sha256_file(script_path)
+    command_executed = f"{sys.executable} {' '.join(sys.argv)}"
+
     registry = {
         "metadata": {
             "execution_timestamp_utc": datetime.now(timezone.utc).isoformat(),
             "git_commit_sha": git_sha,
+            "git_working_tree_clean": git_clean,
+            "benchmark_script_sha256": script_sha256,
+            "command_executed": command_executed,
             "environment": f"Python {sys.version.split()[0]}, scikit-learn {sklearn.__version__}, xgboost {xgb.__version__}, shap {shap.__version__}",
             "seed": 42,
+            "sample_sizes": {
+                "total_eligible_survey_records": len(df_clean),
+                "training_split_n": len(X_train_full),
+                "held_out_test_split_n": len(X_test_full)
+            },
             "datasets": {
                 "HC-251_2023": sha256_file(raw_path),
                 "HC-256_2024": sha256_file(os.path.join(REPO_ROOT, "ml_model", "validation", "hc256", "data", "h256.dta")),
@@ -229,7 +253,11 @@ def main():
                 "MEPS HC-251 contains Panel 28 (Year 1) and Panel 27 (Year 2) observations. "
                 "HC-257 tracks Panel 28 across 2023-2024; evaluation against HC-257 represents prospective longitudinal follow-up "
                 "with disclosed participant overlap with HC-251, not an independent fresh sample. "
-                "HC-251 test split has been used for iterative evaluation and is marked as benchmark test data."
+                "HC-251 test split (N=3,755 held-out from N=18,771 eligible records) has been used for iterative evaluation and is marked as exploratory benchmark test data."
+            ),
+            "uncertainty_methodology_notes": (
+                "Confidence intervals reported from bootstrap_regression and bootstrap_classification are unweighted individual-level non-parametric percentile bootstrap intervals. "
+                "They do not account for MEPS complex survey design (clustering, stratification, survey design effects) and must be interpreted as non-design-based model uncertainty."
             )
         },
         "regression_comparisons": [],
@@ -473,7 +501,14 @@ def main():
         if len(np.unique(prob)) > 1:
             cal_diag = compute_calibration_diagnostics(y_test_cls_tgt2, prob, weights=w_test_norm)
         else:
-            cal_diag = {"citl": 0.0, "cal_intercept": 0.0, "cal_slope": 0.0, "calibration_estimator": "uninformative_baseline"}
+            cal_diag = {
+                "citl": 0.0,
+                "citl_method": "uninformative_baseline",
+                "citl_fallback_reason": None,
+                "cal_intercept": 0.0,
+                "cal_slope": 0.0,
+                "calibration_estimator": "uninformative_baseline"
+            }
 
         ci = bootstrap_classification(y_test_cls_tgt2, prob, n_boot=200, seed=42)
 
@@ -491,6 +526,8 @@ def main():
             "brier_weighted": round(brier_wtd, 4),
             "bss_weighted": round(bss_wtd, 4),
             "calibration_in_the_large_citl": cal_diag["citl"],
+            "citl_method": cal_diag.get("citl_method", "exact_brentq_root"),
+            "citl_fallback_reason": cal_diag.get("citl_fallback_reason"),
             "cal_intercept": cal_diag["cal_intercept"],
             "cal_slope": cal_diag["cal_slope"],
             "calibration_estimator": cal_diag["calibration_estimator"],
