@@ -2,6 +2,7 @@
 HealthScore Subprocess Runner
 Bridge between Node.js Express backend and Python ML engine.
 Reads JSON from argv[1] and writes pure JSON to stdout.
+Supports configurable base_cost and pricing_alpha risk loading.
 """
 
 import sys
@@ -32,7 +33,13 @@ def main():
             "premium": result['premium'],
             "high_cost_probability": result.get('high_cost_probability'),
             "confidence": result['confidence_interval'],
-            "top_risk_factors": result.get('top_risk_factors', [])
+            "simulated_loss_percentiles": result.get('simulated_loss_percentiles', {}),
+            "top_risk_factors": result.get('top_risk_factors', []),
+            "pricing_parameters": {
+                "base_cost": result.get('simulated_loss_percentiles', {}).get('base_cost', 500.0),
+                "pricing_alpha": result.get('simulated_loss_percentiles', {}).get('pricing_alpha', 0.0),
+                "formula": "X_alpha = B + (1 + alpha) * G"
+            }
         }
 
         # Print clean JSON and flush for Node.js

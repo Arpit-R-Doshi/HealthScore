@@ -541,7 +541,7 @@ def parse_structured_clinical_conditions(structured_input, age=None):
     Validated structured per-condition clinical intake parser.
     Maps validated clinical condition records directly to MEPS-aligned feature clusters
     matching the exact Phase 1 training feature formulas.
-    
+
     Distinguishes:
       - Explicit affirmation (active clinical condition)
       - Explicit negation (clinically confirmed absence)
@@ -550,14 +550,14 @@ def parse_structured_clinical_conditions(structured_input, age=None):
       - Unmentioned / missing conditions (explicitly tracked; NOT silently converted to confirmed negatives)
       - Age-inapplicable conditions (enforces official MEPS survey skip patterns, e.g. adult arthritis vs pediatric ADHD)
       - Unmapped clinical concepts (e.g. bipolar, anxiety; quarantined to prevent artificial feature distortion)
-      
+
     Returns a standardized dictionary with flags (6-tuple) and audit provenance.
     """
     all_clusters = ["cardio", "metabolic", "respiratory", "oncology", "msk", "psych"]
-    
+
     if not isinstance(structured_input, (dict, list)):
         raise ValueError(f"structured_input must be a dictionary or list of condition records, got {type(structured_input).__name__}")
-    
+
     # Normalize input into a standardized item dict: {condition_key: {"status": ..., "notes": ...}}
     norm_items = {}
     if isinstance(structured_input, list):
@@ -594,7 +594,7 @@ def parse_structured_clinical_conditions(structured_input, age=None):
     inapplicable = []
     unknown_fields = []
     unmapped_concepts = []
-    
+
     cluster_affirmed = {cl: set() for cl in all_clusters}
     cluster_negated = {cl: set() for cl in all_clusters}
     affirmed_meps_indicators = set()
@@ -726,20 +726,30 @@ def parse_structured_clinical_conditions(structured_input, age=None):
 
 
 
-def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None, base_cost=500.0):
+def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None, base_cost=500.0, pricing_alpha=0.0, return_details=False):
     """
-    Monte Carlo parametric Value-at-Risk (VaR) simulation using a synthetic Gamma loss distribution.
-    
+    Monte Carlo parametric Value-at-Risk (VaR) simulation using a synthetic Gamma loss distribution
+    with configurable base cost floor and dimensionless risk-loading parameter (pricing alpha).
+
+    Mathematical Formulation:
+        X_alpha = B + (1 + alpha) * G
+    where:
+        - B is the configurable base-cost floor in USD (default $500.00).
+        - G ~ Gamma(shape=k, scale=theta) with shape k=1.5 and theta = y_hat / 1.5,
+          ensuring E[G] = k * theta = y_hat (model-predicted mean expenditure).
+        - alpha >= 0 is a dimensionless risk-loading parameter (default alpha=0.0).
+          When alpha=0, X_0 = B + G reproduces the un-loaded baseline simulation exactly.
+          For alpha > 0, (1 + alpha) scales the simulated loss, representing a conservative
+          risk-loaded scenario rather than a discounted offer.
+
+    Target Premium:
+        Target Premium = Percentile_95(X_alpha)
+
     IMPORTANT REGULATORY & ACTUARIAL DISCLAIMER:
     This output is strictly an exploratory parametric loss simulation heuristic for technical demonstration.
     Current MEPS prediction metrics and statistical associations do NOT validate commercial insurance pricing,
     premium calculation, underwriting adequacy, or reserve solvency.
     Output describes an exploratory simulated loss percentile heuristic, NOT an insurance quote.
-
-    NOTE ON BASE_COST FLOOR:
-    The default base_cost ($500.00) is an empirical heuristic baseline offset representing baseline
-    administrative/preventative overhead. It is NOT derived from statutory filings or actuarial standards,
-    and is configurable here for empirical sensitivity analysis.
     """
     # 1. Validate n_simulations as positive integer
     if not isinstance(n_simulations, (int, np.integer)) or isinstance(n_simulations, bool) or n_simulations <= 0:
@@ -750,7 +760,12 @@ def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None, b
         raise ValueError(f"base_cost must be a finite non-negative number, got {base_cost}")
     base_cost = float(base_cost)
 
-    # 3. Validate predicted_mean_cost: handle invalid model outputs explicitly instead of silently masking
+    # 3. Validate pricing_alpha as finite non-negative number
+    if not isinstance(pricing_alpha, (int, float, np.floating, np.integer)) or isinstance(pricing_alpha, bool) or not np.isfinite(pricing_alpha) or pricing_alpha < 0:
+        raise ValueError(f"pricing_alpha must be a finite non-negative number, got {pricing_alpha}")
+    pricing_alpha = float(pricing_alpha)
+
+    # 4. Validate predicted_mean_cost: handle invalid model outputs explicitly instead of silently masking
     if predicted_mean_cost is None:
         raise ValueError("predicted_mean_cost cannot be None. Expected finite non-negative predicted expenditure.")
     try:
@@ -765,7 +780,23 @@ def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None, b
 
     # Boundary case: zero predicted expenditure
     if predicted_mean_cost == 0.0:
-        return round(base_cost, 2), round(base_cost, 2), round(base_cost, 2)
+        zero_p = round(base_cost, 2)
+        if return_details:
+            return {
+                "target_premium": zero_p,
+                "p5": zero_p,
+                "p50": zero_p,
+                "p90": zero_p,
+                "p95": zero_p,
+                "p99": zero_p,
+                "pricing_alpha": pricing_alpha,
+                "base_cost": base_cost,
+                "predicted_mean_cost": 0.0,
+                "n_simulations": int(n_simulations),
+                "formula": "X_alpha = B + (1 + alpha) * G",
+                "disclaimer": "Exploratory parametric loss simulation heuristic, NOT an actuarially certified insurance quote."
+            }
+        return zero_p, zero_p, zero_p
 
     shape = 1.5
     scale = predicted_mean_cost / shape
@@ -776,12 +807,34 @@ def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None, b
     else:
         gamma_draws = np.random.gamma(shape, scale, n_simulations)
 
-    simulated_costs = np.maximum(base_cost, gamma_draws + base_cost)
+    loaded_loss = (1.0 + pricing_alpha) * gamma_draws
+    simulated_costs = np.maximum(base_cost, loaded_loss + base_cost)
+
     target_premium = float(np.percentile(simulated_costs, 95))
     p5 = float(np.percentile(simulated_costs, 5))
+    p50 = float(np.percentile(simulated_costs, 50))
+    p90 = float(np.percentile(simulated_costs, 90))
     p95 = float(np.percentile(simulated_costs, 95))
+    p99 = float(np.percentile(simulated_costs, 99))
+
+    if return_details:
+        return {
+            "target_premium": round(target_premium, 2),
+            "p5": round(p5, 2),
+            "p50": round(p50, 2),
+            "p90": round(p90, 2),
+            "p95": round(p95, 2),
+            "p99": round(p99, 2),
+            "pricing_alpha": pricing_alpha,
+            "base_cost": base_cost,
+            "predicted_mean_cost": round(predicted_mean_cost, 2),
+            "n_simulations": int(n_simulations),
+            "formula": "X_alpha = B + (1 + alpha) * G",
+            "disclaimer": "Exploratory parametric loss simulation heuristic, NOT an actuarially certified insurance quote."
+        }
 
     return round(target_premium, 2), round(p5, 2), round(p95, 2)
+
 
 
 def get_imputed_defaults(age, comorbidity_count, lookup_table=None):
@@ -817,21 +870,24 @@ def get_imputed_defaults(age, comorbidity_count, lookup_table=None):
     }
 
 
-def calculate_risk(data, require_structured_inputs=False):
+def calculate_risk(data, require_structured_inputs=False, base_cost=500.0, pricing_alpha=0.0):
     """
     Primary inference pipeline for a patient profile.
-    
+
     Accepts:
       - age (required)
       - gender (optional, default 'male')
       - diseaseInput (optional free-text)
+      - base_cost (optional float, default 500.0): Floor offset for Monte Carlo simulation
+      - pricing_alpha (optional float >= 0, default 0.0): Dimensionless risk-loading parameter
+
       - perceived_health (optional 1-5; used if explicit SAQ inputs are available)
       - physical_limitation (optional bool/int)
       - cognitive_difficulty (optional bool/int)
       - k6_distress (optional 0-24)
       - require_structured_inputs (optional bool, default False):
           If True and clinical conditions are unmentioned/unparseable, returns an insufficient-input response.
-      
+
     Returns:
       - relative_expenditure_score: Inverse percentile rank among model cohort expectations (0-100)
       - health_score: Alias for relative_expenditure_score (for backward-compatibility)
@@ -1026,7 +1082,23 @@ def calculate_risk(data, require_structured_inputs=False):
         obs_percentile = pred_percentile
 
     # 5. Monte Carlo Parametric VaR Heuristic Simulation
-    target_premium, p5, p95 = monte_carlo_simulation(direct_dollar_expenditure)
+    if "base_cost" in data and data["base_cost"] is not None:
+        base_cost = data["base_cost"]
+    if "pricing_alpha" in data and data["pricing_alpha"] is not None:
+        pricing_alpha = data["pricing_alpha"]
+
+    sim_details = monte_carlo_simulation(
+        direct_dollar_expenditure,
+        base_cost=base_cost,
+        pricing_alpha=pricing_alpha,
+        return_details=True
+    )
+    target_premium = sim_details["target_premium"]
+    p5 = sim_details["p5"]
+    p50 = sim_details["p50"]
+    p90 = sim_details["p90"]
+    p95 = sim_details["p95"]
+    p99 = sim_details["p99"]
 
     # 6. Attributed Indicators
     risk_factors = []
@@ -1060,8 +1132,14 @@ def calculate_risk(data, require_structured_inputs=False):
         "high_cost_probability": high_cost_prob,
         "simulated_loss_percentiles": {
             "p5": p5,
+            "p50": p50,
+            "p90": p90,
             "p95": p95,
+            "p99": p99,
             "p95_loss_heuristic": target_premium,
+            "base_cost": sim_details["base_cost"],
+            "pricing_alpha": sim_details["pricing_alpha"],
+            "formula": "X_alpha = B + (1 + alpha) * G",
             "description": "Exploratory simulated loss percentiles from Gamma Monte Carlo heuristic, NOT an actuarial confidence interval."
         },
         "confidence_interval": {
