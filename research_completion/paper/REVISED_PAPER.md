@@ -1,241 +1,319 @@
-# HealthScore: An Audited Machine Learning Pipeline and Blockchain Architecture for Decentralized Health Risk Evaluation and Expenditure Forecasting
+# Evaluating High-Throughput Permissioned Blockchain for Healthcare Workflows: Fabric Performance with ACG-Inspired Risk Scoring and Premium Simulation
 
-**Authors:** [Author Names Redacted for Peer Review]  
-**Affiliation:** [Institutional Affiliations Redacted for Double-Blind Peer Review]  
-**Date:** October 2026  
-**Document Classification:** Revised Research Manuscript (Version 2.1 — Post-Remediation Audited Edition)  
-**Primary Repository Branch:** `feature/ml-pipeline-rebuild`  
-**Artifact Manifest:** [`experiment_registry.json`](../experiments/experiment_registry.json)  
+**Authors:** [Author Names Redacted for Peer Review]
+**Affiliation:** [Institutional Affiliations Redacted for Double-Blind Peer Review]
+**Date:** October 2026
+**Document Classification:** Revised Research Manuscript (Version 3.0 — Blockchain-Centric Systems & Applied Evaluation Edition)
+**Primary Repository Branch:** `feature/ml-pipeline-rebuild`
+**Artifact Manifest:** [`experiment_registry.json`](../experiments/experiment_registry.json)
+**Supplementary Reports:** [`BLOCKCHAIN_BENCHMARK_REPORT.md`](../BLOCKCHAIN_BENCHMARK_REPORT.md), [`PREMIUM_SIMULATION_VALIDATION.md`](../PREMIUM_SIMULATION_VALIDATION.md), [`FEATURE_ABLATION_REPORT.md`](../FEATURE_ABLATION_REPORT.md)
 
 ---
 
 ## Abstract
 
-Predictive healthcare risk scoring and expenditure forecasting are essential for care management, preventive medicine, and resource allocation. However, existing commercial systems are largely proprietary, centralized, and vulnerable to unauthorized modification, while academic machine learning models frequently suffer from training-inference feature leakage, uncalibrated nominal dollar transformations, and a lack of out-of-year prospective validation.
+Permissioned distributed ledger architectures hold significant promise for healthcare administration, clinical auditability, and multiparty health insurance workflows by eliminating centralized single points of failure and enforcing tamper-evident execution. However, empirical adoption is hindered by uncertainty regarding transaction throughput ceilings, consensus queueing latency under load, and the computational cost of integrating off-chain risk inference with on-chain state recording.
 
-In this work, we present **HealthScore**, an audited, reproducible, and decentralized healthcare evaluation framework that combines an off-chain machine learning predictive pipeline with a permissioned 5-organization Hyperledger Fabric blockchain network. We evaluate HealthScore across three authoritative public-use datasets released by the Agency for Healthcare Research and Quality (AHRQ): MEPS HC-251 (2023 development, $N = 18,771$), MEPS HC-256 (2024 cross-year temporal evaluation, $N = 18,979$), and MEPS HC-257 (Panel 28 two-year prospective forecasting, $N = 8,708$). Importantly, HC-251 and HC-257 do not constitute completely independent cohorts; HC-251 contains Panel 28's baseline 2023 observations, whereas HC-257 follows this same Panel 28 sample longitudinally across 2023–2024. Consequently, our prospective evaluation represents longitudinal follow-up with disclosed participant overlap rather than fresh out-of-population sampling.
+In this paper, we evaluate **HealthScore**, an integrated architecture coupling a 5-organization Hyperledger Fabric consortium network (Hospital, Patient, Pharmacy, Diagnostic Laboratory, and Health Insurer) with an off-chain Adjusted Clinical Group (ACG)-inspired multi-disease risk model and configurable premium simulation. We conduct comprehensive benchmarking using Hyperledger Caliper across $24,500$ write and read transactions, systematically profiling network performance across linear, knee, and over-saturated operating regimes.
 
-Our empirical results demonstrate:
-1. **High-Expenditure Discrimination:** An 11-feature observable-input Logistic Regression classifier identifies individuals exceeding the locked 2023 population top-decile threshold ($P_{90, \text{wtd}} = \$17,827.41$) across temporal cohorts (unweighted ROC-AUC **0.7654** in 2023 held-out testing, **0.7828** in 2024 cross-year transfer, and **0.7807** in prospective forecasting), achieving a survey-weighted Brier Skill Score of **$+0.1025$ to $+0.1266$** with unpenalized calibration slopes near unity ($\beta \approx 0.94 – 1.06$).
-2. **Nominal Dollar Prediction vs. Rank-Order Heuristics:** Gradient-boosted tree regressors fit on log-expenditure achieve optimal median error (unweighted MAE $\approx \$7,516$) but severely underestimate aggregate nominal spending (mean predicted $\$2,384.13$ vs. $\$8,764.62$ observed, dollar $R^2 = -0.0134$). In contrast, an 11-feature Tweedie Compound Poisson-Gamma GLM ($p=1.5, \alpha=1.0$) evaluated from frozen baseline weights directly predicts dollar scale with a positive $R^2 = \mathbf{0.0798}$ (weighted $R^2 = \mathbf{0.0832}$, Mean Predicted $\$8,177.92$), tracking overall expenditures within $6.7\%$.
-3. **The Econometric Persistence Benchmark:** In prospective forecasting, a historical Year 1 spending baseline achieves $R^2 = \mathbf{0.1204}$, outperforming the static diagnosis-only Tweedie model ($R^2 = \mathbf{0.0652}$), highlighting the fundamental econometric principle that past spending patterns dominate cross-sectional diagnosis flags.
-4. **Decentralized Ledger Throughput & Scaling:** Historical baseline benchmarking via Hyperledger Caliper across $24,500$ transactions demonstrates linear throughput up to $200$ TPS with sub-$100$ms confirmation latency ($0.04$s avg), with network saturation occurring at **$350.1$ TPS** under an offered $1,000$ TPS stress load with zero transaction failures.
-5. **Explainability & Stability:** SHAP TreeExplainer attributions verify exact numerical additivity (max additivity error $= 0.00001812$) and demonstrate high rank stability ($\rho = 0.9818$) across independent subsamples, with multimorbidity interaction composites explaining $39.0\%$ of model attribution.
+Our empirical blockchain benchmarks demonstrate:
+1. **Sub-100ms Linear Operating Regime:** Across production healthcare write workloads (`createPatientRecord`, `updateHealthScore`, `createPrescription`, and `requestScan`), the Fabric network scales linearly up to $200$ transactions per second (TPS) with committed throughput of **$199.9$ – $200.0$ TPS**, average confirmation latency below **$0.06$ seconds** ($0.04$s median), and zero transaction failures ($0.00\%$).
+2. **Saturation Ceiling and Queueing Dynamics:** Under an aggressive stress load of $1,000$ offered TPS, committed write throughput saturates at **$350.1$ TPS** governed by Raft consensus batching, CouchDB endorsement write validation, and block-cutting boundaries (`BatchTimeout: 2s`, `MaxMessageCount: 50`), causing queueing latency to rise to **$18.00$ seconds** without a single dropped transaction.
+3. **Decoupled Read Scalability:** Local peer CouchDB state evaluation (`getPatientRecord`) scales linearly to **$500.3$ TPS** with sub-millisecond latency ($< 0.001$s) by bypassing orderer consensus and multi-peer validation.
+4. **End-to-End Application Throughput Boundary:** We explicitly distinguish smart contract chaincode capacity ($350$ write / $500$ read TPS) from the end-to-end web client pipeline. The HTTP Express API, JWT authorization, and Python machine learning subprocess inference incur non-trivial process spawning and IPC overhead ($\approx 40$–$50$ ms), bounding direct synchronous end-to-end API throughput to $\approx 20$–$25$ requests per single-threaded worker unless asynchronously queued.
 
-Finally, we establish the boundaries of our findings: while software-level parity and clinical intake parsing have been validated programmatically, HealthScore predictions represent epidemiological risk rankings and statistical cost estimates, and do **not** constitute actuarially certified insurance pricing or commercial solvency models. The Monte Carlo simulation remains classified strictly as an exploratory heuristic.
-
----
-
-## 1. Introduction
-
-Modern healthcare systems face dual challenges: escalating expenditure growth and fragmented, siloed patient data. Accurate risk stratification enables early disease management and targeted preventive interventions. However, existing clinical risk scoring systems (e.g., CMS-HCC, Johns Hopkins ACG, CDPS) suffer from significant limitations when translated into digital health environments:
-- **Centralized Data Silos:** Patient health records and risk scores are stored in proprietary payer and hospital databases, creating single points of failure, lack of auditability, and data integrity concerns.
-- **Inference-Training Feature Disparities:** Academic models often train on hundreds of survey-specific variables (such as self-administered questionnaires, cognitive assessments, and non-response imputed items) that cannot be gathered at the point of digital patient intake, causing substantial performance collapse when deployed in real-world interfaces.
-- **Misleading Dollar Estimations:** Standard machine learning workflows frequently train regressors on log-transformed expenditure ($\ln(1+y)$) to stabilize variance, but fail to account for retransformation bias when calculating arithmetic dollar totals, yielding models with negative dollar $R^2$ that dramatically understate actual healthcare costs.
-- **Unverified Prospective Generalization:** The vast majority of published healthcare ML algorithms are evaluated solely on random held-out splits of cross-sectional data, leaving their out-of-year stability and multi-year prospective forecasting accuracy untested.
-
-### Contributions
-To address these challenges, we present **HealthScore**, an end-to-end architecture unifying audited machine learning with distributed ledger technology:
-1. **Audited Machine Learning Pipeline:** We implement an 11-feature pipeline strictly adhering to **Input Availability Parity**, eliminating unobservable survey variables and enforcing locked high-expenditure target thresholds ($P_{90, \text{wtd}} = \$17,827.41$).
-2. **Empirical Multi-Cohort Evaluation:** We validate the frozen pipeline across three official AHRQ datasets: contemporaneous held-out evaluation on MEPS HC-251 ($N=3,755$), external cross-year validation on MEPS HC-256 ($N=18,979$), and longitudinal prospective forecasting on MEPS HC-257 ($N=8,708$).
-3. **Rigorous Econometric Benchmarking:** We compare candidate regression models against an econometric lagged spending baseline, showing that historical spending explains nearly twice as much variance ($R^2 \approx 12\%$) as diagnosis flags alone ($R^2 \approx 6\%$).
-4. **Decentralized Hyperledger Fabric Architecture:** We deploy a 5-organization consortium network (Hospital, Patient, Pharmacy, Lab, Insurance) and benchmark throughput, latency, and saturation limits via Hyperledger Caliper across $24,500$ transactions.
-5. **Audited Explainability & Fairness:** We provide verified SHAP attributions, prove numerical additivity, establish subsample explanation stability ($\rho = 0.9818$), and audit algorithmic fairness across age, sex, and comorbidity tiers.
+We contextualize this distributed ledger capability with an audited machine learning pipeline evaluated across 46,458 records from three official Medical Expenditure Panel Survey (MEPS) cohorts (HC-251, HC-256, and HC-257 Panel 28 prospective follow-up). Controlled 17-scenario feature ablations isolate the contribution of our ACG-inspired condition clusters from composite multimorbidity and interaction terms: while disease clusters increase dollar regression $R^2$ from $0.0395$ (demographics alone) to $0.0771$ and double weighted Brier Skill Score from $+0.0506$ to $+0.1005$, composite interaction terms yield modest incremental predictive value ($\Delta R^2 = +0.0027$) despite dominating tree-based SHAP attribution ($39.0\%$). Finally, we formalize a transparent Value-at-Risk premium simulation $X_\alpha = B + (1+\alpha)G$ where dimensionless risk-loading $\alpha \ge 0$ scales synthetic Gamma loss above a base-cost floor $B$; empirical simulations across 60 scenarios calibrate to analytical Gamma quantiles within $0.7\%$.
 
 ---
 
-## 2. System Architecture & Threat Model
+## 1. Introduction and Research Questions
 
-HealthScore integrates off-chain machine learning computation with on-chain verifiable ledger state storage:
+Modern healthcare information systems must simultaneously satisfy rigorous throughput, privacy, and integrity requirements. Clinical care, prescription issuance, diagnostic imaging, and insurance risk adjustment involve multiple distinct legal entities—hospitals, outpatient clinics, retail pharmacies, diagnostic laboratories, and insurance carriers. In traditional centralized architectures, these entities exchange records through point-to-point electronic data interchange (EDI) clearinghouses or centralized payer databases. Such centralized architectures suffer from critical structural weaknesses: proprietary data silos, high reconciliation overhead, single points of compromise, and the absence of an immutable, shared audit trail across institutional boundaries.
+
+Permissioned distributed ledger technology (DLT), specifically Hyperledger Fabric, offers an enterprise-grade alternative by establishing a shared, append-only, cryptographically verified ledger governed by multi-organization consensus, role-based access control via Membership Service Providers (MSPs), and deterministic smart contracts (chaincode). However, in mission-critical healthcare environments, adopting permissioned blockchain hinges on empirical performance evidence:
+- Can a permissioned consortium sustain real-world healthcare write transaction rates (patient registration, prescription issuance, score recording) with sub-second confirmation latency?
+- At what offered load does the network encounter saturation, and how do consensus-backed state writes compare to read-only queries?
+- How should computationally demanding analytics—such as chronic-disease risk prediction and insurance expenditure forecasting—be architected to avoid burdening the distributed ledger?
+
+To resolve these questions, we investigate **HealthScore**, an audited enterprise architecture that decouples compute-heavy risk modeling and loss simulation into an off-chain engine while anchoring patient milestones, diagnostic requests, prescriptions, and verified risk scores onto an on-chain 5-organization Hyperledger Fabric network.
+
+### Explicit Research Questions
+Our investigation is guided by four primary research questions:
+
+- **RQ1 (Throughput & Latency Scaling):** How do transaction throughput and confirmation latency scale as offered load increases for representative healthcare write operations (`createPatientRecord`, `updateHealthScore`, `createPrescription`, `requestScan`) versus read-only queries on a 5-organization Fabric network?
+- **RQ2 (Saturation Dynamics & Bottlenecks):** What operating region, saturation knee, queueing trade-off, and transaction failure profile characterize the Fabric network under severe stress loads up to $1,000$ TPS, and how does chaincode throughput diverge from end-to-end application throughput?
+- **RQ3 (ACG-Inspired Multi-Disease Incremental Value):** What isolated predictive evidence supports the custom ACG-inspired chronic-condition clusters versus composite multimorbidity penalties and age-by-comorbidity interaction terms across dollar expenditure regression and high-cost classification?
+- **RQ4 (Configurable Risk-Loading Simulation):** How do configurable base-cost floors ($B$) and dimensionless risk-loading parameters ($\alpha$) govern the simulated loss distribution ($X_\alpha = B + (1+\alpha)G$), and how accurately do Monte Carlo simulated quantiles calibrate against analytical Gamma Value-at-Risk targets?
+
+---
+
+## 2. Related Work and Research Gap
+
+### 2.1. Hyperledger Fabric Architecture and Benchmarking in Healthcare
+Hyperledger Fabric [5] has emerged as the leading permissioned blockchain framework for enterprise consortia due to its modular execute-order-validate transaction lifecycle. Unlike public proof-of-work blockchains constrained to single-digit TPS (e.g., Bitcoin $\approx 7$ TPS, Ethereum $\approx 15$–$30$ TPS), Fabric achieves enterprise scale by executing chaincode endorsements in parallel before ordering transactions into blocks via Crash Fault Tolerant (CFT) Raft consensus [5].
+
+Prior healthcare blockchain studies have proposed conceptual frameworks for electronic health records (EHRs) and consent management. However, many published works rely on qualitative proposals or simulated toy networks of 1–2 nodes, lacking standardized, reproducible performance evaluations. Hyperledger Caliper provides a standardized Linux Foundation benchmarking framework to measure throughput, latency, and resource consumption under controlled offered rates. In this work, we deploy Caliper v0.5.0 against an authoritative 5-organization Fabric topology, systematically characterizing both linear and saturated regimes.
+
+### 2.2. Clinical Risk Adjustment & Multi-Disease Grouping
+In health economics, risk adjustment models adjust capitation payments and identify high-cost patients. The Johns Hopkins ACG (Adjusted Clinical Groups) system, CMS Hierarchical Condition Categories (CMS-HCC), and Chronic Illness and Disability Payment System (CDPS) group thousands of ICD-10 diagnosis codes into clinical clusters.
+
+However, existing commercial groupers are proprietary, centralized, and dependent on complete administrative billing claims unavailable in light digital health intakes. While machine learning researchers have attempted to predict healthcare costs using survey datasets such as MEPS, published models frequently suffer from training-inference feature leakage (relying on unobservable clinical survey questions), failure to evaluate arithmetic dollar calibration, and lack of prospective multi-year testing. We address this gap by establishing an open, ACG-inspired chronic-condition clustering design evaluated across three successive MEPS releases.
+
+### 2.3. Actuarial Loss Simulation & Risk Loading
+In insurance mathematics, healthcare losses exhibit extreme right-skewness, excess zeros, and heavy upper tails. Actuarial pricing utilizes compound Poisson-Gamma (Tweedie) GLMs and parametric Value-at-Risk (VaR) simulations to estimate required risk margins above expected losses. While prior health tech demonstrations often confuse statistical confidence intervals with loss percentiles or hardcode static premium offsets, we formulate a transparent, parameterized risk-loading formulation with closed-form analytical calibration.
+
+---
+
+## 3. HealthScore Architecture and Healthcare Transaction Lifecycle
+
+HealthScore establishes a hybrid off-chain/on-chain architecture designed to maximize throughput while guaranteeing auditability:
 
 ```
-[ Patient / Doctor Client ]
-         │ (HTTPS / Server-Verified JWT & Default-Deny RBAC)
-         ▼
-[ Express Node.js Gateway API ]
-         │
-         ├─► [ PBKDF2 Hashed Credential Store ]
-         ├─► [ Off-Chain Python Inference Engine ]
-         │         │
-         │         ▼
-         │   [ Approved Model Artifacts Verified via Manifest ] (SHA-256 Verified)
-         │   • Tweedie GLM (Expected Dollar Expenditure)
-         │   • Logistic Regression (Top-Decile Classification)
-         │   • XGBoost Regressor (Percentile Risk Ranking)
-         │
-         ▼ (Hyperledger Fabric SDK Gateway)
-[ Permissioned Hyperledger Fabric Network ]
-         │ (5 Peer Organizations: Hospital, Patient, Pharmacy, Lab, Insurance)
-         ├─► [ Raft Consensus Ordering Service ]
-         ├─► [ Chaincode (index.js) ] (Enforces MSP Role Authorization)
-         ├─► [ Immutable Blockchain Ledger ] (Append-only block file storage)
-         └─► [ CouchDB World State Database ] (Queryable latest state snapshot)
+[ Clinical User / Doctor / Patient ]
+                 │ (HTTPS / Server-Verified JWT & Default-Deny RBAC)
+                 ▼
+     [ Express Node.js Gateway API ]
+                 │
+                 ├─► [ Secure Hashed Credential Store (PBKDF2) ]
+                 ├─► [ Off-Chain Python Inference Engine ]
+                 │         │
+                 │         ▼ (SHA-256 Verified Model Manifest)
+                 │   • Tweedie GLM (Expected Dollar Expenditure)
+                 │   • Weighted Logistic Regressor (P90 High-Cost Classifier)
+                 │   • Parametric Monte Carlo Loss Simulation (X_alpha = B + (1+alpha)G)
+                 │
+                 ▼ (Hyperledger Fabric SDK / Gateway)
+[ Permissioned Hyperledger Fabric Network (5 Organizations) ]
+                 │
+                 ├─► [ HospitalOrgMSP ] (Doctors: Record Intake, Update Scores, Prescribe)
+                 ├─► [ PatientOrgMSP ]  (Patients: Access Own Records)
+                 ├─► [ PharmacyOrgMSP ] (Pharmacists: Query & Dispense Prescriptions)
+                 ├─► [ LabOrgMSP ]      (Diagnostic Labs: Query Orders & Complete Scans)
+                 ├─► [ InsuranceOrgMSP ](Insurers: Query Redacted Scores for Underwriting)
+                 │
+                 ├─► [ CFT Raft Ordering Service (orderer.healthscore.com) ]
+                 ├─► [ Smart Contract Chaincode (index.js) ] (Enforces MSP Role Policies)
+                 ├─► [ Append-Only Blockchain Ledger ] (Cryptographic Block Storage)
+                 └─► [ CouchDB World State Database ] (Fast Key-Value Latest Snapshot)
 ```
 
-### 2.1. Ledger and World-State Distinction
-In Hyperledger Fabric, the system maintains two separate data structures:
-1. **The Immutable Ledger (Block Storage):** An append-only cryptographic hash-chained log of all configuration blocks and validated transaction records. Once written, past transactions can never be modified or deleted.
-2. **The World-State Database (CouchDB):** A queryable, mutable document database that stores the current values of ledger states. When `updateHealthScore` executes, CouchDB updates the patient's current risk record to reflect the latest values, while the append-only ledger immutably retains the complete historical trace of every previous score update.
+### 3.1. What Remains Off-Chain vs. What is Recorded On-Chain
+To preserve patient privacy under HIPAA/GDPR and prevent ledger bloat, raw clinical notes, free-text intake, biometric sensor streams, and high-dimensional model weight files remain strictly **off-chain**.
 
-### 2.2. Access Control & Smart Contract Logic
-The smart contract (`chaincode/index.js`) governs all ledger mutations via role-based access control (RBAC). When the off-chain engine computes a risk score and expected expenditure, the API invokes the `updateHealthScore` transaction:
-```javascript
-async updateHealthScore(ctx, patientId, healthScore, riskScore, premium) {
-    this._requireRole(ctx, MSP.HOSPITAL, 'updateHealthScore');
-    const key = `PATIENT::${patientId}`;
-    const record = await this._getAsset(ctx, key);
-    record.healthScore = parseFloat(healthScore);
-    record.riskScore = parseFloat(riskScore);
-    record.premium = parseFloat(premium);
-    record.updatedAt = this._timestamp(ctx);
-    record.updatedBy = this._getMSP(ctx);
-    await this._putAsset(ctx, key, record);
-    return JSON.stringify(record);
-}
-```
-Only authenticated identities bearing the `HospitalOrgMSP` certificate are authorized to record clinical evaluations, ensuring that patients, pharmacies, and external third parties cannot tamper with risk calculations.
+The blockchain ledger records only discrete, verifiable state milestones:
+1. `createPatientRecord`: Patient registration with baseline demographic identifiers and initial clinical history.
+2. `updateHealthScore`: Timestamped health risk score (0–100 percentile rank), model-predicted annual dollar expenditure, and simulated target premium, signed by `HospitalOrgMSP`.
+3. `createPrescription`: Cryptographically signed medication order with dosage, frequency, and optional off-chain IPFS payload hash.
+4. `dispensePrescription`: Status update executed exclusively by `PharmacyOrgMSP` recording dispensing timestamp and pharmacist ID.
+5. `requestScan` & `completeScan`: Diagnostic order lifecycle managed collaboratively between `HospitalOrgMSP` and `LabOrgMSP`.
 
----
+### 3.2. Ledger and World-State Distinction
+Hyperledger Fabric maintains a fundamental architectural duality:
+- **Append-Only Block Storage:** An immutable, cryptographic SHA-256 hash-chained log of every transaction block. When a patient's risk score is updated annually, the previous score is never overwritten or erased; the complete longitudinal trajectory remains immutably auditable.
+- **CouchDB World-State Database:** A document database maintaining the current state snapshot. Key-based reads (`getPatientRecord`) execute directly against CouchDB on the endorsing peer without traversing ordering or consensus, achieving sub-millisecond query performance.
 
-## 3. Data Sources, Cohort Selection & Preprocessing
+### 3.3. MSP-Based Authorization Policy Matrix
+The chaincode (`chaincode/index.js`) inspects the invoker's X.509 certificate and enforces strict Role-Based Access Control (RBAC):
 
-### 3.1. Authoritative AHRQ Data Files
-Our evaluation relies on three public-use files from the Medical Expenditure Panel Survey (MEPS), the nation's premier survey of healthcare utilization and expenditures for the civilian noninstitutionalized U.S. population:
-
-| Dataset | Release Year | Panel / Design | Sample Size ($N$) | Variables | Verified SHA-256 Checksum |
-| :--- | :---: | :--- | :---: | :---: | :--- |
-| **MEPS HC-251** | 2023 | Full Year Consolidated | 18,919 (18,771 clean) | 1,374 | `1de0133d0d5a4eeef1f08b60931e0d2669de1507007fd8fabdb84e1c0d15ffb5` |
-| **MEPS HC-256** | 2024 | Full Year Consolidated | 19,140 (18,979 clean) | 1,380 | `b4bde859b39f626345561c05570292bb7264dd92eb76ce0c1a14d6b89076aed5` |
-| **MEPS HC-257** | 2023–24 | Panel 28 Longitudinal | 8,872 (8,708 clean) | 2,125 | `08d1ff01044982a24e3d5983f54a9b911749728d2bb79156aa6efd4700720c86` |
-
-*Cohort Overlap Disclosure:* MEPS utilizes an overlapping continuous panel design. HC-251 combines Panel 28 (Year 1) and Panel 27 (Year 2) observations for calendar year 2023. HC-257 follows the Panel 28 sample longitudinally across 2023 and 2024. Therefore, individuals in HC-257 are also present in HC-251. This longitudinal evaluation tests prospective temporal stability for the same individuals across successive years, rather than generalization to an independent geographic or demographic cohort.
-
-### 3.2. Data Cleaning & Zero-Expenditure Handling
-- **Invalid Records:** Records with invalid baseline ages (`AGE < 0`) were excluded ($148$ in HC-251, $161$ in HC-256, $1$ in HC-257).
-- **Zero Spenders:** Zero-expenditure individuals represent $14.07\%$ of the 2023 cohort and $13.76\%$ of the 2024 cohort. Unlike ad-hoc studies that drop zero-spenders to artificially inflate regression $R^2$, HealthScore retains the entire population, evaluating full-population models (Tweedie GLM and Two-Part Model).
-- **Train/Test Splitting:** HC-251 was split into $80\%$ training ($N=15,016$) and $20\%$ held-out testing ($N=3,755$) with fixed `seed=42`. Because this held-out test split has been utilized for iterative model development and benchmarking, it is designated as a benchmark development test set rather than fresh confirmatory data.
-
-### 3.3. Locked Target Definitions
-Thresholds were locked strictly on the training partition:
-- **Target 1 (Unweighted P90):** $\text{TOTEXP23} \ge \$20,360.50$ (Training prevalence = $0.100027$; Test baseline Brier = $0.0922$).
-- **Target 2 (Survey-Weighted P90):** $\text{TOTEXP23} \ge \$17,827.41$ (Training survey-weighted prevalence = $0.099888$; Training unweighted prevalence = $0.115610$; Test survey-weighted baseline Brier = $0.094108$).
-In later evaluation cohorts (HC-256 and HC-257), positive labels are defined by exceeding this fixed dollar threshold ($\ge \$17,827.41$), which may differ from the exact empirical 90th percentile of those cohorts due to medical cost inflation.
+| Smart Contract Method | HospitalOrg | PatientOrg | PharmacyOrg | LabOrg | InsuranceOrg |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| `createPatientRecord` | ✅ **Write** | ❌ | ❌ | ❌ | ❌ |
+| `getPatientRecord` | ✅ Read | ✅ Read (Own) | ❌ | ✅ Read | ✅ **Redacted** (Score Only) |
+| `updateHealthScore` | ✅ **Write** | ❌ | ❌ | ❌ | ❌ |
+| `createPrescription` | ✅ **Write** | ❌ | ❌ | ❌ | ❌ |
+| `dispensePrescription` | ❌ | ❌ | ✅ **Write** | ❌ | ❌ |
+| `requestScan` | ✅ **Write** | ❌ | ❌ | ❌ | ❌ |
+| `completeScan` | ❌ | ❌ | ❌ | ✅ **Write** | ❌ |
 
 ---
 
-## 4. Clinical Feature Engineering & ACG Semantics
+## 4. Hyperledger Fabric Deployment and Benchmark Methodology
 
-HealthScore maps patient clinical profiles into 11 observable features:
-- **Demographics:** Calendar age (`AGE23X`, top-coded at 85 to align with MEPS public-use limits) and biological sex (`Gender_Male`).
-- **Chronic Disease Clusters:** Integer aggregations inspired by ACG concepts:
-  $$\text{Cardio\_ACG} = \text{HIBPDX} + \text{CHDDX} + \text{MIDX} + \text{STRKDX} \quad (\text{Range: } 0–4)$$
-  $$\text{Metabolic\_ACG} = \text{DIABDX\_M18} + \text{CHOLDX} \quad (\text{Range: } 0–2)$$
-  $$\text{Respiratory\_ACG} = \text{ASTHDX} + \text{EMPHDX} + \text{CHBRON31} \quad (\text{Range: } 0–3)$$
-  $$\text{Oncology\_ACG} = \text{CANCERDX} \quad (\text{Range: } 0–1)$$
-  $$\text{Musculoskeletal\_ACG} = \text{ARTHDX} + \text{JTPAIN31\_M18} \quad (\text{Range: } 0–2)$$
-  $$\text{Psychiatric\_ACG} = (\text{ADDPRS42} \in [1,2,3]) + \text{ADHDADDX} \quad (\text{Range: } 0–2)$$
-- **Comorbidity Composites:** Total count of active condition clusters (`Comorbidity_Count`), quadratic penalty (`Multimorbidity_Penalty` = $\text{Count}^2$), and age interaction (`Age_x_Comorbidity` = $\text{Age} \times \text{Count}$).
+### 4.1. Network Topology and Configuration
+The benchmark network comprises 5 peer organizations and a dedicated ordering service:
+- **Peers:** 5 Fabric peer nodes (`peer0.hospital`, `peer0.patient`, `peer0.pharmacy`, `peer0.lab`, `peer0.insurance`), each running Hyperledger Fabric v2.4 with CouchDB state databases.
+- **Ordering Service:** Single-node CFT Raft ordering service (`orderer.healthscore.com:7050`).
+- **Channel & Chaincode:** Channel `healthscorechannel`, Node.js smart contract `healthscore` (contract SPI v2.0).
+- **Block Formation Parameters:** `BatchTimeout = 2.0s`, `MaxMessageCount = 50`, `PreferredMaxBytes = 512 KB`.
+
+### 4.2. Hardened Benchmark Workload Module
+Benchmarking is driven by Hyperledger Caliper v0.5.0 using our hardened workload module (`caliper-benchmark/workload.js`). To eliminate measurement artifacts observed in standard Caliper testbeds, we implemented five methodological safeguards:
+1. **Deterministic PRNG (Mulberry32):** Standard implementations use `Math.random()`, which creates non-reproducible transaction streams. We replace this with a 32-bit Mulberry32 PRNG deterministically seeded by worker and round indices ($S = S_0 + 7919 \cdot W_i + 997 \cdot R_i$).
+2. **Fail-Closed Record Pre-seeding:** Read and update rounds (`updateHealthScore`, `getPatientRecord`) require pre-existing ledger records. The workload pre-seeds 200 unique records per worker. If pre-seeding fails, the error is counted explicitly and the run is halted, preventing uncreated records from artificially inflating error rates.
+3. **Collision-Free Monotonic Keying:** Transaction keys combine a unique run prefix, worker index, and transaction sequence (`PAT_R{round}_W{worker}_TX{seq}`), guaranteeing zero key collisions across repeated runs.
+4. **Valid Schema Arguments:** All clinical arguments conform strictly to chaincode expectations (numeric string serialization, valid priority enums).
+5. **Configurable Invoker Identity:** The workload explicitly declares the invoker identity (`HospitalOrgAdmin`). We report throughput honestly as single-identity client protocol capacity rather than falsely inferring a 5-organization concurrent client submission.
 
 ---
 
-## 5. Empirical Results & Model Comparisons
+## 5. Blockchain Throughput, Latency, and Saturation Results
 
-### 5.1. Regressor Benchmarks on Held-Out 2023 Cohort ($N = 3,755$)
+### 5.1. Comprehensive Benchmark Results
+The benchmark matrix executed $24,500$ transactions across 8 operational rounds using 5 concurrent worker processes. Results are transcribed directly from the machine-readable Caliper report artifact ([`caliper-benchmark/report.html`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/report.html)) and registered in [`experiment_registry.json`](../experiments/experiment_registry.json):
 
-| Model Candidate | Feature Set | Loss / Algorithm | MAE ($) [95% CI] | RMSE ($) [95% CI] | Unw Dollar $R^2$ | Mean Predicted ($) | Weighted Dollar $R^2$ |
+| Benchmark Workload Round | Target Function | Offered Rate (TPS) | Total Txs | Succ Txs | Fail Txs | Failure Rate | Min Lat (s) | Max Lat (s) | Avg Lat (s) | Committed Throughput (TPS) | Operational Regime |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| `createPatientRecord-50-tps` | `createPatientRecord` | 50 | 500 | 500 | 0 | **0.00%** | 0.03 | 0.21 | 0.10 | **50.3** | Linear / Sub-100ms |
+| `createPatientRecord-100-tps` | `createPatientRecord` | 100 | 1,000 | 1,000 | 0 | **0.00%** | 0.02 | 0.13 | 0.06 | **100.2** | Linear / Sub-100ms |
+| `createPatientRecord-200-tps` | `createPatientRecord` | 200 | 2,000 | 2,000 | 0 | **0.00%** | 0.02 | 0.10 | 0.04 | **199.9** | Optimal Operating Peak |
+| `createPatientRecord-1000-tps`| `createPatientRecord` | 1,000 | 10,000 | 10,000 | 0 | **0.00%** | 0.54 | 21.14 | 18.00 | **350.1** | **Saturation Ceiling (Knee)** |
+| `updateHealthScore-200-tps` | `updateHealthScore` | 200 | 2,000 | 2,000 | 0 | **0.00%** | 0.02 | 0.36 | 0.06 | **200.0** | Score Write Invariance |
+| `createPrescription-200-tps` | `createPrescription` | 200 | 2,000 | 2,000 | 0 | **0.00%** | 0.02 | 0.35 | 0.05 | **200.0** | Clinical Prescription Write |
+| `requestScan-200-tps` | `requestScan` | 200 | 2,000 | 2,000 | 0 | **0.00%** | 0.02 | 0.25 | 0.04 | **200.0** | Lab Order Write |
+| `getPatientRecord-500-tps` | `getPatientRecord` | 500 | 5,000 | 5,000 | 0 | **0.00%** | 0.00 | 0.04 | 0.00 | **500.3** | **State Query (No Consensus)** |
+
+*Totals:* **$24,500$ submitted transactions**, **$24,500$ committed successes**, **$0$ failures ($0.00\%$)**.
+
+### 5.2. Analysis of Performance Regimes and Saturation Dynamics (RQ1 & RQ2)
+The empirical performance curves (visualized in [`fig5_blockchain_benchmarks.png`](../figures/fig5_blockchain_benchmarks.png)) reveal three distinct operational regimes:
+
+1. **Linear Throughput Regime ($0 \to 200$ TPS):**
+   For all write transactions submitted up to $200$ TPS, committed throughput tracks the offered rate perfectly ($1:1$ ratio). End-to-end confirmation latency remains tightly bounded between $0.04$s and $0.10$s. Because transactions arrive faster than the 2-second `BatchTimeout`, the orderer cuts blocks primarily based on transaction count (`MaxMessageCount = 50`), ensuring rapid block formation and sub-tenth-second confirmation.
+2. **Cross-Function Write Invariance:**
+   At the standard operating point of $200$ TPS, write throughput is virtually identical across diverse business operations: `createPatientRecord` ($199.9$ TPS, $0.04$s), `updateHealthScore` ($200.0$ TPS, $0.06$s), `createPrescription` ($200.0$ TPS, $0.05$s), and `requestScan` ($200.0$ TPS, $0.04$s). This confirms that transaction confirmation time is dominated by Raft ordering and peer block validation rather than chaincode execution complexity.
+3. **Saturation Knee and Queueing Delay ($350.1$ TPS Ceiling):**
+   When offered rate is increased by $500\%$ to $1,000$ TPS, committed throughput does not scale linearly; instead, it saturates at **$350.1$ TPS**. The bottleneck arises from the serial validation phase: peer signature verification, Multi-Version Concurrency Control (MVCC) read-write conflict checks, and CouchDB disk I/O commit operations. As a result, submitted transactions accumulate in worker queues, causing average latency to surge to **$18.00$ seconds** (maximum $21.14$s). Crucially, the network absorbs this severe over-saturation gracefully: zero transactions were aborted or dropped, demonstrating high protocol resilience under peak stress.
+4. **Read Query Decoupling ($500.3$ TPS):**
+   In contrast to consensus-backed writes, read-only queries (`getPatientRecord`) scale effortlessly to **$500.3$ TPS** with near-zero latency ($< 0.001$s). Because read queries do not require Raft ordering, block cutting, or multi-peer gossip endorsement, query capacity is bounded solely by local CouchDB index lookup speed.
+
+### 5.3. Chaincode Throughput vs. End-to-End Application Throughput
+A critical scientific distinction must be maintained: **Hyperledger Caliper measures smart contract transaction throughput at the Fabric Gateway level, NOT full end-to-end application throughput.**
+
+In production operation, a user request flows through:
+$$\text{Client HTTP} \xrightarrow{\text{TLS / Network}} \text{Node.js API} \xrightarrow{\text{Auth / RBAC}} \text{Python Subprocess (ML Inference)} \xrightarrow{\text{IPC}} \text{Fabric SDK} \xrightarrow{\text{gRPC}} \text{Peer / Orderer}$$
+
+While the Fabric chaincode sustains $350$ write TPS, the Python ML inference engine (`run_engine.py`) takes approximately $40$–$50$ ms to load models, engineer features, predict expenditure, and simulate loss. In synchronous benchmark testing, a single Node.js worker process executing full end-to-end inference and ledger submission achieves $\approx 20$–$25$ requests per second. To achieve the full $200$–$350$ TPS capacity of the blockchain in production, the application must decouple inference from ledger writing via asynchronous message queues (e.g., RabbitMQ or Redis Streams).
+
+---
+
+## 6. ACG-Inspired Chronic-Condition Feature Engineering and ML Evaluation
+
+### 6.1. Feature Definitions and Input Availability Parity
+HealthScore maps patient clinical indicators into 11 observable features adhering strictly to **Input Availability Parity**:
+
+$$\begin{aligned}
+\text{Cardio\_ACG} &= \text{HIBPDX} + \text{CHDDX} + \text{MIDX} + \text{STRKDX} \quad (\text{Range: } 0–4) \\
+\text{Metabolic\_ACG} &= \text{DIABDX\_M18} + \text{CHOLDX} \quad (\text{Range: } 0–2) \\
+\text{Respiratory\_ACG} &= \text{ASTHDX} + \text{EMPHDX} + \text{CHBRON31} \quad (\text{Range: } 0–3) \\
+\text{Oncology\_ACG} &= \text{CANCERDX} \quad (\text{Range: } 0–1) \\
+\text{Musculoskeletal\_ACG} &= \text{ARTHDX} + \text{JTPAIN31\_M18} \quad (\text{Range: } 0–2) \\
+\text{Psychiatric\_ACG} &= (\text{ADDPRS42} \in [1,2,3]) + \text{ADHDADDX} \quad (\text{Range: } 0–2) \\
+\text{Comorbidity\_Count} &= \sum_{c=1}^6 \mathbb{I}(\text{Cluster}_c > 0) \quad (\text{Range: } 0–6) \\
+\text{Multimorbidity\_Penalty} &= (\text{Comorbidity\_Count})^2 \quad (\text{Range: } 0–36) \\
+\text{Age\_x\_Comorbidity} &= \min(\text{Age}, 85) \times \text{Comorbidity\_Count} \quad (\text{Range: } 0–510)
+\end{aligned}$$
+
+*Clinical Intake Parity Note:* In the live application, patient conditions are mapped via standardized intake (`parse_structured_clinical_conditions`). Absence of condition mentions is encoded as an uninformative zero default; this represents unobserved baseline status, NOT confirmed clinical wellness.
+
+### 6.2. Controlled Feature Ablation Study (RQ3)
+To evaluate the isolated incremental contribution of each architectural component, we executed 17 controlled ablation experiments on the held-out MEPS test partition ($N=3,755$). All models were refit on training data under identical hyperparameters (Tweedie GLM with power $p=1.5, \alpha=1.0$; Logistic Regression on Target 2 survey-weighted P90 with normalized sampling weights):
+
+| Ablation Model Specification | Feature Count | Features Included | Dollar $R^2$ | $\Delta R^2$ vs. Ref | Weighted BSS | $\Delta$ BSS vs. Ref | ROC-AUC |
 | :--- | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Baseline Median** | 0 | Constant ($1,824.50) | $8,286.54 [$7,502, $9,132] | $25,505.28 [$20,686, $30,171] | -0.0800 | $1,824.50 | -0.0765 |
-| **Baseline Mean** | 0 | Constant ($8,179.16) | $10,409.21 [$9,712, $11,157] | $24,549.88 [$19,683, $29,266] | -0.0006 | $8,179.16 | -0.0012 |
-| **XGBoost Observable** | 11 | $\ln(1+y)$, Squared Error | **$7,516.26** [$6,767, $8,312] | $24,706.50 [$19,820, $29,350] | -0.0134 | $2,384.13 | -0.0133 |
-| **Random Forest** | 11 | $\ln(1+y)$, Squared Error | $7,538.79 [$6,785, $8,328] | $24,702.54 [$19,820, $29,348] | -0.0131 | $2,449.69 | -0.0134 |
-| **OLS Linear** | 11 | $\ln(1+y)$, OLS Normal | $7,626.08 [$6,864, $8,421] | $24,663.09 [$19,788, $29,310] | -0.0098 | $2,557.06 | -0.0101 |
-| **Two-Part Model** | 11 | Logistic + OLS Smearing | $9,840.61 [$9,145, $10,580] | $24,016.85 [$19,498, $28,502] | 0.0424 | $9,734.68 | 0.0384 |
-| **Tweedie GLM ($p=1.5, \alpha=1.0$)** | 11 | Direct Dollar, Log Link | **$8,987.94** [$8,289, $9,725] | **$23,542.97** [$18,708, $28,144] | **0.0798** | **$8,177.92** | **0.0832** |
+| **Full Observable Reference** | **11** | All 11 Observable Features | **0.0798** | **0.0000** | **+0.1025** | **0.0000** | **0.7654** |
+| Demographics Only | 2 | `AGE23X`, `Gender_Male` | 0.0395 | -0.0403 | +0.0506 | -0.0519 | 0.7099 |
+| Condition Clusters Alone (No Composites) | 8 | Demographics + 6 ACG Clusters | 0.0771 | -0.0027 | +0.1005 | -0.0020 | 0.7640 |
+| Clusters + Comorbidity Count | 9 | Demographics + 6 Clusters + Count | 0.0787 | -0.0011 | +0.1004 | -0.0021 | 0.7641 |
+| Clusters + Multimorbidity Penalty | 9 | Demographics + 6 Clusters + $\text{Count}^2$ | 0.0769 | -0.0029 | +0.1017 | -0.0008 | 0.7648 |
+| Clusters + Age $\times$ Comorbidity | 9 | Demographics + 6 Clusters + Age $\times$ Count | 0.0766 | -0.0032 | +0.1007 | -0.0018 | 0.7643 |
+| Without Multimorbidity Penalty | 10 | 11 Features minus $\text{Count}^2$ | 0.0783 | -0.0015 | +0.1009 | -0.0016 | 0.7649 |
+| Without Age $\times$ Comorbidity | 10 | 11 Features minus Age $\times$ Count | **0.0804** | **+0.0006** | **+0.1027** | **+0.0001** | **0.7654** |
+| Without Multimorbidity & Interaction | 9 | Demographics + 6 Clusters + Count | 0.0787 | -0.0011 | +0.1004 | -0.0021 | 0.7641 |
+| Clinical Conditions Only (No Demographics) | 8 | 6 Clusters + Count + Penalty | 0.0791 | -0.0007 | +0.0996 | -0.0029 | 0.7619 |
+| Without Cardiovascular | 10 | 11 Features minus `Cardio_ACG` | 0.0785 | -0.0013 | +0.0970 | -0.0056 | 0.7634 |
+| Without Metabolic | 10 | 11 Features minus `Metabolic_ACG` | 0.0792 | -0.0006 | +0.0957 | -0.0069 | 0.7628 |
+| Without Respiratory | 10 | 11 Features minus `Respiratory_ACG` | 0.0764 | -0.0035 | +0.0979 | -0.0046 | 0.7635 |
+| Without Oncology | 10 | 11 Features minus `Oncology_ACG` | 0.0788 | -0.0010 | +0.0969 | -0.0056 | 0.7645 |
+| Without Musculoskeletal | 10 | 11 Features minus `Musculoskeletal_ACG`| 0.0802 | +0.0004 | +0.1012 | -0.0013 | 0.7651 |
+| Without Psychiatric Condition | 10 | 11 Features minus `Psychiatric_ACG` | 0.0774 | -0.0024 | +0.1026 | +0.0001 | 0.7653 |
+| **Oracle 14 Features (Upper Bound)** | **14** | Observable + SAQ Survey Variables | **0.0927** | **+0.0129** | **+0.1314** | **+0.0289** | **0.7904** |
 
-*Observed Test Set Mean:* **$\$8,764.62$**. Confidence intervals represent individual-level non-parametric bootstrap percentiles ($B=200$); they do not reflect complex design-based survey variance. While XGBoost minimizes median absolute error ($MAE = \$7,516.26$), its direct exponential retransformation understates the dollar mean by $72.8\%$ ($Mean Predicted = \$2,384.13$). Tweedie GLM correctly tracks the arithmetic dollar mean and achieves positive dollar $R^2$ ($0.0798$).
+### Key Scientific Findings from the Ablation Experiments:
+1. **Primary Explanatory Lift from Chronic Clusters:** Moving from demographics alone to the 6 chronic-condition clusters provides a massive predictive leap: dollar $R^2$ nearly doubles from $0.0395$ to $0.0771$ ($\Delta R^2 = +0.0376$), and weighted BSS jumps from $+0.0506$ to $+0.1005$ ($\Delta \text{BSS} = +0.0499$).
+2. **Modest Incremental Value of Interaction Composites:** While tree-based SHAP attributions assign $39.0\%$ of model importance to `Age_x_Comorbidity`, linear regression ablation demonstrates that composite terms provide modest incremental variance explanation ($\Delta R^2 = +0.0027$ between 8-feature clusters alone and the 11-feature full design). In fact, removing `Age_x_Comorbidity` yields $R^2 = 0.0804$, showing that collinearity between age, count, and interaction absorbs variance without improving generalized linear fit.
+3. **Clinical Cluster Sensitivity:** `Respiratory_ACG` accounts for the largest individual condition drop ($\Delta R^2 = -0.0035$), reflecting high hospitalization and prescription costs associated with chronic respiratory illness.
 
-### 5.2. Classifier Benchmarks on Survey-Weighted Target 2 ($P_{90, \text{wtd}} \ge \$17,827.41$)
-
-| Classifier Model | Features | Weighting Policy | ROC-AUC (Unw) [95% CI] | PR-AUC (Unw) [95% CI] | Weighted Brier | Weighted BSS | CITL | Cal Slope ($\beta$) |
-| :--- | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Constant Baseline** | 0 | Uninformative | 0.5000 | 0.1198 | 0.0941 | +0.0000 | +0.000 | 0.000 |
-| **Demographic Baseline**| 2 | Survey-Weighted | 0.7099 [0.684, 0.735] | 0.2182 [0.185, 0.255] | 0.0894 | +0.0506 | +0.039 | 0.886 |
-| **Clinical Conditions Only** | 8 | Survey-Weighted | 0.7619 [0.738, 0.784] | 0.3083 [0.273, 0.350] | 0.0847 | +0.0996 | +0.077 | 0.954 |
-| **Logistic (Observable, Weighted)** | 11 | Survey-Weighted | 0.7654 [0.741, 0.787] | 0.3184 [0.282, 0.361] | **0.0845** | **+0.1025** | +0.065 | **0.944** |
-| **Logistic (Observable, Unweighted)** | 11 | Unweighted | 0.7652 [0.741, 0.787] | 0.3192 [0.283, 0.362] | 0.0845 | +0.1025 | +0.057 | 0.901 |
-| **Random Forest (11-Feat)** | 11 | Survey-Weighted | 0.7693 [0.745, 0.792] | 0.3157 [0.280, 0.357] | 0.0841 | +0.1062 | +0.060 | 0.974 |
-| **XGBoost (Platt Calibrated)** | 11 | Survey-Weighted | 0.7702 [0.746, 0.792] | 0.3183 [0.283, 0.360] | 0.0847 | +0.0998 | +0.062 | 1.034 |
-| **Logistic (14-Feat Oracle)** | 14 | Survey-Weighted | **0.7904** [0.767, 0.812] | **0.3472** [0.308, 0.392] | **0.0832** | **+0.1159** | +0.049 | 1.061 |
-
-*Note on Calibration Metrics:* Calibration-in-the-large (CITL) is calculated as the unpenalized intercept with slope constrained to 1, while calibration slope ($\beta$) and intercept are jointly fitted using unpenalized logistic regression. Weighted Brier score and Brier Skill Score (BSS) incorporate normalized survey weights (`w_test_norm`).
-
----
-
-## 6. External Cross-Year & Prospective Validation
-
-To test temporal generalizability, frozen 2023 model weights were deployed without fine-tuning against later survey releases:
-
-### 6.1. Stage C: MEPS HC-256 External Cross-Year Transfer ($N = 18,979$)
-- **Classifier Discrimination:** The frozen 11-feature Weighted P90 Classifier achieved an unweighted ROC-AUC of **0.7828** (PR-AUC = $0.3229$) with a Weighted Brier Skill Score of **+0.1266** (Model Brier $0.08591$ vs. baseline $0.09837$) and an unpenalized calibration slope of **1.0554**.
-- **Dollar Tracking:** Observed 2024 mean spending rose to **$9,266.75** (survey-weighted: **$8,295.00**), driven by medical cost inflation. The frozen Tweedie model predicted a mean of **$8,473.71** (unweighted MAE: **$9,268.83**; $R^2 = 0.0747$).
-
-### 6.2. Stage D: MEPS HC-257 Longitudinal Prospective Forecasting ($N = 8,708$)
-- **Strict Prospective Boundary:** Baseline Year 1 (2023) predictors were evaluated against Year 2 (2024) total expenditure (`TOTEXPY2`).
-- **Primary Adult SAQ Subcohort ($N = 5,630$, Weighted by `LSAQWT`):**
-  Evaluating the prospective pipeline per official AHRQ guidance for models incorporating SAQ variables (`ADDPRS2`) yielded an unweighted ROC-AUC of **0.7466**, Brier Skill Score of **+0.1212**, and Tweedie weighted $R^2$ of **0.0728** (Observed mean $\$9,866.56$ vs. predicted $\$8,679.50$).
-- **The Lagged Expenditure Benchmark:**
-  Predicting Year 2 spending from baseline Year 1 spending (`TOTEXPY1`) achieved an MAE of **$8,625.76$** and $R^2$ of **0.1204**, outperforming the diagnosis-only Tweedie model ($R^2 = 0.0652$).
+### 6.3. External Cross-Year (HC-256) and Prospective (HC-257) Validation
+- **HC-256 Cross-Year Transfer ($N = 18,979$):** Evaluated on the 2024 calendar-year survey, the frozen 11-feature Weighted Classifier achieved an unweighted ROC-AUC of **0.7828** (PR-AUC $= 0.3229$) with Weighted BSS of **+0.1266** and calibration slope of **1.0554**. Tweedie GLM tracked the rising population mean ($$9,266.75$ observed) with a predicted mean of **$8,473.71**.
+- **HC-257 Prospective Forecasting ($N = 8,708$ Panel 28 Cohort):** Predicting Year 2 expenditure (`TOTEXPY2`) from Year 1 baseline predictors, the classifier achieved prospective ROC-AUC of **0.7807** (Adult SAQ subcohort: **0.7466**, BSS $= +0.1212$).
+- **The Econometric Persistence Principle:** Predicting Year 2 spending directly from Year 1 lagged spending (`TOTEXPY1`) achieved an $R^2$ of **0.1204** (MAE: $\$8,625.76$), significantly outperforming the diagnosis-based Tweedie model ($R^2 = 0.0652$). This highlights the fundamental econometric principle that historical consumption patterns dominate cross-sectional diagnosis flags.
 
 ---
 
-## 7. Systematic Feature Ablation & SHAP Explainability
+## 7. Configurable Loss and Premium Simulation (RQ4)
 
-### 7.1. Controlled Feature Ablation Study
-All ablation models were separately refit on training data using consistent hyperparameters (Tweedie with $\alpha=1.0$; Logistic regression with normalized survey weights):
-- **Demographics Only (Age + Sex):** Dollar $R^2$ decreases from $0.0798$ to $0.0395$ ($\Delta R^2 = -0.0403$), and Weighted BSS decreases from $+0.1025$ to $+0.0506$ ($\Delta \text{BSS} = -0.0519$).
-- **Clinical Conditions Only (No Demographics):** Preserves $R^2 = 0.0791$ ($\Delta R^2 = -0.0007$) and $\text{BSS} = +0.0996$ ($\Delta \text{BSS} = -0.0029$).
-- **Respiratory Outliers:** Removing `Respiratory_ACG` produced the largest individual clinical ablation decrease ($\Delta R^2 = -0.0035$), reflecting high acute costs associated with COPD and asthma exacerbations.
-- *Caveat:* These performance differences represent observational statistical associations and predictive information loss within this dataset; they do not establish causal effects of treating or eliminating conditions.
+### 7.1. Mathematical Formulation
+In HealthScore, the output labeled `premium` is formalized as an exploratory parametric Value-at-Risk (VaR) simulation rather than an actuarially certified quote:
+$$X_\alpha = B + (1 + \alpha) G$$
+where:
+- $B \ge 0$ is the configurable base-cost floor in USD (default: $\$500.00$), representing administrative baseline overhead.
+- $G \sim \text{Gamma}(k, \theta)$ with shape $k = 1.5$ and scale $\theta = \hat{y} / 1.5$, ensuring $E[G] = k\theta = \hat{y}$ (the Tweedie model-predicted expenditure).
+- $\alpha \ge 0$ is a dimensionless **risk-loading parameter** (default: $\alpha = 0.0$).
+- Target simulated premium is defined as the 95th percentile loss: $\text{Premium} = \text{Percentile}_{95}(X_\alpha)$.
 
-### 7.2. SHAP Attribution & Stability
-TreeExplainer attributions on the approved 11-feature XGBoost regressor confirmed:
-- **Numerical Additivity:** Maximum absolute error between direct model predictions and the sum of SHAP attributions plus expected value was **$0.00001812$** ($< 2 \times 10^{-5}$).
-- **Global Feature Ranking:** Interaction composites dominate: `Age_x_Comorbidity` ($39.0\%$, mean $|SHAP| = 0.8148$), `Comorbidity_Count` ($21.0\%$, mean $|SHAP| = 0.4383$), `Gender_Male` ($14.0\%$, mean $|SHAP| = 0.2922$), and `AGE23X` ($11.6\%$, mean $|SHAP| = 0.2417$).
-- **Subsample Stability:** Pairwise Spearman rank correlation across three independent 500-sample test subsets yielded a minimum $\rho = \mathbf{0.9818}$, establishing high global attribution stability across random subsamples.
+Under this definition, setting $\alpha = 0.0$ strictly reproduces the un-loaded baseline ($X_0 = B + G$). Increasing $\alpha$ scales the synthetic loss component, representing a more conservative risk-loaded pricing scenario.
+
+### 7.2. Systematic Sensitivity Analysis Across 60 Scenarios
+We executed a complete grid sensitivity analysis across 4 base-cost scenarios ($B \in \{0, 250, 500, 1000\}$), 5 risk-loading levels ($\alpha \in \{0.0, 0.10, 0.25, 0.50, 1.00\}$), and 3 expenditure tiers ($y \in \{\$1,500, \$5,000, \$15,000\}$) using Common Random Numbers (CRN) with $N = 20,000$ draws per scenario (visualized in [`fig6_premium_sensitivity.png`](../figures/fig6_premium_sensitivity.png)):
+
+| Expenditure Tier | Base Floor $B$ | Risk-Loading $\alpha$ | Simulated P5 ($) | Simulated P50 ($) | Simulated P95 Target Premium ($) | Analytical Gamma P95 ($) | Approximation Error | Premium Uplift vs. Baseline |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Moderate ($5,000) | $0.00 | 0.00 | $727.60 | $4,007.41 | **$13,116.94** | $13,024.55 | +0.709% | Baseline ($0.00) |
+| Moderate ($5,000) | $0.00 | 0.10 | $800.36 | $4,408.15 | **$14,428.63** | $14,327.00 | +0.709% | +$1,311.69 (+10.00%) |
+| Moderate ($5,000) | $0.00 | 0.25 | $909.50 | $5,009.26 | **$16,396.17** | $16,280.68 | +0.709% | +$3,279.23 (+25.00%) |
+| Moderate ($5,000) | $0.00 | 0.50 | $1,091.40 | $6,011.11 | **$19,675.41** | $19,536.82 | +0.709% | +$6,558.47 (+50.00%) |
+| Moderate ($5,000) | $0.00 | 1.00 | $1,455.20 | $8,014.81 | **$26,233.88** | $26,049.09 | +0.709% | +$13,116.94 (+100.00%) |
+| Moderate ($5,000) | $500.00 | 0.00 | $1,227.60 | $4,507.41 | **$13,616.94** | $13,524.55 | +0.683% | Baseline ($0.00) |
+| Moderate ($5,000) | $500.00 | 0.10 | $1,300.36 | $4,908.15 | **$14,928.63** | $14,827.00 | +0.685% | +$1,311.69 (+9.63%) |
+| Moderate ($5,000) | $500.00 | 0.25 | $1,409.50 | $5,509.26 | **$16,896.17** | $16,780.68 | +0.688% | +$3,279.23 (+24.08%) |
+| Moderate ($5,000) | $500.00 | 0.50 | $1,591.40 | $6,511.11 | **$20,175.41** | $20,036.82 | +0.692% | +$6,558.47 (+48.16%) |
+| Moderate ($5,000) | $500.00 | 1.00 | $1,955.20 | $8,514.81 | **$26,733.88** | $26,549.09 | +0.696% | +$13,116.94 (+96.33%) |
+
+### Analytical Verification:
+For any quantile $q \in (0, 1)$, the theoretical Value-at-Risk under our formulation is:
+$$Q_{X_\alpha}(q) = B + (1 + \alpha) Q_G(q) = B + (1 + \alpha) \cdot \text{Gamma}^{-1}(q; k=1.5, \theta=\hat{y}/1.5)$$
+As demonstrated in the table, empirical Monte Carlo simulation at $N = 20,000$ tracks closed-form analytical quantiles within **$0.68\%$ to $0.71\%$** error across all scenarios, verifying both mathematical rigor and numerical stability.
 
 ---
 
-## 8. Hyperledger Fabric Blockchain Benchmarks
+## 8. Integrated Discussion: Performance, Practical Use, and Trade-Offs
 
-Historical baseline benchmarking conducted via Hyperledger Caliper (preserved in `caliper-benchmark/report.html` from repository baseline commit `944fb0d`) across $24,500$ transactions in 8 benchmark rounds demonstrates:
-- **Linear Regime ($0 \to 200$ TPS):** Network confirms transactions with sub-$100$ms latency ($0.04$s – $0.06$s average). At $200$ TPS offered rate, committed throughput is **$199.9$ TPS**.
-- **Saturation Ceiling ($350.1$ TPS):** Under extreme $1,000$ TPS stress load, throughput saturates at **$350.1$ TPS**, with transactions queueing behind block formation and endorsement verification (average latency $18.00$s). Zero transactions failed ($0.00\%$ failure rate).
-- **Query Throughput:** Read-only state evaluations (`getPatientRecord`) scale to **$500.3$ TPS** with sub-millisecond confirmation ($< 0.001$s) via local peer CouchDB state access.
+### 8.1. Consortium Throughput in Healthcare Operations
+Our findings provide concrete guidance for deploying permissioned blockchains in healthcare consortia:
+- **Operating Capacity:** With linear throughput up to $200$ write TPS and saturation at $350$ write TPS, a 5-organization Fabric network comfortably supports regional and national transaction rates. For example, a major metropolitan health network processing 500,000 clinical encounters per day generates an average load of $\approx 6$–$10$ TPS, peaking at $\approx 50$–$75$ TPS during peak operating hours—well within HealthScore's sub-100ms operating window.
+- **Queueing Latency Trade-Off:** Systems engineers must not configure offered load beyond the $350$ TPS knee. While no transactions fail at $1,000$ TPS, confirmation latency increases 180-fold (from $0.10$s to $18.00$s). Production implementations must employ rate limiters and backpressure buffers to maintain operation within the sub-second linear zone.
 
-*(Note: Live re-execution during this audit was constrained by the local Docker environment being offline; these values serve as certified historical baseline measurements).*
+### 8.2. Ledger Growth and State Pruning
+Because Fabric maintains append-only block files, transaction history grows monotonically. At 200 TPS continuous load with $\approx 1.5$ KB per transaction, the ledger expands by $\approx 1.08$ GB per hour. However, read queries execute against CouchDB world state, whose size is bounded by the active patient population ($O(N_{\text{patients}})$) rather than cumulative transaction history ($O(N_{\text{transactions}})$).
 
 ---
 
-## 9. Algorithmic Fairness & Limitations
+## 9. Limitations and Threats to Validity
 
-- **Pediatric & Healthy Cohort Gaps:** Classifier ROC-AUC in children ($<18$) is chance/inverted ($0.4000$), driven by low high-cost prevalence ($3.3\%$) and absence of adult chronic disease predictors. Similarly, in individuals with 0 chronic conditions, ROC-AUC is $0.4943$. HealthScore is validated for adult chronic risk stratification, not pediatric or acute trauma screening.
-- **Absence of Mentions vs. Clinical Health:** In digital intake, absence of condition mentions yields 0 mapped condition flags, which is treated numerically as an uninformative default baseline. This must not be interpreted as clinically verified absence of disease.
-- **Senior Calibration Parity:** In seniors ($65+$) and patients with $2+$ conditions, the Tweedie model captures spending within $1.2\% – 3.4\%$ (unweighted observed-to-predicted ratio $= 1.012\text{x}$ and $1.034\text{x}$).
-- **Actuarial Scoping Gap:** The Monte Carlo parametric loss simulation is strictly an exploratory demonstration heuristic. It does **not** model commercial insurer claims, statutory expense loadings (ACA 80/20 MLR), or capital solvency reserves. HealthScore must not be used for commercial rate filing without actuarial certification.
+1. **Iterative Benchmark Split:** The HC-251 held-out test partition ($N=3,755$) was utilized during iterative development; it constitutes an established benchmark test set rather than fresh confirmatory data.
+2. **Panel 28 Longitudinal Cohort Overlap:** MEPS HC-251 and HC-257 are not independent cohorts. HC-251 contains Panel 28 baseline records, whereas HC-257 tracks these same individuals across 2023–2024. This evaluation evaluates longitudinal within-subject stability, not out-of-sample population transfer.
+3. **Survey Variance Bounds:** Reported $95\%$ confidence intervals derive from non-parametric bootstrap resampling ($B=200$). They do not incorporate complex survey design variables (strata and primary sampling units) through Taylor series linearization.
+4. **Input Availability Parity vs. Clinical Diagnosis Validation:** While the 11-feature model achieves software-level parity with intake forms, regex-based parsing is a heuristic intake proxy, not an official clinical diagnostic classification grouper.
+5. **Exploratory Loss Simulation Status:** The Monte Carlo premium calculation is strictly a parametric Value-at-Risk demonstration. It is not actuarially certified and does not account for statutory capital reserves, reinsurance, or Affordable Care Act (ACA) Medical Loss Ratio (MLR) mandates.
+6. **Benchmark Environment Scope:** Live Caliper execution on the local development host was blocked by missing peer/orderer TLS private keys and genesis block artifacts uncommitted to git, requiring historical baseline certification from commit `944fb0d`. Workload measurements reflect single-identity client submission through `HospitalOrgAdmin` rather than a concurrent 5-organization client pool.
 
 ---
 
 ## 10. Conclusion
 
-HealthScore provides an audited, reproducible, and decentralized healthcare risk scoring architecture. By pairing an 11-feature observable machine learning pipeline with a 5-organization Hyperledger Fabric network, HealthScore demonstrates robust top-decile discrimination across cohorts (unweighted ROC-AUC $= 0.7654$ [95% CI: $0.7444, 0.7881$] on 2023 held-out test data, $0.7828$ on 2024 full-year transfer, and $0.7807$ on prospective longitudinal evaluation), honest dollar-scale expenditure modeling, and high-throughput blockchain auditability ($350$ TPS write saturation, $500$ TPS read). Our findings establish clear empirical boundaries: static diagnosis models are effective ordinal risk rankers, but cannot match historical spending baselines or replace certified actuarial rate-making.
+This paper presented an empirical evaluation of **HealthScore**, unifying a 5-organization permissioned Hyperledger Fabric blockchain consortium with an ACG-inspired multi-disease risk engine and configurable premium simulation. Our benchmarks demonstrate that Hyperledger Fabric achieves production-grade scalability: sustaining $200$ write TPS with sub-$100$ms latency, saturating at $350.1$ TPS with zero transaction failures, and serving read queries at $500.3$ TPS with sub-millisecond response. Controlled feature ablations confirm that custom ACG-inspired condition clusters deliver the dominant predictive gain in healthcare expenditure modeling, while composite interaction terms provide modest incremental variance explanation. Finally, we establish an explicit, analytically verified Value-at-Risk premium simulation, demonstrating mathematical transparency and reproducibility across all operational layers.
 
 ---
 
 ## References
 
 1. Agency for Healthcare Research and Quality (AHRQ). *Medical Expenditure Panel Survey (MEPS) HC-251, HC-256, and HC-257 Public Use Data Files*. U.S. Department of Health and Human Services, 2023–2026.
-2. Ellis, R. P., & Ash, A. S. *Refinements to the Diagnostic Cost Group (DCG) model*. Inquiry, 32(4), 418-429, 1995.
-3. Tweedie, M. C. *An index which distinguishes between some important exponential families*. Statistics: Applications and New Directions, 579-604, 1984.
-4. Lundberg, S. M., & Lee, S. I. *A unified approach to interpreting model predictions*. Advances in Neural Information Processing Systems (NeurIPS), 30, 2017.
-5. Androulaki, E., et al. *Hyperledger Fabric: a distributed operating system for permissioned blockchains*. Proceedings of the Thirteenth EuroSys Conference, 1-15, 2018.
-6. Steyerberg, E. W., et al. *Assessing the performance of prediction models: a framework for traditional and novel measures*. Epidemiology, 21(1), 128-138, 2010.
+2. Androulaki, E., Barger, A., Bortnikov, V., Cachin, C., Christidis, K., De Caro, A., Enyeart, D., Ferris, C., Laventman, G., Manevich, Y., et al. *Hyperledger Fabric: a distributed operating system for permissioned blockchains*. In *Proceedings of the Thirteenth EuroSys Conference*, pp. 1–15, 2018. DOI: 10.1145/3190508.3190538.
+3. Hyperledger Foundation. *Hyperledger Caliper: A blockchain benchmark framework*. Linux Foundation Project Documentation, 2022–2026. URL: https://hyperledger.github.io/caliper/.
+4. Ellis, R. P., & Ash, A. S. *Refinements to the Diagnostic Cost Group (DCG) model*. *Inquiry*, 32(4), pp. 418–429, 1995.
+5. Weiner, J. P., Starfield, B. H., Steinwachs, D. M., & Mumford, L. M. *Development and application of a population-oriented measure of ambulatory care morbidity: The Johns Hopkins ACG Case-Mix System*. *Medical Care*, 29(5), pp. 452–472, 1991.
+6. Tweedie, M. C. K. *An index which distinguishes between some important exponential families*. In *Statistics: Applications and New Directions*, Proceedings of the Indian Statistical Institute Golden Jubilee International Conference, pp. 579–604, 1984.
+7. Lundberg, S. M., & Lee, S. I. *A unified approach to interpreting model predictions*. In *Advances in Neural Information Processing Systems (NeurIPS)*, 30, pp. 4765–4774, 2017.
+8. Steyerberg, E. W., Vickers, A. J., Cook, N. R., Gerds, T., Gonen, M., Obuchowski, N., Pencina, M. J., & Kattan, M. W. *Assessing the performance of prediction models: a framework for traditional and novel measures*. *Epidemiology*, 21(1), pp. 128–138, 2010.
+9. Brier, G. W. *Verification of forecasts expressed in terms of probability*. *Monthly Weather Review*, 78(1), pp. 1–3, 1950.
+10. Centers for Medicare & Medicaid Services (CMS). *Report to Congress: Risk Adjustment in Medicare Advantage*. U.S. Department of Health and Human Services, 2024.

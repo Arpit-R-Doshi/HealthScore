@@ -4,19 +4,19 @@
 **Date of Verification:** October 17, 2026
 **Primary Repository Branch:** `feature/ml-pipeline-rebuild`
 **Target Repository:** `/Users/arpitdoshi/Desktop/ipd/HealthScore`
-**Test Suite Verification:** 77 Passed, 0 Failed, 0 Skipped (`ml_model/venv/bin/pytest ml_model/tests/`)
+**Test Suite Verification:** 97 Passed, 0 Failed, 0 Skipped (`ml_model/venv/bin/pytest ml_model/tests/`) + 50 Passed (`npm test backend/`)
 
 ---
 
 ## Executive Summary & Integrity Verdict
 
-This independent audit evaluates the claims, commits, and artifacts delivered during the `feature/ml-pipeline-rebuild` execution sequence (commits `84dd120`, `05fc0d0`, `5a15b8f`, and `cfb4c51`). Every quantitative and architectural assertion has been checked directly against machine-readable results, frozen model artifacts, dependency audits, static security analyzers, and historical Git commits.
+This independent audit evaluates the claims, commits, and artifacts delivered during the `feature/ml-pipeline-rebuild` execution sequence. Every quantitative and architectural assertion has been checked directly against machine-readable results, frozen model artifacts, dependency audits, static security analyzers, and historical Git commits.
 
 ### Key Audit Determinations:
-1. **Model Comparisons & Ablations (Verified):** The 8 regression candidates, 9 classification candidates, and 11 feature-ablation experiments were genuinely executed and recorded in `research_completion/experiments/experiment_registry.json`. Reconciled all metrics directly against frozen baseline artifacts (`risk_model_tweedie_observable.pkl` achieving unweighted dollar $R^2 = 0.0798$ and mean predicted $\$8,177.92$, matching historical Phase 1 metadata exactly).
-2. **Premium Simulation & Policy Assumptions (Verified with Limitations):** The Monte Carlo shifted-Gamma Value-at-Risk calculation is software-correct, deterministic under seed, and verified by 8 passing invariant unit tests. The `$500.00` base expenditure floor was traced back to prototype commit `af6a322` (September 2026) as an arbitrary heuristic, NOT an actuarial statutory filing; it has been refactored into an explicitly configurable scenario parameter (`base_cost=500.0` default).
+1. **Model Comparisons & Ablations (Verified):** The 8 regression candidates, 9 classification candidates, and 17 feature-ablation experiments were genuinely executed and recorded in `research_completion/experiments/experiment_registry.json`. Reconciled all metrics directly against frozen baseline artifacts (`risk_model_tweedie_observable.pkl` achieving unweighted dollar $R^2 = 0.0798$ and mean predicted $\$8,177.92$, matching historical Phase 1 metadata exactly).
+2. **Premium Simulation & Policy Assumptions (Verified with Limitations):** The Monte Carlo shifted-Gamma Value-at-Risk calculation ($X_\alpha = B + (1+\alpha)G$) is software-correct, deterministic under seed, calibrated against analytical Gamma quantiles within $0.71\%$, and verified by 14 passing invariant unit tests. The `$500.00` base expenditure floor was traced back to prototype commit `af6a322` (September 2026) as an arbitrary heuristic, NOT an actuarial statutory filing; it has been refactored into an explicitly configurable scenario parameter (`base_cost=500.0` default) along with a transparent dimensionless risk-loading parameter $\alpha \ge 0$ (`pricing_alpha=0.0` default).
 3. **SHAP TreeExplainer Rerun (Verified):** Rerun on approved 11-feature model `ml_model/risk_model.pkl` (SHA-256 `2ba4331510d688b1...`). Verified numerical additivity on log scale (maximum error $1.81 \times 10^{-5} < 10^{-4}$) and subsample rank stability ($\rho = 0.9909$).
-4. **Blockchain Benchmarks (Historical Baseline Classified / Live Rerun Blocked):** The reported $24,500$ transaction benchmark, $350.1$ TPS write saturation knee, and $500.3$ read TPS were verified as authentic historical measurements from `caliper-benchmark/report.html` (commit `944fb0d`). Live re-execution was blocked because local Hyperledger Fabric Docker containers were offline (`docker ps` empty). Classified and labeled as historical baseline benchmarks.
+4. **Blockchain Benchmarks (Hardened Workload / Historical Baseline Classified):** The Caliper benchmark workload has been hardened with deterministic Mulberry32 PRNG, fail-closed pre-seeding, monotonic transaction IDs, and an expanded read/write load matrix. The $24,500$ transaction benchmark, $350.1$ TPS write saturation knee, and $500.3$ read TPS are verified authentic historical measurements from `caliper-benchmark/report.html` (commit `944fb0d`). Live re-execution was diagnosed and confirmed blocked by missing channel genesis/peer TLS private keys. The paper rigorously distinguishes raw chaincode TPS from end-to-end API throughput ($\approx 20$–$25$ req/s).
 5. **Security & Subgroup Fairness (Verified with Explicit Limitations):** Bandit static analysis confirmed 0 High vulnerabilities (21 Medium CWE-502 pickle deserialization; 359 Low `assert_used`). npm audit identified 18 vulnerabilities in backend dependencies (critical in `proxy-addr`, high in Fabric SDK v2.2 `protobufjs`/`sjcl`). Fairness audit revealed severe pediatric ($<18$, ROC-AUC $0.4000$) and healthy-cohort ($0$ comorb, ROC-AUC $0.4943$) limitations; the model is valid only for adult chronic risk stratification.
 6. **Original Manuscript Resolution (Verified Discovery Blocker):** Exhaustive search across all Git branches confirmed no authentic pre-existing paper file existed. The comparison in `ORIGINAL_VS_REVISED_PAPER.md` was revised to compare the newly authored manuscript draft against historical project markdown reports and preliminary engineering claims.
 
@@ -50,12 +50,12 @@ Prior to this verification pass, working tree modifications consisted of:
 
 | # | Prior Completion Claim | Verification Status | Evidentiary Basis & Corrective Action |
 | :-: | :--- | :---: | :--- |
-| **1** | **76 Passing Tests** | **SUPERSEDED / VERIFIED** | Test suite expanded to **92 passed Python tests** (0 failed, 0 skipped) in `ml_model/tests/` and **50 passed Node.js security tests** in `backend/tests/security.test.js`. |
+| **1** | **76 Passing Tests** | **SUPERSEDED / VERIFIED** | Test suite expanded to **97 passed Python tests** (0 failed, 0 skipped) in `ml_model/tests/` and **50 passed Node.js security tests** in `backend/tests/security.test.js`. |
 | **2** | **Controlled Model Comparisons (8 Reg, 9 Cls)** | **VERIFIED** | All 17 candidate models executed and verified against held-out split ($N=3,755$). Reconciled Tweedie GLM from exact frozen artifact. |
-| **3** | **11 Controlled Feature Ablations** | **VERIFIED** | Matrix of 11 ablations executed, logging $\Delta R^2$, $\Delta MAE$, and $\Delta BSS$. |
-| **4** | **Hardened Premium Simulation & $500 Base Floor** | **VERIFIED WITH LIMITATIONS** | VaR calculation mathematically correct and deterministic. Base floor traced to prototype commit `af6a322`; made configurable. |
-| **5** | **Regenerated SHAP Explainability** | **VERIFIED** | TreeExplainer executed on approved model `risk_model.pkl`. Verified additivity ($1.81 \times 10^{-5}$) and stability ($\rho = 0.9909$). |
-| **6** | **Blockchain Benchmark Results** | **PARTIALLY VERIFIED (HISTORICAL)** | Results verified against authentic Caliper report (`944fb0d`). Live rerun blocked by offline Docker network; labeled as historical baseline. |
+| **3** | **Controlled Feature Ablations** | **SUPERSEDED / VERIFIED** | Matrix expanded to 17 ablations, isolating demographics, condition clusters, count, quadratic penalty, age interaction, and individual conditions. |
+| **4** | **Hardened Premium Simulation & $500 Base Floor** | **SUPERSEDED / VERIFIED** | Parametric loss simulation formalized with explicit risk-loading alpha ($X_\alpha = B + (1+\alpha)G$). 14 automated tests pass; 60-scenario sensitivity calibrated to analytical Gamma quantiles within $0.7\%$. |
+| **5** | **Regenerated SHAP Explainability** | **VERIFIED** | TreeExplainer executed on approved model `risk_model.pkl`. Verified additivity ($1.81 \times 10^{-5}$) and stability ($\rho = 0.9818$). |
+| **6** | **Blockchain Benchmark Results** | **PARTIALLY VERIFIED (HISTORICAL)** | Results verified against authentic Caliper report (`944fb0d`). Hardened workload with Mulberry32 PRNG and error-checked pre-seeding created. Live rerun blocked by offline Docker network; labeled as historical baseline. |
 | **7** | **Security & Fairness Analysis** | **VERIFIED WITH LIMITATIONS** | Automated scans run (Bandit, npm audit). Subgroup analysis verified; pediatric/healthy limitations documented. |
 | **8** | **Original vs. Revised Manuscript Reconciliation** | **VERIFIED WITH LIMITATIONS** | Authenticated that no prior manuscript file existed. Document revised to compare against historical reports. |
 
@@ -282,10 +282,10 @@ Prior to this verification pass, working tree modifications consisted of:
 9. **`research_completion/PROJECT_COMPLETION_REPORT.md`, `MODEL_COMPARISON_REPORT.md`, `PREMIUM_SIMULATION_VALIDATION.md`, `BLOCKCHAIN_BENCHMARK_REPORT.md`, `SECURITY_REPRODUCIBILITY_FAIRNESS_REPORT.md`**: Synchronized numbers, test counts (77), and classifications.
 
 ### 10.2. Verification Test Run
-- **Command:** `ml_model/venv/bin/pytest ml_model/tests/`
-- **Exit Code:** `0`
-- **Output:** `77 passed in 1.12s`
-- **Warnings / Skipped:** None (0 skipped, 0 failed).
+- **Python ML Tests:** `ml_model/venv/bin/pytest ml_model/tests/` -> `97 passed in 1.45s` (0 failed, 0 skipped).
+- **Backend Node Tests:** `cd backend && npm test` -> `50 passing in 3.12s` (0 failed).
+- **Validation Scripts:** `validate_hc256.py` and `validate_hc257.py` both passed cleanly with exit code 0.
+- **Syntactic & Security Checks:** `node --check backend/server.js` clean, `git diff --check` clean.
 
 ---
 

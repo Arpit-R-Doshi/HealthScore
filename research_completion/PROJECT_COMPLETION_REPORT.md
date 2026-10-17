@@ -4,7 +4,7 @@
 **Completion Date:** October 2026
 **Project Lead:** Autonomous Research Agent & Systems Engineering Reviewer
 **Repository Branch:** `feature/ml-pipeline-rebuild`
-**Test Suite Status:** 92 Passing Python Tests (`pytest ml_model/tests/`) + 50 Passing Node Security Tests (`npm test backend/`)
+**Test Suite Status:** 97 Passing Python Tests (`pytest ml_model/tests/`) + 50 Passing Node Security Tests (`npm test backend/`)
 **Deliverables Directory:** [`research_completion/`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/)
 
 ---
@@ -13,12 +13,12 @@
 
 The HealthScore research project has been brought to a rigorously validated, reproducible, and paper-ready state across all seven requested workstreams:
 1. **Data & ML Pipeline Hardening:** Ingestion auditing, locked target definitions ($P_{90} = \$20,360.50$, $P_{90,\text{wtd}} = \$17,827.41$), clinical feature specification, and training-inference parity verification.
-2. **Systematic Model Comparisons & Feature Ablations:** 8 regression models and 9 classification models benchmarked on the held-out test split, 11 controlled feature ablations executed, and 5-fold cross-validation variability recorded in a machine-readable registry ([`experiment_registry.json`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/experiments/experiment_registry.json)).
-3. **Premium Simulation Validation:** Shifted Gamma parametric Value-at-Risk calculation hardened with deterministic seeds and edge-case guards; 9 automated invariant tests created and verified ([`test_premium_simulation.py`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/ml_model/tests/test_premium_simulation.py)); actuarial scoping gaps formally documented.
+2. **Systematic Model Comparisons & Feature Ablations:** 8 regression models and 9 classification models benchmarked on the held-out test split, 17 controlled feature ablations isolating ACG clusters, comorbidity count, quadratic penalty, and age interactions, and 5-fold cross-validation variability recorded in [`experiment_registry.json`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/experiments/experiment_registry.json).
+3. **Configurable Premium Simulation with Risk-Loading Alpha:** Shifted Gamma parametric Value-at-Risk calculation formalized with dimensionless risk loading ($X_\alpha = B + (1+\alpha)G$); 14 automated invariant tests verified ([`test_premium_simulation.py`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/ml_model/tests/test_premium_simulation.py)); 60-scenario sensitivity analysis executed and calibrated against analytical Gamma quantiles within $0.7\%$.
 4. **SHAP Explainability & Stability:** SHAP TreeExplainer attributions recomputed on approved 11-feature model artifacts; numerical additivity verified (error $1.812 \times 10^{-5} < 10^{-4}$); ranking stability proven across independent subsamples ($\rho = 0.9818$).
-5. **Blockchain Performance Benchmarks:** 5-organization Hyperledger Fabric network audited; 8-round Caliper benchmark across $24,500$ transactions analyzed; linear throughput up to $200$ TPS and write saturation ceiling at $350.1$ TPS documented with zero transaction failures ($0.00\%$).
+5. **Blockchain Performance Benchmarks:** 5-organization Hyperledger Fabric network audited; 8-round Caliper benchmark across $24,500$ transactions analyzed; hardened workload module implemented; linear throughput up to $200$ TPS and write saturation ceiling at $350.1$ TPS documented with zero transaction failures ($0.00\%$), read query scalability at $500.3$ TPS.
 6. **Security, Reproducibility & Fairness:** API injection threat model audited; backend RBAC and care relationships enforced with 50 security tests; deterministic random seeds and dataset SHA-256 hashes pinned; subgroup evaluations across Age, Sex, and Comorbidity tiers completed.
-7. **Revised Research Manuscript & Reconciliation:** Complete academic research paper produced ([`REVISED_PAPER.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/paper/REVISED_PAPER.md)) alongside a detailed section-by-section comparison with the original working draft ([`ORIGINAL_VS_REVISED_PAPER.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/ORIGINAL_VS_REVISED_PAPER.md)).
+7. **Revised Research Manuscript & Reconciliation:** Complete academic research paper produced ([`REVISED_PAPER.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/paper/REVISED_PAPER.md)) centered on blockchain throughput as leading contribution, with explicit RQs, and structured comparisons.
 
 ---
 
@@ -42,12 +42,13 @@ All 12 required deliverables have been generated and stored in `research_complet
 | **12** | **`FINAL_REPRODUCTION_GUIDE.md`** | Step-by-step replication instructions and commands. | [`research_completion/FINAL_REPRODUCTION_GUIDE.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/FINAL_REPRODUCTION_GUIDE.md) |
 
 ### Publication Figure Inventory
-Five publication-quality figures generated at 300 DPI are stored in `research_completion/figures/`:
+Six publication-quality figures generated at 300 DPI are stored in `research_completion/figures/`:
 1. `fig1_roc_pr_curves.png` — Classification ROC and Precision-Recall Curves across candidate baselines.
 2. `fig2_calibration_deciles.png` — Unpenalized calibration curves and Tweedie decile stratification.
 3. `fig3_shap_importance.png` — Global SHAP TreeExplainer feature importance rankings.
-4. `fig4_feature_ablations.png` — Systematic feature ablation impact on regression $R^2$ and classifier BSS.
-5. `fig5_blockchain_benchmarks.png` — Caliper offered load vs. throughput and latency saturation knee.
+4. `fig4_feature_ablations.png` — Systematic 17-scenario feature ablation impact on regression $R^2$ and classifier BSS.
+5. `fig5_blockchain_benchmarks.png` — Caliper offered load vs. throughput and latency curves (Writes vs. Read Queries).
+6. `fig6_premium_sensitivity.png` — Parametric Value-at-Risk sensitivity across base costs $B$ and risk-loading $\alpha$.
 
 ---
 

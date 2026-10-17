@@ -23,7 +23,7 @@ ml_model/
 │   ├── training_metadata.json        # Timestamps, train/test counts, locked target thresholds
 │   ├── evaluation_metrics.json       # Full test-set regression & classification metrics
 │   └── candidates/                   # Unapproved retraining candidates (default export destination)
-└── tests/                            # Comprehensive automated pytest suite (92 tests)
+└── tests/                            # Comprehensive automated pytest suite (97 tests)
     ├── test_pipeline.py              # MEPS data pipeline, leakage prevention, and model export
     ├── test_phase2_clinical_semantics.py # Clinical ACG feature parsing and semantics
     ├── test_phase2_external_validation.py # External validation cohorts (HC-256, HC-257) & calibration

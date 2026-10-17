@@ -4,7 +4,7 @@
 **Evaluation Date:** October 2026
 **Auditor:** Autonomous Senior Healthcare Data Scientist & Research Systems Engineer
 **Branch:** `feature/ml-pipeline-rebuild`
-**Validation Suite:** 92 Passing Automated Tests (`pytest ml_model/tests/`)
+**Validation Suite:** 97 Passing Automated Tests (`pytest ml_model/tests/`) + 50 Node Security Tests (`npm test backend/`)
 
 ---
 

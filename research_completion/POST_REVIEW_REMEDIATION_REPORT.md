@@ -3,7 +3,7 @@
 **Document ID:** `HS-REP-09-REMEDIATION-VERIFICATION`
 **Remediation Date:** October 2026
 **Branch:** `feature/ml-pipeline-rebuild`
-**Test Suite Status:** 92 Passing Python Tests (`pytest ml_model/tests/`) + 50 Passing Node Security Tests (`npm test backend/`)
+**Test Suite Status:** 97 Passing Python Tests (`pytest ml_model/tests/`) + 50 Passing Node Security Tests (`npm test backend/`)
 **Canonical Experiment Registry:** [`experiment_registry.json`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/experiments/experiment_registry.json)
 **Canonical Script Revision:** `run_comprehensive_benchmarks.py` (SHA-256 `febee05bc5...`, Commit `a54c8d9`)
 

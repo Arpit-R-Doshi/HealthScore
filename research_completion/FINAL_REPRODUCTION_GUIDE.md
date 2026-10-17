@@ -4,7 +4,7 @@
 **Date:** October 2026
 **Auditor / Reproducibility Engineer:** Autonomous Research Agent
 **Branch:** `feature/ml-pipeline-rebuild`
-**Expected Test Result:** 92 Passing Python Tests (`pytest ml_model/tests/`) + 50 Passing Node Security Tests (`npm test backend/`)
+**Expected Test Result:** 97 Passing Python Tests (`pytest ml_model/tests/`) + 50 Passing Node Security Tests (`npm test backend/`)
 
 ---
 
@@ -80,11 +80,11 @@ To run the complete automated Python ML test suite (clinical semantics, external
 ml_model/venv/bin/pytest ml_model/tests/
 ```
 
-**Expected Result:** **92 passed in ~1.2s**
+**Expected Result:** **97 passed in ~1.8s**
 - `test_phase2_clinical_semantics.py`: 21 passed
 - `test_phase2_external_validation.py`: 22 passed
 - `test_pipeline.py`: 26 passed
-- `test_premium_simulation.py`: 9 passed
+- `test_premium_simulation.py`: 14 passed (hardened with pricing alpha, monotonicity, analytical Gamma quantiles)
 - `test_runtime_parity.py`: 14 passed
 
 ### 3.2. Backend Security & Authorization Tests
@@ -131,7 +131,8 @@ ml_model/venv/bin/python ml_model/validation/hc257/validate_hc257.py
 
 ## 5. Comprehensive Experiments, Ablations & Figures
 
-To execute the full model comparison matrix, feature ablations, SHAP stability audit, subgroup fairness calculations, and generate all publication figures:
+### 5.1. Model Benchmarks, 17-Scenario Ablations & Figures
+To execute the full model comparison matrix, 17 feature ablations, SHAP stability audit, subgroup fairness calculations, and generate all publication figures:
 
 ```bash
 ml_model/venv/bin/python research_completion/experiments/run_comprehensive_benchmarks.py
@@ -144,6 +145,17 @@ This single command automatically updates:
 4. `research_completion/figures/fig3_shap_importance.png`
 5. `research_completion/figures/fig4_feature_ablations.png`
 6. `research_completion/figures/fig5_blockchain_benchmarks.png`
+
+### 5.2. Systematic Premium Simulation Sensitivity Analysis
+To execute the 60-scenario parametric loss sensitivity analysis across base costs, pricing alphas, and expenditure tiers with analytical Gamma quantile validation:
+
+```bash
+ml_model/venv/bin/python research_completion/experiments/run_premium_sensitivity.py
+```
+
+Outputs generated:
+1. `research_completion/reports/premium_sensitivity_results.json`
+2. `research_completion/figures/fig6_premium_sensitivity.png`
 
 ---
 
