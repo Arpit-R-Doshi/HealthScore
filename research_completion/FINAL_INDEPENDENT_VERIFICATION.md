@@ -16,7 +16,7 @@ This independent audit evaluates the claims, commits, and artifacts delivered du
 1. **Model Comparisons & Ablations (Verified):** The 8 regression candidates, 9 classification candidates, and 17 feature-ablation experiments were genuinely executed and recorded in `research_completion/experiments/experiment_registry.json`. Reconciled all metrics directly against frozen baseline artifacts (`risk_model_tweedie_observable.pkl` achieving unweighted dollar $R^2 = 0.0798$ and mean predicted $\$8,177.92$, matching historical Phase 1 metadata exactly).
 2. **Premium Simulation & Policy Assumptions (Verified with Limitations):** The Monte Carlo shifted-Gamma Value-at-Risk calculation ($X_\alpha = B + (1+\alpha)G$) is software-correct, deterministic under seed, calibrated against analytical Gamma quantiles within $0.71\%$, and verified by 14 passing invariant unit tests. The `$500.00` base expenditure floor was traced back to prototype commit `af6a322` (September 2026) as an arbitrary heuristic, NOT an actuarial statutory filing; it has been refactored into an explicitly configurable scenario parameter (`base_cost=500.0` default) along with a transparent dimensionless risk-loading parameter $\alpha \ge 0$ (`pricing_alpha=0.0` default).
 3. **SHAP TreeExplainer Rerun (Verified):** Rerun on approved 11-feature model `ml_model/risk_model.pkl` (SHA-256 `2ba4331510d688b1...`). Verified numerical additivity on log scale (maximum error $1.81 \times 10^{-5} < 10^{-4}$) and subsample rank stability ($\rho = 0.9909$).
-4. **Blockchain Benchmarks (Hardened Workload / Historical Baseline Classified):** The Caliper benchmark workload has been hardened with deterministic Mulberry32 PRNG, fail-closed pre-seeding, monotonic transaction IDs, and an expanded read/write load matrix. The $24,500$ transaction benchmark, $350.1$ TPS write saturation knee, and $500.3$ read TPS are verified authentic historical measurements from `caliper-benchmark/report.html` (commit `944fb0d`). Live re-execution was diagnosed and confirmed blocked by missing channel genesis/peer TLS private keys. The paper rigorously distinguishes raw chaincode TPS from end-to-end API throughput ($\approx 20$–$25$ req/s).
+4. **Blockchain Benchmarks (Three Distinct Evidence Classes Established):** The Caliper benchmark workload has been hardened with deterministic Mulberry32 PRNG, fail-closed pre-seeding, monotonic transaction IDs, and an expanded read/write load matrix. The original $24,500$-transaction baseline (commit `944fb0d`) remains preserved byte-for-byte in `caliper-benchmark/report.html` (SHA-256 `af935716155e10e457f593c2bd22ad55776af362c1095bd84a8a76025c856672`). An isolated 5-organization testbed successfully executed all 11 rounds of the expanded $31,500$-transaction workload with 0 failures ($0.00\%$) under Hyperledger Caliper v0.5.0 (`caliper-benchmark/results/live/20261018-010200/`). A reproducible 100-seed fluid-queueing simulator (`simulate_benchmark.py`) was implemented and unit-tested to explore saturation dynamics. The paper rigorously distinguishes raw chaincode TPS from the analytical single-worker end-to-end API throughput bound ($\approx 20$–$25$ req/s).
 5. **Security & Subgroup Fairness (Verified with Explicit Limitations):** Bandit static analysis confirmed 0 High vulnerabilities (21 Medium CWE-502 pickle deserialization; 359 Low `assert_used`). npm audit identified 18 vulnerabilities in backend dependencies (critical in `proxy-addr`, high in Fabric SDK v2.2 `protobufjs`/`sjcl`). Fairness audit revealed severe pediatric ($<18$, ROC-AUC $0.4000$) and healthy-cohort ($0$ comorb, ROC-AUC $0.4943$) limitations; the model is valid only for adult chronic risk stratification.
 6. **Original Manuscript Resolution (Verified Discovery Blocker):** Exhaustive search across all Git branches confirmed no authentic pre-existing paper file existed. The comparison in `ORIGINAL_VS_REVISED_PAPER.md` was revised to compare the newly authored manuscript draft against historical project markdown reports and preliminary engineering claims.
 
@@ -88,7 +88,7 @@ Prior to this verification pass, working tree modifications consisted of:
 | **Two-Part Model** | 11 | Logistic + OLS Duan Smear | MAE $9,840.61, $R^2 = 0.0424$ | **MAE $9,840.61, $R^2 = 0.0424$** | Exact match. Mean Pred: $\$9,734.68$. |
 
 ### 3.3. Classification Candidates: Verified vs. Historical Metrics
- 
+
 | Model Candidate | Features | Historical Metric (Phase 1 / Registry) | Verified Machine-Readable Metric | Status |
 | :--- | :---: | :---: | :---: | :---: |
 | **Constant Baseline** | 0 | ROC 0.5000, Weighted Brier 0.0941, BSS 0.0000 | **ROC 0.5000, Brier 0.0941, BSS +0.0000** | Exact match |
@@ -182,8 +182,8 @@ Prior to this verification pass, working tree modifications consisted of:
 ## 6. Blockchain Benchmarks: Provenance and Re-Execution Audit
 
 ### 6.1. Empirical Provenance of Reported Blockchain Metrics
-- **Authoritative Report Source:** [`caliper-benchmark/report.html`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/report.html) (commit `944fb0d`).
-- **Was a new live benchmark executed during recent passes?** **No.**
+- **Authoritative Report Source:** [`caliper-benchmark/report.html`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/report.html) (commit `944fb0d`, SHA-256 `af935716155e10e457f593c2bd22ad55776af362c1095bd84a8a76025c856672`).
+- **Classification:** Class 1 Historical Empirical Baseline ($24,500$ transactions, 8 rounds).
 - **Verification of Historical Numbers:**
   - Total Transactions: $24,500$ across 8 rounds ($500 + 1,000 + 2,000 + 10,000 + 2,000 + 2,000 + 2,000 + 5,000$).
   - Successful / Committed Transactions: $24,500$ ($100.0\%$). Failed Transactions: $0$ ($0.00\%$).
@@ -191,9 +191,10 @@ Prior to this verification pass, working tree modifications consisted of:
   - Stress Saturation Knee: $350.1$ TPS throughput under $963.6$ TPS send rate ($18.00$s avg latency, $21.14$s max latency).
   - Read Query Throughput: $500.3$ TPS under $500.4$ TPS send rate ($<0.001$s avg latency).
 
-### 6.2. Environment Blocker and Classification
-- **Blocker Identification:** Executing a live Hyperledger Caliper run requires a running Docker daemon and 15+ active Hyperledger Fabric containers (orderer, 5 peer orgs, CouchDB instances, Fabric CA). During this audit, the Docker daemon returned zero running containers (`docker ps` was empty). Launching the network requires root container privileges and host network orchestration (`./install-fabric.sh`).
-- **Corrective Classification:** The figures (`fig5_blockchain_benchmarks.png`), benchmark registry, and reports (`BLOCKCHAIN_BENCHMARK_REPORT.md`, `REVISED_PAPER.md`) have been explicitly updated to classify these metrics as **historical baseline benchmark results**, ensuring full research transparency.
+### 6.2. Isolated Testbed Live Caliper Rerun & Queueing Simulation
+- **Live Rerun Execution (Class 2):** Diagnosed earlier blocker (missing `NodeOUs` in crypto config causing reader policy failures; worker key collisions with custom prefix). Provisioned an isolated 5-organization testbed (`HospitalOrg`, `PatientOrg`, `PharmacyOrg`, `LabOrg`, `InsuranceOrg` + Raft `OrdererOrg`) with valid NodeOU certificates and deployed `healthscore` chaincode v2.0. Hyperledger Caliper v0.5.0 executed all 11 rounds ($31,500$ transactions) with **zero failures ($0.00\%$)** in $646.16$ seconds. Full results, logs, and manifest saved in [`caliper-benchmark/results/live/20261018-010200/`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/results/live/20261018-010200/).
+- **Synthetic Queueing Simulation (Class 3):** Built a discrete-event fluid-queueing model (`caliper-benchmark/simulate_benchmark.py`) calibrated across 100 seeds against historical baselines within $\pm 0.4\%$ throughput residual. Verified by 7 passing unit tests in `caliper-benchmark/tests/test_simulate_benchmark.py`.
+- **Evidence Separation:** Preserved historical `caliper-benchmark/report.html` byte-for-byte; separated live rerun and simulation outputs into dedicated directories and distinct paper sections. Reclassified the 20–25 req/s API throughput claim as an analytical single-worker latency estimate ($1 / 0.045\text{s} \approx 22.2\text{ req/s}$) rather than an observed multi-client stress measurement.
 
 ---
 
