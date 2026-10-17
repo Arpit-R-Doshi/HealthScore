@@ -1,0 +1,893 @@
+{
+  "metadata": {
+    "execution_date": "2026-10-17",
+    "environment": "Python 3.14.8, scikit-learn 1.9.1, xgboost 3.4.1, shap 0.53.0",
+    "seed": 42,
+    "datasets": {
+      "HC-251_2023": "1de0133d0d5a4eeef1f08b60931e0d2669de1507007fd8fabdb84e1c0d15ffb5",
+      "HC-256_2024": "b4bde859b39f626345561c05570292bb7264dd92eb76ce0c1a14d6b89076aed5",
+      "HC-257_Panel28": "08d1ff01044982a24e3d5983f54a9b911749728d2bb79156aa6efd4700720c86"
+    }
+  },
+  "regression_comparisons": [
+    {
+      "model_name": "Baseline Median",
+      "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "mean_predicted": 1824.5,
+      "observed_mean": 8764.62,
+      "mae_unweighted": 8286.54,
+      "mae_ci_95": [
+        7568.21,
+        9132.89
+      ],
+      "rmse_unweighted": 25505.28,
+      "rmse_ci_95": [
+        20416.26,
+        30695.16
+      ],
+      "r2_unweighted": -0.08,
+      "r2_ci_95": [
+        -0.1056,
+        -0.0641
+      ],
+      "mae_weighted": 7069.26,
+      "rmse_weighted": 21198.98,
+      "r2_weighted": -0.0765
+    },
+    {
+      "model_name": "Baseline Mean",
+      "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "mean_predicted": 8179.16,
+      "observed_mean": 8764.62,
+      "mae_unweighted": 10409.21,
+      "mae_ci_95": [
+        9693.1,
+        11256.31
+      ],
+      "rmse_unweighted": 24549.88,
+      "rmse_ci_95": [
+        19479.03,
+        29696.84
+      ],
+      "r2_unweighted": -0.0006,
+      "r2_ci_95": [
+        -0.0027,
+        -0.0
+      ],
+      "mae_weighted": 9615.14,
+      "rmse_weighted": 20443.8,
+      "r2_weighted": -0.0012
+    },
+    {
+      "model_name": "OLS Linear (Observable)",
+      "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "mean_predicted": 2557.06,
+      "observed_mean": 8764.62,
+      "mae_unweighted": 7626.08,
+      "mae_ci_95": [
+        6936.18,
+        8439.99
+      ],
+      "rmse_unweighted": 24663.09,
+      "rmse_ci_95": [
+        19674.22,
+        29940.98
+      ],
+      "r2_unweighted": -0.0098,
+      "r2_ci_95": [
+        -0.0293,
+        0.0082
+      ],
+      "mae_weighted": 6549.55,
+      "rmse_weighted": 20593.04,
+      "r2_weighted": -0.0159
+    },
+    {
+      "model_name": "Ridge \u03b1=10 (Observable)",
+      "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "mean_predicted": 2551.15,
+      "observed_mean": 8764.62,
+      "mae_unweighted": 7624.74,
+      "mae_ci_95": [
+        6936.88,
+        8437.16
+      ],
+      "rmse_unweighted": 24662.46,
+      "rmse_ci_95": [
+        19671.71,
+        29940.54
+      ],
+      "r2_unweighted": -0.0098,
+      "r2_ci_95": [
+        -0.029,
+        0.0083
+      ],
+      "mae_weighted": 6548.63,
+      "rmse_weighted": 20591.78,
+      "r2_weighted": -0.0157
+    },
+    {
+      "model_name": "Random Forest (Observable)",
+      "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "mean_predicted": 2449.69,
+      "observed_mean": 8764.62,
+      "mae_unweighted": 7538.79,
+      "mae_ci_95": [
+        6850.57,
+        8337.0
+      ],
+      "rmse_unweighted": 24702.54,
+      "rmse_ci_95": [
+        19599.15,
+        29943.9
+      ],
+      "r2_unweighted": -0.0131,
+      "r2_ci_95": [
+        -0.0254,
+        -0.0004
+      ],
+      "mae_weighted": 6477.02,
+      "rmse_weighted": 20563.29,
+      "r2_weighted": -0.0129
+    },
+    {
+      "model_name": "XGBoost Regressor (Observable)",
+      "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "mean_predicted": 2378.32,
+      "observed_mean": 8764.62,
+      "mae_unweighted": 7512.18,
+      "mae_ci_95": [
+        6813.56,
+        8300.37
+      ],
+      "rmse_unweighted": 24690.65,
+      "rmse_ci_95": [
+        19576.02,
+        29937.95
+      ],
+      "r2_unweighted": -0.0121,
+      "r2_ci_95": [
+        -0.0256,
+        0.0004
+      ],
+      "mae_weighted": 6463.53,
+      "rmse_weighted": 20563.35,
+      "r2_weighted": -0.0129,
+      "cv_5fold_r2_mean": -0.0014,
+      "cv_5fold_r2_std": 0.0086
+    },
+    {
+      "model_name": "Tweedie GLM (Observable)",
+      "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "mean_predicted": 8198.51,
+      "observed_mean": 8764.62,
+      "mae_unweighted": 8993.97,
+      "mae_ci_95": [
+        8338.11,
+        9753.46
+      ],
+      "rmse_unweighted": 23558.96,
+      "rmse_ci_95": [
+        18478.98,
+        28820.9
+      ],
+      "r2_unweighted": 0.0786,
+      "r2_ci_95": [
+        0.0567,
+        0.1087
+      ],
+      "mae_weighted": 7846.12,
+      "rmse_weighted": 19580.77,
+      "r2_weighted": 0.0816,
+      "cv_5fold_r2_mean": 0.1125,
+      "cv_5fold_r2_std": 0.015
+    },
+    {
+      "model_name": "Two-Part Model (Observable)",
+      "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "mean_predicted": 9734.68,
+      "observed_mean": 8764.62,
+      "mae_unweighted": 9840.61,
+      "mae_ci_95": [
+        9173.59,
+        10603.0
+      ],
+      "rmse_unweighted": 24016.85,
+      "rmse_ci_95": [
+        19280.21,
+        28948.44
+      ],
+      "r2_unweighted": 0.0424,
+      "r2_ci_95": [
+        -0.02,
+        0.0888
+      ],
+      "mae_weighted": 8459.92,
+      "rmse_weighted": 20153.57,
+      "r2_weighted": 0.027
+    }
+  ],
+  "classification_comparisons": [
+    {
+      "model_name": "Constant Prevalence Baseline",
+      "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "mean_pred_prob": 0.0999,
+      "roc_auc": 0.5,
+      "roc_auc_ci_95": [
+        0.5,
+        0.5
+      ],
+      "pr_auc": 0.1198,
+      "pr_auc_ci_95": [
+        0.1111,
+        0.1308
+      ],
+      "brier_unweighted": 0.1059,
+      "bss_unweighted": -0.0036,
+      "brier_weighted": 0.0941,
+      "bss_weighted": 0.0,
+      "cal_intercept": 0.0,
+      "cal_slope": 0.0,
+      "precision_at_10pct": 0.0,
+      "recall_at_10pct": 0.0,
+      "f1_at_10pct": 0.0
+    },
+    {
+      "model_name": "Demographic Baseline (Age+Sex)",
+      "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "mean_pred_prob": 0.1184,
+      "roc_auc": 0.7099,
+      "roc_auc_ci_95": [
+        0.6856,
+        0.7319
+      ],
+      "pr_auc": 0.2182,
+      "pr_auc_ci_95": [
+        0.1928,
+        0.2489
+      ],
+      "brier_unweighted": 0.0996,
+      "bss_unweighted": 0.0557,
+      "brier_weighted": 0.0894,
+      "bss_weighted": 0.0501,
+      "cal_intercept": -0.1744,
+      "cal_slope": 0.8934,
+      "precision_at_10pct": 0.1928,
+      "recall_at_10pct": 0.7867,
+      "f1_at_10pct": 0.3097
+    },
+    {
+      "model_name": "Clinical Conditions Only",
+      "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "mean_pred_prob": 0.1155,
+      "roc_auc": 0.7617,
+      "roc_auc_ci_95": [
+        0.739,
+        0.7859
+      ],
+      "pr_auc": 0.3104,
+      "pr_auc_ci_95": [
+        0.2818,
+        0.3509
+      ],
+      "brier_unweighted": 0.0939,
+      "bss_unweighted": 0.1097,
+      "brier_weighted": 0.0847,
+      "bss_weighted": 0.0998,
+      "cal_intercept": -0.0286,
+      "cal_slope": 0.9558,
+      "precision_at_10pct": 0.2236,
+      "recall_at_10pct": 0.7667,
+      "f1_at_10pct": 0.3462
+    },
+    {
+      "model_name": "Logistic Regression (11-Feat Observable)",
+      "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "mean_pred_prob": 0.1165,
+      "roc_auc": 0.7652,
+      "roc_auc_ci_95": [
+        0.7433,
+        0.7882
+      ],
+      "pr_auc": 0.3192,
+      "pr_auc_ci_95": [
+        0.2869,
+        0.3582
+      ],
+      "brier_unweighted": 0.0936,
+      "bss_unweighted": 0.1129,
+      "brier_weighted": 0.0845,
+      "bss_weighted": 0.1025,
+      "cal_intercept": -0.0638,
+      "cal_slope": 0.9405,
+      "precision_at_10pct": 0.2278,
+      "recall_at_10pct": 0.7644,
+      "f1_at_10pct": 0.351
+    },
+    {
+      "model_name": "Logistic Regression (11-Feat Wtd Fit)",
+      "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "mean_pred_prob": 0.1151,
+      "roc_auc": 0.7654,
+      "roc_auc_ci_95": [
+        0.7444,
+        0.7881
+      ],
+      "pr_auc": 0.3184,
+      "pr_auc_ci_95": [
+        0.2876,
+        0.3556
+      ],
+      "brier_unweighted": 0.0936,
+      "bss_unweighted": 0.1123,
+      "brier_weighted": 0.0845,
+      "bss_weighted": 0.1025,
+      "cal_intercept": 0.0157,
+      "cal_slope": 0.9788,
+      "precision_at_10pct": 0.2318,
+      "recall_at_10pct": 0.7733,
+      "f1_at_10pct": 0.3567
+    },
+    {
+      "model_name": "Random Forest (11-Feat Observable)",
+      "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "mean_pred_prob": 0.1162,
+      "roc_auc": 0.7707,
+      "roc_auc_ci_95": [
+        0.748,
+        0.795
+      ],
+      "pr_auc": 0.3194,
+      "pr_auc_ci_95": [
+        0.2863,
+        0.3584
+      ],
+      "brier_unweighted": 0.0934,
+      "bss_unweighted": 0.1149,
+      "brier_weighted": 0.0843,
+      "bss_weighted": 0.1046,
+      "cal_intercept": 0.0055,
+      "cal_slope": 0.9798,
+      "precision_at_10pct": 0.2344,
+      "recall_at_10pct": 0.7667,
+      "f1_at_10pct": 0.359
+    },
+    {
+      "model_name": "XGBoost (Uncalibrated)",
+      "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "mean_pred_prob": 0.1171,
+      "roc_auc": 0.7687,
+      "roc_auc_ci_95": [
+        0.7462,
+        0.7921
+      ],
+      "pr_auc": 0.3184,
+      "pr_auc_ci_95": [
+        0.2873,
+        0.3585
+      ],
+      "brier_unweighted": 0.0934,
+      "bss_unweighted": 0.115,
+      "brier_weighted": 0.0842,
+      "bss_weighted": 0.1057,
+      "cal_intercept": -0.0102,
+      "cal_slope": 0.976,
+      "precision_at_10pct": 0.2238,
+      "recall_at_10pct": 0.7956,
+      "f1_at_10pct": 0.3493
+    },
+    {
+      "model_name": "XGBoost (Platt Calibrated)",
+      "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "mean_pred_prob": 0.1168,
+      "roc_auc": 0.77,
+      "roc_auc_ci_95": [
+        0.748,
+        0.7938
+      ],
+      "pr_auc": 0.3181,
+      "pr_auc_ci_95": [
+        0.2878,
+        0.3586
+      ],
+      "brier_unweighted": 0.0945,
+      "bss_unweighted": 0.104,
+      "brier_weighted": 0.085,
+      "bss_weighted": 0.0972,
+      "cal_intercept": -0.0248,
+      "cal_slope": 0.9673,
+      "precision_at_10pct": 0.251,
+      "recall_at_10pct": 0.68,
+      "f1_at_10pct": 0.3667
+    },
+    {
+      "model_name": "Logistic Regression (14-Feat Oracle)",
+      "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "mean_pred_prob": 0.117,
+      "roc_auc": 0.7869,
+      "roc_auc_ci_95": [
+        0.7645,
+        0.8101
+      ],
+      "pr_auc": 0.3607,
+      "pr_auc_ci_95": [
+        0.3215,
+        0.3966
+      ],
+      "brier_unweighted": 0.0903,
+      "bss_unweighted": 0.1443,
+      "brier_weighted": 0.0819,
+      "bss_weighted": 0.13,
+      "cal_intercept": 0.0033,
+      "cal_slope": 0.9823,
+      "precision_at_10pct": 0.2509,
+      "recall_at_10pct": 0.7733,
+      "f1_at_10pct": 0.3789
+    }
+  ],
+  "feature_ablations": [
+    {
+      "ablation_label": "Full Observable Reference (11 Feat)",
+      "feature_count": 11,
+      "features": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "regression_mae": 8993.97,
+      "regression_rmse": 23558.96,
+      "regression_r2": 0.0786,
+      "delta_r2_vs_ref": 0.0,
+      "delta_mae_vs_ref": 0.0,
+      "classification_roc_auc": 0.7652,
+      "classification_bss_weighted": 0.1025,
+      "delta_bss_vs_ref": 0.0
+    },
+    {
+      "ablation_label": "Demographics Only (Age + Sex)",
+      "feature_count": 2,
+      "features": [
+        "AGE23X",
+        "Gender_Male"
+      ],
+      "regression_mae": 9702.32,
+      "regression_rmse": 24054.65,
+      "regression_r2": 0.0394,
+      "delta_r2_vs_ref": -0.0392,
+      "delta_mae_vs_ref": 708.35,
+      "classification_roc_auc": 0.7099,
+      "classification_bss_weighted": 0.0501,
+      "delta_bss_vs_ref": -0.0524
+    },
+    {
+      "ablation_label": "Clinical Conditions Only (No Demographics)",
+      "feature_count": 8,
+      "features": [
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty"
+      ],
+      "regression_mae": 9029.65,
+      "regression_rmse": 23566.67,
+      "regression_r2": 0.078,
+      "delta_r2_vs_ref": -0.0006,
+      "delta_mae_vs_ref": 35.68,
+      "classification_roc_auc": 0.7617,
+      "classification_bss_weighted": 0.0998,
+      "delta_bss_vs_ref": -0.0027
+    },
+    {
+      "ablation_label": "Without Psychiatric Condition",
+      "feature_count": 10,
+      "features": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "regression_mae": 9015.62,
+      "regression_rmse": 23588.02,
+      "regression_r2": 0.0763,
+      "delta_r2_vs_ref": -0.0023,
+      "delta_mae_vs_ref": 21.65,
+      "classification_roc_auc": 0.7635,
+      "classification_bss_weighted": 0.1035,
+      "delta_bss_vs_ref": 0.001
+    },
+    {
+      "ablation_label": "Without Multimorbidity & Interaction",
+      "feature_count": 9,
+      "features": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count"
+      ],
+      "regression_mae": 9072.77,
+      "regression_rmse": 23575.9,
+      "regression_r2": 0.0772,
+      "delta_r2_vs_ref": -0.0013,
+      "delta_mae_vs_ref": 78.8,
+      "classification_roc_auc": 0.7654,
+      "classification_bss_weighted": 0.0997,
+      "delta_bss_vs_ref": -0.0027
+    },
+    {
+      "ablation_label": "Without Oncology",
+      "feature_count": 10,
+      "features": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "regression_mae": 9066.99,
+      "regression_rmse": 23562.95,
+      "regression_r2": 0.0783,
+      "delta_r2_vs_ref": -0.0003,
+      "delta_mae_vs_ref": 73.02,
+      "classification_roc_auc": 0.7622,
+      "classification_bss_weighted": 0.0966,
+      "delta_bss_vs_ref": -0.0058
+    },
+    {
+      "ablation_label": "Without Cardiovascular",
+      "feature_count": 10,
+      "features": [
+        "AGE23X",
+        "Gender_Male",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "regression_mae": 9083.71,
+      "regression_rmse": 23567.95,
+      "regression_r2": 0.0779,
+      "delta_r2_vs_ref": -0.0007,
+      "delta_mae_vs_ref": 89.74,
+      "classification_roc_auc": 0.7605,
+      "classification_bss_weighted": 0.0969,
+      "delta_bss_vs_ref": -0.0056
+    },
+    {
+      "ablation_label": "Without Metabolic",
+      "feature_count": 10,
+      "features": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "regression_mae": 9030.87,
+      "regression_rmse": 23561.19,
+      "regression_r2": 0.0784,
+      "delta_r2_vs_ref": -0.0002,
+      "delta_mae_vs_ref": 36.9,
+      "classification_roc_auc": 0.7602,
+      "classification_bss_weighted": 0.0957,
+      "delta_bss_vs_ref": -0.0068
+    },
+    {
+      "ablation_label": "Without Respiratory",
+      "feature_count": 10,
+      "features": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "regression_mae": 9021.68,
+      "regression_rmse": 23603.25,
+      "regression_r2": 0.0751,
+      "delta_r2_vs_ref": -0.0035,
+      "delta_mae_vs_ref": 27.71,
+      "classification_roc_auc": 0.7629,
+      "classification_bss_weighted": 0.0971,
+      "delta_bss_vs_ref": -0.0054
+    },
+    {
+      "ablation_label": "Without Musculoskeletal",
+      "feature_count": 10,
+      "features": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "regression_mae": 9029.09,
+      "regression_rmse": 23547.16,
+      "regression_r2": 0.0795,
+      "delta_r2_vs_ref": 0.0009,
+      "delta_mae_vs_ref": 35.12,
+      "classification_roc_auc": 0.7619,
+      "classification_bss_weighted": 0.1014,
+      "delta_bss_vs_ref": -0.0011
+    },
+    {
+      "ablation_label": "Oracle 14 Features (with SAQ variables)",
+      "feature_count": 14,
+      "features": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Frailty_Index",
+        "Age_x_Frailty",
+        "Age_x_Comorbidity",
+        "K6SUM42"
+      ],
+      "regression_mae": 8794.23,
+      "regression_rmse": 23403.55,
+      "regression_r2": 0.0907,
+      "delta_r2_vs_ref": 0.0121,
+      "delta_mae_vs_ref": -199.73,
+      "classification_roc_auc": 0.7869,
+      "classification_bss_weighted": 0.13,
+      "delta_bss_vs_ref": 0.0275
+    }
+  ],
+  "shap_summary": {
+    "max_additivity_error": 9.54e-06,
+    "additivity_verified": true,
+    "feature_importance": [
+      {
+        "feature": "Age_x_Comorbidity",
+        "mean_abs_shap_log_scale": 0.7724,
+        "relative_importance_pct": 37.6,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "Comorbidity_Count",
+        "mean_abs_shap_log_scale": 0.4601,
+        "relative_importance_pct": 22.4,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "Gender_Male",
+        "mean_abs_shap_log_scale": 0.2928,
+        "relative_importance_pct": 14.25,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "AGE23X",
+        "mean_abs_shap_log_scale": 0.246,
+        "relative_importance_pct": 11.98,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "Multimorbidity_Penalty",
+        "mean_abs_shap_log_scale": 0.0702,
+        "relative_importance_pct": 3.42,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "Musculoskeletal_ACG",
+        "mean_abs_shap_log_scale": 0.0609,
+        "relative_importance_pct": 2.96,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "Cardio_ACG",
+        "mean_abs_shap_log_scale": 0.0427,
+        "relative_importance_pct": 2.08,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "Oncology_ACG",
+        "mean_abs_shap_log_scale": 0.042,
+        "relative_importance_pct": 2.04,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "Metabolic_ACG",
+        "mean_abs_shap_log_scale": 0.0351,
+        "relative_importance_pct": 1.71,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "Psychiatric_ACG",
+        "mean_abs_shap_log_scale": 0.0168,
+        "relative_importance_pct": 0.82,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "Respiratory_ACG",
+        "mean_abs_shap_log_scale": 0.0152,
+        "relative_importance_pct": 0.74,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      }
+    ],
+    "rank_stability_spearman_min": 0.9909
+  },
+  "subgroup_fairness": [
+    {
+      "category": "Age Category",
+      "subgroup": "Pediatric (<18)",
+      "sample_size": 731,
+      "observed_mean": 3113.53,
+      "predicted_mean": 2529.17,
+      "ratio_obs_pred": 1.231,
+      "mae": 3646.56,
+      "high_cost_prev": 0.0328,
+      "roc_auc": 0.4002,
+      "brier_score": 0.0321,
+      "brier_skill_score": -0.0105
+    },
+    {
+      "category": "Age Category",
+      "subgroup": "Young Adult (18-44)",
+      "sample_size": 1121,
+      "observed_mean": 5271.57,
+      "predicted_mean": 4808.84,
+      "ratio_obs_pred": 1.0962,
+      "mae": 6135.33,
+      "high_cost_prev": 0.0624,
+      "roc_auc": 0.6866,
+      "brier_score": 0.0558,
+      "brier_skill_score": 0.047
+    },
+    {
+      "category": "Age Category",
+      "subgroup": "Middle Age (45-64)",
+      "sample_size": 954,
+      "observed_mean": 10389.33,
+      "predicted_mean": 9332.94,
+      "ratio_obs_pred": 1.1132,
+      "mae": 10513.89,
+      "high_cost_prev": 0.1499,
+      "roc_auc": 0.7312,
+      "brier_score": 0.1171,
+      "brier_skill_score": 0.0807
+    },
+    {
+      "category": "Age Category",
+      "subgroup": "Older Adult (65+)",
+      "sample_size": 949,
+      "observed_mean": 15610.44,
+      "predicted_mean": 15429.11,
+      "ratio_obs_pred": 1.0118,
+      "mae": 14961.81,
+      "high_cost_prev": 0.2244,
+      "roc_auc": 0.6748,
+      "brier_score": 0.1619,
+      "brier_skill_score": 0.0699
+    },
+    {
+      "category": "Sex / Gender",
+      "subgroup": "Female",
+      "sample_size": 2003,
+      "observed_mean": 8674.37,
+      "predicted_mean": 8892.67,
+      "ratio_obs_pred": 0.9755,
+      "mae": 8728.97,
+      "high_cost_prev": 0.1318,
+      "roc_auc": 0.7443,
+      "brier_score": 0.1031,
+      "brier_skill_score": 0.0989
+    },
+    {
+      "category": "Sex / Gender",
+      "subgroup": "Male",
+      "sample_size": 1752,
+      "observed_mean": 8867.81,
+      "predicted_mean": 7404.89,
+      "ratio_obs_pred": 1.1976,
+      "mae": 9296.93,
+      "high_cost_prev": 0.1062,
+      "roc_auc": 0.7821,
+      "brier_score": 0.0827,
+      "brier_skill_score": 0.1285
+    },
+    {
+      "category": "Comorbidity Burden",
+      "subgroup": "0 Comorbidities",
+      "sample_size": 1358,
+      "observed_mean": 2851.17,
+      "predicted_mean": 2674.46,
+      "ratio_obs_pred": 1.0661,
+      "mae": 3713.56,
+      "high_cost_prev": 0.0339,
+      "roc_auc": 0.4897,
+      "brier_score": 0.0328,
+      "brier_skill_score": -0.0037
+    },
+    {
+      "category": "Comorbidity Burden",
+      "subgroup": "1 Comorbidity",
+      "sample_size": 827,
+      "observed_mean": 6052.22,
+      "predicted_mean": 5447.1,
+      "ratio_obs_pred": 1.1111,
+      "mae": 6943.64,
+      "high_cost_prev": 0.0726,
+      "roc_auc": 0.6636,
+      "brier_score": 0.0663,
+      "brier_skill_score": 0.0148
+    },
+    {
+      "category": "Comorbidity Burden",
+      "subgroup": "2 Comorbidities",
+      "sample_size": 673,
+      "observed_mean": 9882.55,
+      "predicted_mean": 9652.82,
+      "ratio_obs_pred": 1.0238,
+      "mae": 10382.21,
+      "high_cost_prev": 0.1352,
+      "roc_auc": 0.6204,
+      "brier_score": 0.1142,
+      "brier_skill_score": 0.0236
+    },
+    {
+      "category": "Comorbidity Burden",
+      "subgroup": "3+ Comorbidities",
+      "sample_size": 897,
+      "observed_mean": 19379.17,
+      "predicted_mean": 18007.11,
+      "ratio_obs_pred": 1.0762,
+      "mae": 17836.91,
+      "high_cost_prev": 0.2821,
+      "roc_auc": 0.6175,
+      "brier_score": 0.1953,
+      "brier_skill_score": 0.0358
+    }
+  ]
+}
