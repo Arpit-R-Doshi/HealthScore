@@ -1,0 +1,1510 @@
+{
+  "metadata": {
+    "dataset": "MEPS HC-251 (2023 Full Year Consolidated)",
+    "generated_at": "2026-10-14T11:12:23.178892",
+    "train_samples": 15016,
+    "test_samples": 3755,
+    "unweighted_p90_threshold": 20360.5,
+    "weighted_p90_threshold": 17827.405977383045,
+    "test_variance_raw_dollars": 602354051.95,
+    "test_population_variance_ddof0": 602354051.95,
+    "test_sample_variance_ddof1": 602514508.54,
+    "variance_convention_diagnostics": {
+      "population_variance_ddof0": 602354051.95,
+      "sample_variance_ddof1": 602514508.54,
+      "identity_verification": "R2 = 1 - (SS_res / SS_tot) = 1 - (RMSE^2 / Var_pop). Strictly verified against ddof=0 population variance ($602,354,051.95)."
+    },
+    "confidence_intervals_method": "Ordinary row-level percentile bootstrap (1,000 resamples). Reflects sample resampling uncertainty on exploratory held-out test split, NOT complex-survey design-based intervals.",
+    "overall_test_metrics": {
+      "test_samples": 3755,
+      "overall_observed_mean": 8764.62,
+      "overall_pred_xgb_obs_mean": 2384.13,
+      "overall_pred_tweedie_obs_mean": 8177.92,
+      "overall_pred_tweedie_mean": 8216.41,
+      "overall_pred_twopart_mean": 9781.06
+    }
+  },
+  "regressors": {
+    "Baseline_Median": {
+      "mae_unweighted": 8286.54,
+      "medae_unweighted": 1824.5,
+      "rmse_unweighted": 25505.28,
+      "r2_unweighted": -0.08,
+      "r2_log": -0.0597,
+      "mean_predicted": 1824.5,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        7502.44,
+        9132.4
+      ],
+      "rmse_ci_95": [
+        20685.85,
+        30170.84
+      ],
+      "r2_ci_95": [
+        -0.1056,
+        -0.0634
+      ],
+      "mae_weighted": 7069.26,
+      "rmse_weighted": 21198.98,
+      "r2_weighted": -0.0765
+    },
+    "Baseline_Mean": {
+      "mae_unweighted": 10409.21,
+      "medae_unweighted": 7426.16,
+      "rmse_unweighted": 24549.88,
+      "r2_unweighted": -0.0006,
+      "r2_log": -0.514,
+      "mean_predicted": 8179.16,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        9711.53,
+        11157.29
+      ],
+      "rmse_ci_95": [
+        19683.09,
+        29266.14
+      ],
+      "r2_ci_95": [
+        -0.0027,
+        -0.0
+      ],
+      "mae_weighted": 9615.14,
+      "rmse_weighted": 20443.8,
+      "r2_weighted": -0.0012
+    },
+    "XGBoost_ObservableOnly_Unweighted": {
+      "mae_unweighted": 7516.26,
+      "medae_unweighted": 1414.44,
+      "rmse_unweighted": 24706.5,
+      "r2_unweighted": -0.0134,
+      "r2_log": 0.2518,
+      "mean_predicted": 2384.13,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        6766.71,
+        8312.72
+      ],
+      "rmse_ci_95": [
+        19821.6,
+        29347.89
+      ],
+      "r2_ci_95": [
+        -0.0266,
+        -0.0013
+      ],
+      "mae_weighted": 6464.45,
+      "rmse_weighted": 20571.27,
+      "r2_weighted": -0.0137
+    },
+    "XGBoost_ObservableOnly_WeightedFit": {
+      "mae_unweighted": 7511.06,
+      "medae_unweighted": 1389.35,
+      "rmse_unweighted": 24724.64,
+      "r2_unweighted": -0.0149,
+      "r2_log": 0.2457,
+      "mean_predicted": 2382.41,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        6765.89,
+        8307.69
+      ],
+      "rmse_ci_95": [
+        19850.29,
+        29380.31
+      ],
+      "r2_ci_95": [
+        -0.0273,
+        -0.0033
+      ],
+      "mae_weighted": 6455.21,
+      "rmse_weighted": 20580.31,
+      "r2_weighted": -0.0146
+    },
+    "XGBoost_14Feat_DeploymentImputed": {
+      "mae_unweighted": 7495.29,
+      "medae_unweighted": 1590.67,
+      "rmse_unweighted": 24579.85,
+      "r2_unweighted": -0.003,
+      "r2_log": 0.2196,
+      "mean_predicted": 2797.33,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        6765.08,
+        8293.55
+      ],
+      "rmse_ci_95": [
+        19703.26,
+        29228.95
+      ],
+      "r2_ci_95": [
+        -0.0149,
+        0.0089
+      ],
+      "mae_weighted": 6439.15,
+      "rmse_weighted": 20435.34,
+      "r2_weighted": -0.0004
+    },
+    "XGBoost_14Feat_OracleGroundTruth": {
+      "mae_unweighted": 7393.0,
+      "medae_unweighted": 1430.54,
+      "rmse_unweighted": 24483.64,
+      "r2_unweighted": 0.0048,
+      "r2_log": 0.2781,
+      "mean_predicted": 2560.56,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        6651.32,
+        8193.44
+      ],
+      "rmse_ci_95": [
+        19581.42,
+        29197.13
+      ],
+      "r2_ci_95": [
+        -0.0089,
+        0.0206
+      ],
+      "mae_weighted": 6375.95,
+      "rmse_weighted": 20373.53,
+      "r2_weighted": 0.0057
+    },
+    "Tweedie_GLM_ObservableOnly_Unweighted": {
+      "mae_unweighted": 8987.94,
+      "medae_unweighted": 4006.3,
+      "rmse_unweighted": 23542.97,
+      "r2_unweighted": 0.0798,
+      "r2_log": -0.214,
+      "mean_predicted": 8177.92,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        8288.7,
+        9724.82
+      ],
+      "rmse_ci_95": [
+        18707.6,
+        28143.67
+      ],
+      "r2_ci_95": [
+        0.0594,
+        0.1094
+      ],
+      "mae_weighted": 7841.15,
+      "rmse_weighted": 19563.13,
+      "r2_weighted": 0.0832
+    },
+    "Tweedie_GLM_14Feat_Unweighted_Oracle": {
+      "mae_unweighted": 8784.13,
+      "medae_unweighted": 3701.37,
+      "rmse_unweighted": 23377.73,
+      "r2_unweighted": 0.0927,
+      "r2_log": -0.1933,
+      "mean_predicted": 8216.41,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        8077.37,
+        9508.28
+      ],
+      "rmse_ci_95": [
+        18537.32,
+        28083.43
+      ],
+      "r2_ci_95": [
+        0.0664,
+        0.1296
+      ],
+      "mae_weighted": 7605.82,
+      "rmse_weighted": 19370.18,
+      "r2_weighted": 0.1012
+    },
+    "Tweedie_GLM_14Feat_DeploymentImputed": {
+      "mae_unweighted": 8972.22,
+      "medae_unweighted": 3972.3,
+      "rmse_unweighted": 23652.41,
+      "r2_unweighted": 0.0712,
+      "r2_log": -0.2125,
+      "mean_predicted": 7974.15,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        8274.73,
+        9718.04
+      ],
+      "rmse_ci_95": [
+        18741.57,
+        28291.38
+      ],
+      "r2_ci_95": [
+        0.0545,
+        0.0965
+      ],
+      "mae_weighted": 7815.22,
+      "rmse_weighted": 19592.24,
+      "r2_weighted": 0.0805
+    },
+    "Tweedie_GLM_Unweighted": {
+      "mae_unweighted": 8784.13,
+      "medae_unweighted": 3701.37,
+      "rmse_unweighted": 23377.73,
+      "r2_unweighted": 0.0927,
+      "r2_log": -0.1933,
+      "mean_predicted": 8216.41,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        8077.37,
+        9508.28
+      ],
+      "rmse_ci_95": [
+        18537.32,
+        28083.43
+      ],
+      "r2_ci_95": [
+        0.0664,
+        0.1296
+      ],
+      "mae_weighted": 7605.82,
+      "rmse_weighted": 19370.18,
+      "r2_weighted": 0.1012
+    },
+    "Tweedie_GLM_14Feat_WeightedFit_Oracle": {
+      "mae_unweighted": 8861.53,
+      "medae_unweighted": 3711.7,
+      "rmse_unweighted": 23404.73,
+      "r2_unweighted": 0.0906,
+      "r2_log": -0.2024,
+      "mean_predicted": 8359.35,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        8161.2,
+        9592.24
+      ],
+      "rmse_ci_95": [
+        18561.96,
+        28101.47
+      ],
+      "r2_ci_95": [
+        0.0643,
+        0.127
+      ],
+      "mae_weighted": 7675.65,
+      "rmse_weighted": 19377.44,
+      "r2_weighted": 0.1005
+    },
+    "Tweedie_GLM_14Feat_WeightedFit_DeploymentImputed": {
+      "mae_unweighted": 9018.38,
+      "medae_unweighted": 3878.68,
+      "rmse_unweighted": 23674.13,
+      "r2_unweighted": 0.0695,
+      "r2_log": -0.2197,
+      "mean_predicted": 8035.34,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        8320.94,
+        9761.7
+      ],
+      "rmse_ci_95": [
+        18732.97,
+        28305.21
+      ],
+      "r2_ci_95": [
+        0.0524,
+        0.0946
+      ],
+      "mae_weighted": 7862.1,
+      "rmse_weighted": 19605.41,
+      "r2_weighted": 0.0792
+    },
+    "Tweedie_GLM_WeightedFit": {
+      "mae_unweighted": 8861.53,
+      "medae_unweighted": 3711.7,
+      "rmse_unweighted": 23404.73,
+      "r2_unweighted": 0.0906,
+      "r2_log": -0.2024,
+      "mean_predicted": 8359.35,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        8161.2,
+        9592.24
+      ],
+      "rmse_ci_95": [
+        18561.96,
+        28101.47
+      ],
+      "r2_ci_95": [
+        0.0643,
+        0.127
+      ],
+      "mae_weighted": 7675.65,
+      "rmse_weighted": 19377.44,
+      "r2_weighted": 0.1005
+    },
+    "TwoPart_Model_DuanSmearing": {
+      "mae_unweighted": 9650.22,
+      "medae_unweighted": 3672.67,
+      "rmse_unweighted": 23842.28,
+      "r2_unweighted": 0.0563,
+      "r2_log": -0.1613,
+      "mean_predicted": 9781.06,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        8961.44,
+        10387.3
+      ],
+      "rmse_ci_95": [
+        19327.1,
+        28327.42
+      ],
+      "r2_ci_95": [
+        0.003,
+        0.1001
+      ],
+      "mae_weighted": 8204.84,
+      "rmse_weighted": 19892.29,
+      "r2_weighted": 0.0521,
+      "duan_smear_factor": 2.9989
+    },
+    "Linear_Regression_Unweighted": {
+      "mae_unweighted": 7530.51,
+      "medae_unweighted": 1417.86,
+      "rmse_unweighted": 24524.75,
+      "r2_unweighted": 0.0015,
+      "r2_log": 0.2447,
+      "mean_predicted": 2696.24,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        6779.12,
+        8331.05
+      ],
+      "rmse_ci_95": [
+        19657.68,
+        29193.89
+      ],
+      "r2_ci_95": [
+        -0.014,
+        0.0188
+      ],
+      "mae_weighted": 6481.02,
+      "rmse_weighted": 20450.72,
+      "r2_weighted": -0.0019
+    },
+    "Ridge_Regression_Unweighted": {
+      "mae_unweighted": 7529.85,
+      "medae_unweighted": 1418.37,
+      "rmse_unweighted": 24524.27,
+      "r2_unweighted": 0.0015,
+      "r2_log": 0.2448,
+      "mean_predicted": 2692.32,
+      "mean_observed": 8764.62,
+      "mae_ci_95": [
+        6778.33,
+        8331.6
+      ],
+      "rmse_ci_95": [
+        19656.65,
+        29192.33
+      ],
+      "r2_ci_95": [
+        -0.0138,
+        0.0188
+      ],
+      "mae_weighted": 6480.62,
+      "rmse_weighted": 20450.32,
+      "r2_weighted": -0.0018
+    }
+  },
+  "deployment_parity_subgroups": {
+    "pediatric": {
+      "count": 731,
+      "obs_model_mae": 2929.76,
+      "imputed_model_mae": 2942.54,
+      "oracle_model_mae": 2938.46
+    },
+    "young_adult": {
+      "count": 1121,
+      "obs_model_mae": 4945.57,
+      "imputed_model_mae": 4918.79,
+      "oracle_model_mae": 4898.7
+    },
+    "middle_aged": {
+      "count": 954,
+      "obs_model_mae": 9050.35,
+      "imputed_model_mae": 8983.42,
+      "oracle_model_mae": 8890.65
+    },
+    "senior": {
+      "count": 949,
+      "obs_model_mae": 12543.62,
+      "imputed_model_mae": 12549.69,
+      "oracle_model_mae": 12265.09
+    }
+  },
+  "classifiers": {
+    "target_unweighted_p90": {
+      "Constant_Prevalence_Baseline": {
+        "roc_auc": 0.5,
+        "pr_auc": 0.1028,
+        "brier_score": 0.0922,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.0,
+        "calibration_intercept": 0.0,
+        "calibration_slope": 0.0,
+        "mean_predicted_prob": 0.1,
+        "operating_threshold": 0.1,
+        "precision": 0.1028,
+        "recall": 1.0,
+        "f1": 0.1864
+      },
+      "Logistic_Regression_ObservableOnly": {
+        "roc_auc": 0.7599,
+        "pr_auc": 0.2706,
+        "brier_score": 0.0839,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.0906,
+        "calibration_intercept": -0.1649,
+        "calibration_slope": 0.8956,
+        "mean_predicted_prob": 0.1007,
+        "operating_threshold": 0.1,
+        "precision": 0.2064,
+        "recall": 0.7202,
+        "f1": 0.3208,
+        "roc_auc_ci_95": [
+          0.7341,
+          0.783
+        ],
+        "pr_auc_ci_95": [
+          0.2327,
+          0.3133
+        ],
+        "brier_ci_95": [
+          0.0772,
+          0.0907
+        ]
+      },
+      "Logistic_Regression_14Feat_DeploymentImputed": {
+        "roc_auc": 0.7552,
+        "pr_auc": 0.2569,
+        "brier_score": 0.0842,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.0866,
+        "calibration_intercept": -0.051,
+        "calibration_slope": 0.9382,
+        "mean_predicted_prob": 0.0975,
+        "operating_threshold": 0.1,
+        "precision": 0.2068,
+        "recall": 0.7565,
+        "f1": 0.3248,
+        "roc_auc_ci_95": [
+          0.73,
+          0.7781
+        ],
+        "pr_auc_ci_95": [
+          0.2228,
+          0.2974
+        ],
+        "brier_ci_95": [
+          0.0774,
+          0.0912
+        ]
+      },
+      "Logistic_Regression_14Feat_ActualMEPS_Oracle": {
+        "roc_auc": 0.7826,
+        "pr_auc": 0.3147,
+        "brier_score": 0.081,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.1221,
+        "calibration_intercept": -0.0999,
+        "calibration_slope": 0.9304,
+        "mean_predicted_prob": 0.1009,
+        "operating_threshold": 0.1,
+        "precision": 0.2285,
+        "recall": 0.7098,
+        "f1": 0.3457,
+        "roc_auc_ci_95": [
+          0.7567,
+          0.8054
+        ],
+        "pr_auc_ci_95": [
+          0.2742,
+          0.3601
+        ],
+        "brier_ci_95": [
+          0.0744,
+          0.0875
+        ]
+      },
+      "Logistic_Regression_Natural": {
+        "roc_auc": 0.7826,
+        "pr_auc": 0.3147,
+        "brier_score": 0.081,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.1221,
+        "calibration_intercept": -0.0999,
+        "calibration_slope": 0.9304,
+        "mean_predicted_prob": 0.1009,
+        "operating_threshold": 0.1,
+        "precision": 0.2285,
+        "recall": 0.7098,
+        "f1": 0.3457,
+        "roc_auc_ci_95": [
+          0.7567,
+          0.8054
+        ],
+        "pr_auc_ci_95": [
+          0.2742,
+          0.3601
+        ],
+        "brier_ci_95": [
+          0.0744,
+          0.0875
+        ]
+      },
+      "Logistic_Regression_WeightedFit": {
+        "roc_auc": 0.7833,
+        "pr_auc": 0.3172,
+        "brier_score": 0.0809,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.1226,
+        "calibration_intercept": -0.0935,
+        "calibration_slope": 0.9365,
+        "mean_predicted_prob": 0.1013,
+        "operating_threshold": 0.1,
+        "precision": 0.2348,
+        "recall": 0.728,
+        "f1": 0.355,
+        "roc_auc_ci_95": [
+          0.7579,
+          0.8062
+        ],
+        "pr_auc_ci_95": [
+          0.2761,
+          0.3621
+        ],
+        "brier_ci_95": [
+          0.0743,
+          0.0874
+        ]
+      },
+      "XGBoost_Classifier_14Feat_DeploymentImputed": {
+        "roc_auc": 0.7587,
+        "pr_auc": 0.2504,
+        "brier_score": 0.0847,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.0815,
+        "calibration_intercept": -0.3393,
+        "calibration_slope": 0.8238,
+        "mean_predicted_prob": 0.1056,
+        "operating_threshold": 0.1,
+        "precision": 0.2042,
+        "recall": 0.7539,
+        "f1": 0.3214,
+        "roc_auc_ci_95": [
+          0.7338,
+          0.7825
+        ],
+        "pr_auc_ci_95": [
+          0.2186,
+          0.2904
+        ],
+        "brier_ci_95": [
+          0.0783,
+          0.0915
+        ]
+      },
+      "XGBoost_Classifier_14Feat_ActualMEPS_Oracle": {
+        "roc_auc": 0.7842,
+        "pr_auc": 0.292,
+        "brier_score": 0.0821,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.1097,
+        "calibration_intercept": -0.1989,
+        "calibration_slope": 0.8766,
+        "mean_predicted_prob": 0.1015,
+        "operating_threshold": 0.1,
+        "precision": 0.233,
+        "recall": 0.7098,
+        "f1": 0.3508,
+        "roc_auc_ci_95": [
+          0.7591,
+          0.8069
+        ],
+        "pr_auc_ci_95": [
+          0.254,
+          0.3353
+        ],
+        "brier_ci_95": [
+          0.0757,
+          0.0888
+        ]
+      },
+      "XGBoost_Classifier_Natural": {
+        "roc_auc": 0.7842,
+        "pr_auc": 0.292,
+        "brier_score": 0.0821,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.1097,
+        "calibration_intercept": -0.1989,
+        "calibration_slope": 0.8766,
+        "mean_predicted_prob": 0.1015,
+        "operating_threshold": 0.1,
+        "precision": 0.233,
+        "recall": 0.7098,
+        "f1": 0.3508,
+        "roc_auc_ci_95": [
+          0.7591,
+          0.8069
+        ],
+        "pr_auc_ci_95": [
+          0.254,
+          0.3353
+        ],
+        "brier_ci_95": [
+          0.0757,
+          0.0888
+        ]
+      },
+      "XGBoost_Classifier_PlattCalibrated_14Feat_DeploymentImputed": {
+        "roc_auc": 0.7589,
+        "pr_auc": 0.2564,
+        "brier_score": 0.0852,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.0767,
+        "calibration_intercept": 0.0712,
+        "calibration_slope": 1.0149,
+        "mean_predicted_prob": 0.0993,
+        "operating_threshold": 0.1,
+        "precision": 0.2252,
+        "recall": 0.6166,
+        "f1": 0.3299,
+        "roc_auc_ci_95": [
+          0.7342,
+          0.7825
+        ],
+        "pr_auc_ci_95": [
+          0.2239,
+          0.2971
+        ],
+        "brier_ci_95": [
+          0.0783,
+          0.0923
+        ]
+      },
+      "XGBoost_Classifier_PlattCalibrated_14Feat_ActualMEPS_Oracle": {
+        "roc_auc": 0.785,
+        "pr_auc": 0.2959,
+        "brier_score": 0.0834,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.096,
+        "calibration_intercept": -0.0167,
+        "calibration_slope": 0.9797,
+        "mean_predicted_prob": 0.101,
+        "operating_threshold": 0.1,
+        "precision": 0.2625,
+        "recall": 0.614,
+        "f1": 0.3677,
+        "roc_auc_ci_95": [
+          0.7598,
+          0.8079
+        ],
+        "pr_auc_ci_95": [
+          0.2575,
+          0.3393
+        ],
+        "brier_ci_95": [
+          0.0766,
+          0.0905
+        ]
+      },
+      "XGBoost_Classifier_PlattCalibrated": {
+        "roc_auc": 0.785,
+        "pr_auc": 0.2959,
+        "brier_score": 0.0834,
+        "target_baseline_brier": 0.0922,
+        "brier_skill_score": 0.096,
+        "calibration_intercept": -0.0167,
+        "calibration_slope": 0.9797,
+        "mean_predicted_prob": 0.101,
+        "operating_threshold": 0.1,
+        "precision": 0.2625,
+        "recall": 0.614,
+        "f1": 0.3677,
+        "roc_auc_ci_95": [
+          0.7598,
+          0.8079
+        ],
+        "pr_auc_ci_95": [
+          0.2575,
+          0.3393
+        ],
+        "brier_ci_95": [
+          0.0766,
+          0.0905
+        ]
+      }
+    },
+    "target_weighted_p90": {
+      "Constant_Prevalence_Baseline": {
+        "roc_auc": 0.5,
+        "pr_auc": 0.1051,
+        "brier_score": 0.1059,
+        "target_baseline_brier": 0.1059,
+        "brier_skill_score": 0.0,
+        "survey_weighted_brier": 0.0941,
+        "survey_weighted_target_baseline_brier": 0.0941,
+        "survey_weighted_brier_skill_score": 0.0,
+        "calibration_intercept": 0.0,
+        "calibration_slope": 0.0,
+        "mean_predicted_prob": 0.0999,
+        "operating_threshold": 0.1,
+        "precision": 0.1051,
+        "recall": 1.0,
+        "f1": 0.1903,
+        "exact_arithmetic_audit": {
+          "training_survey_weighted_prevalence": 0.099888,
+          "constant_baseline_prediction": 0.099888,
+          "test_survey_weighted_outcome_prevalence": 0.105134,
+          "test_unweighted_outcome_prevalence": 0.11984,
+          "test_survey_weighted_baseline_brier": 0.094108,
+          "test_unweighted_baseline_brier": 0.105877,
+          "formula_verification": "Brier_wtd = test_prev_wtd * (1 - 2*p_hat) + p_hat^2"
+        }
+      },
+      "Logistic_Regression_ObservableOnly": {
+        "roc_auc": 0.7654,
+        "pr_auc": 0.3184,
+        "brier_score": 0.0936,
+        "target_baseline_brier": 0.1059,
+        "brier_skill_score": 0.1155,
+        "calibration_intercept": 0.0157,
+        "calibration_slope": 0.9788,
+        "mean_predicted_prob": 0.1151,
+        "operating_threshold": 0.1,
+        "precision": 0.2318,
+        "recall": 0.7733,
+        "f1": 0.3567,
+        "survey_weighted_brier": 0.0845,
+        "survey_weighted_target_baseline_brier": 0.0941,
+        "survey_weighted_brier_skill_score": 0.1025,
+        "roc_auc_ci_95": [
+          0.7414,
+          0.7874
+        ],
+        "pr_auc_ci_95": [
+          0.282,
+          0.3606
+        ],
+        "brier_ci_95": [
+          0.087,
+          0.1011
+        ]
+      },
+      "Logistic_Regression_14Feat_DeploymentImputed": {
+        "roc_auc": 0.7594,
+        "pr_auc": 0.2982,
+        "brier_score": 0.0946,
+        "target_baseline_brier": 0.1059,
+        "brier_skill_score": 0.1067,
+        "calibration_intercept": 0.052,
+        "calibration_slope": 0.9943,
+        "mean_predicted_prob": 0.1141,
+        "operating_threshold": 0.1,
+        "precision": 0.2252,
+        "recall": 0.7756,
+        "f1": 0.349,
+        "survey_weighted_brier": 0.0849,
+        "survey_weighted_target_baseline_brier": 0.0941,
+        "survey_weighted_brier_skill_score": 0.0978,
+        "roc_auc_ci_95": [
+          0.7359,
+          0.7808
+        ],
+        "pr_auc_ci_95": [
+          0.2636,
+          0.3401
+        ],
+        "brier_ci_95": [
+          0.0881,
+          0.1018
+        ]
+      },
+      "Logistic_Regression_14Feat_ActualMEPS_Oracle": {
+        "roc_auc": 0.7876,
+        "pr_auc": 0.3637,
+        "brier_score": 0.0901,
+        "target_baseline_brier": 0.1059,
+        "brier_skill_score": 0.1491,
+        "calibration_intercept": 0.0246,
+        "calibration_slope": 0.9952,
+        "mean_predicted_prob": 0.117,
+        "operating_threshold": 0.1,
+        "precision": 0.248,
+        "recall": 0.7733,
+        "f1": 0.3756,
+        "survey_weighted_brier": 0.0817,
+        "survey_weighted_target_baseline_brier": 0.0941,
+        "survey_weighted_brier_skill_score": 0.1314,
+        "roc_auc_ci_95": [
+          0.7637,
+          0.8086
+        ],
+        "pr_auc_ci_95": [
+          0.3233,
+          0.4086
+        ],
+        "brier_ci_95": [
+          0.0837,
+          0.0972
+        ]
+      },
+      "Logistic_Regression_WeightedFit": {
+        "roc_auc": 0.7876,
+        "pr_auc": 0.3637,
+        "brier_score": 0.0901,
+        "target_baseline_brier": 0.1059,
+        "brier_skill_score": 0.1491,
+        "calibration_intercept": 0.0246,
+        "calibration_slope": 0.9952,
+        "mean_predicted_prob": 0.117,
+        "operating_threshold": 0.1,
+        "precision": 0.248,
+        "recall": 0.7733,
+        "f1": 0.3756,
+        "survey_weighted_brier": 0.0817,
+        "survey_weighted_target_baseline_brier": 0.0941,
+        "survey_weighted_brier_skill_score": 0.1314,
+        "roc_auc_ci_95": [
+          0.7637,
+          0.8086
+        ],
+        "pr_auc_ci_95": [
+          0.3233,
+          0.4086
+        ],
+        "brier_ci_95": [
+          0.0837,
+          0.0972
+        ]
+      },
+      "XGBoost_Classifier_PlattCalibrated_14Feat_DeploymentImputed": {
+        "roc_auc": 0.765,
+        "pr_auc": 0.3087,
+        "brier_score": 0.0946,
+        "target_baseline_brier": 0.1059,
+        "brier_skill_score": 0.1062,
+        "calibration_intercept": 0.1404,
+        "calibration_slope": 1.0615,
+        "mean_predicted_prob": 0.1169,
+        "operating_threshold": 0.1,
+        "precision": 0.2421,
+        "recall": 0.7133,
+        "f1": 0.3615,
+        "survey_weighted_brier": 0.0848,
+        "survey_weighted_target_baseline_brier": 0.0941,
+        "survey_weighted_brier_skill_score": 0.0989,
+        "roc_auc_ci_95": [
+          0.7414,
+          0.7877
+        ],
+        "pr_auc_ci_95": [
+          0.2737,
+          0.3503
+        ],
+        "brier_ci_95": [
+          0.0879,
+          0.1019
+        ]
+      },
+      "XGBoost_Classifier_PlattCalibrated_14Feat_ActualMEPS_Oracle": {
+        "roc_auc": 0.7904,
+        "pr_auc": 0.3472,
+        "brier_score": 0.0922,
+        "target_baseline_brier": 0.1059,
+        "brier_skill_score": 0.1296,
+        "calibration_intercept": 0.0578,
+        "calibration_slope": 1.0158,
+        "mean_predicted_prob": 0.1172,
+        "operating_threshold": 0.1,
+        "precision": 0.2806,
+        "recall": 0.6822,
+        "f1": 0.3977,
+        "survey_weighted_brier": 0.0832,
+        "survey_weighted_target_baseline_brier": 0.0941,
+        "survey_weighted_brier_skill_score": 0.1159,
+        "roc_auc_ci_95": [
+          0.7676,
+          0.8119
+        ],
+        "pr_auc_ci_95": [
+          0.3086,
+          0.3911
+        ],
+        "brier_ci_95": [
+          0.0852,
+          0.0995
+        ]
+      },
+      "XGBoost_Classifier_PlattCalibrated": {
+        "roc_auc": 0.7904,
+        "pr_auc": 0.3472,
+        "brier_score": 0.0922,
+        "target_baseline_brier": 0.1059,
+        "brier_skill_score": 0.1296,
+        "calibration_intercept": 0.0578,
+        "calibration_slope": 1.0158,
+        "mean_predicted_prob": 0.1172,
+        "operating_threshold": 0.1,
+        "precision": 0.2806,
+        "recall": 0.6822,
+        "f1": 0.3977,
+        "survey_weighted_brier": 0.0832,
+        "survey_weighted_target_baseline_brier": 0.0941,
+        "survey_weighted_brier_skill_score": 0.1159,
+        "roc_auc_ci_95": [
+          0.7676,
+          0.8119
+        ],
+        "pr_auc_ci_95": [
+          0.3086,
+          0.3911
+        ],
+        "brier_ci_95": [
+          0.0852,
+          0.0995
+        ]
+      }
+    }
+  },
+  "stratification_and_ranking_analysis": [
+    {
+      "decile": 1,
+      "count": 376,
+      "xgb_obs_predicted_range": [
+        25.81,
+        103.07
+      ],
+      "mean_predicted_xgb_obs": 61.88,
+      "mean_predicted_tweedie": 2795.09,
+      "mean_predicted_twopart": 2004.92,
+      "mean_observed": 1979.9,
+      "xgb_underprediction_ratio": 31.994,
+      "pct_zero_spenders": 39.6,
+      "pct_top_decile_spenders": 1.6
+    },
+    {
+      "decile": 2,
+      "count": 381,
+      "xgb_obs_predicted_range": [
+        103.18,
+        230.43
+      ],
+      "mean_predicted_xgb_obs": 182.74,
+      "mean_predicted_tweedie": 2723.7,
+      "mean_predicted_twopart": 2320.03,
+      "mean_observed": 3387.33,
+      "xgb_underprediction_ratio": 18.536,
+      "pct_zero_spenders": 23.9,
+      "pct_top_decile_spenders": 2.4
+    },
+    {
+      "decile": 3,
+      "count": 377,
+      "xgb_obs_predicted_range": [
+        230.64,
+        274.61
+      ],
+      "mean_predicted_xgb_obs": 255.14,
+      "mean_predicted_tweedie": 2989.2,
+      "mean_predicted_twopart": 2629.04,
+      "mean_observed": 3686.97,
+      "xgb_underprediction_ratio": 14.451,
+      "pct_zero_spenders": 22.5,
+      "pct_top_decile_spenders": 4.2
+    },
+    {
+      "decile": 4,
+      "count": 382,
+      "xgb_obs_predicted_range": [
+        275.13,
+        411.08
+      ],
+      "mean_predicted_xgb_obs": 318.28,
+      "mean_predicted_tweedie": 3327.28,
+      "mean_predicted_twopart": 2914.06,
+      "mean_observed": 4013.33,
+      "xgb_underprediction_ratio": 12.609,
+      "pct_zero_spenders": 19.1,
+      "pct_top_decile_spenders": 2.9
+    },
+    {
+      "decile": 5,
+      "count": 362,
+      "xgb_obs_predicted_range": [
+        412.58,
+        913.69
+      ],
+      "mean_predicted_xgb_obs": 665.77,
+      "mean_predicted_tweedie": 4619.02,
+      "mean_predicted_twopart": 4457.54,
+      "mean_observed": 4090.41,
+      "xgb_underprediction_ratio": 6.144,
+      "pct_zero_spenders": 9.9,
+      "pct_top_decile_spenders": 4.1
+    },
+    {
+      "decile": 6,
+      "count": 375,
+      "xgb_obs_predicted_range": [
+        915.93,
+        1461.49
+      ],
+      "mean_predicted_xgb_obs": 1137.14,
+      "mean_predicted_tweedie": 6307.75,
+      "mean_predicted_twopart": 6460.39,
+      "mean_observed": 8184.84,
+      "xgb_underprediction_ratio": 7.198,
+      "pct_zero_spenders": 11.5,
+      "pct_top_decile_spenders": 9.3
+    },
+    {
+      "decile": 7,
+      "count": 378,
+      "xgb_obs_predicted_range": [
+        1461.56,
+        2744.96
+      ],
+      "mean_predicted_xgb_obs": 2068.48,
+      "mean_predicted_tweedie": 8797.18,
+      "mean_predicted_twopart": 9563.3,
+      "mean_observed": 9835.12,
+      "xgb_underprediction_ratio": 4.755,
+      "pct_zero_spenders": 5.6,
+      "pct_top_decile_spenders": 12.4
+    },
+    {
+      "decile": 8,
+      "count": 373,
+      "xgb_obs_predicted_range": [
+        2749.8,
+        4140.29
+      ],
+      "mean_predicted_xgb_obs": 3466.76,
+      "mean_predicted_tweedie": 11321.43,
+      "mean_predicted_twopart": 13352.95,
+      "mean_observed": 11978.64,
+      "xgb_underprediction_ratio": 3.455,
+      "pct_zero_spenders": 2.4,
+      "pct_top_decile_spenders": 15.0
+    },
+    {
+      "decile": 9,
+      "count": 375,
+      "xgb_obs_predicted_range": [
+        4143.65,
+        6772.45
+      ],
+      "mean_predicted_xgb_obs": 5307.46,
+      "mean_predicted_tweedie": 15120.72,
+      "mean_predicted_twopart": 19065.74,
+      "mean_observed": 15538.82,
+      "xgb_underprediction_ratio": 2.928,
+      "pct_zero_spenders": 1.6,
+      "pct_top_decile_spenders": 19.5
+    },
+    {
+      "decile": 10,
+      "count": 376,
+      "xgb_obs_predicted_range": [
+        6774.51,
+        23962.79
+      ],
+      "mean_predicted_xgb_obs": 10396.39,
+      "mean_predicted_tweedie": 24228.73,
+      "mean_predicted_twopart": 35117.73,
+      "mean_observed": 24974.08,
+      "xgb_underprediction_ratio": 2.402,
+      "pct_zero_spenders": 1.6,
+      "pct_top_decile_spenders": 31.4
+    }
+  ],
+  "reconciliation_summary": {
+    "test_sample_size": 3755,
+    "overall_observed_mean": 8764.62,
+    "overall_pred_xgb_obs_mean": 2384.13,
+    "overall_pred_tweedie_mean": 8216.41,
+    "overall_pred_tweedie_obs_mean": 8177.92,
+    "overall_pred_twopart_mean": 9781.06,
+    "count_weighted_observed_mean": 8764.62,
+    "count_weighted_pred_xgb_obs_mean": 2384.13,
+    "count_weighted_pred_tweedie_mean": 8216.41,
+    "count_weighted_pred_twopart_mean": 9781.06,
+    "max_discrepancy": 0.0017,
+    "tolerance": 0.05,
+    "reconciled": true,
+    "count_weighted_pred_tweedie_obs_mean": 8177.92
+  },
+  "stratification_analysis_tweedie_observable": [
+    {
+      "decile": 1,
+      "count": 390,
+      "tweedie_obs_predicted_range": [
+        1844.66,
+        2249.21
+      ],
+      "mean_predicted_tweedie_obs": 2057.32,
+      "mean_observed": 3632.68,
+      "observed_to_predicted_ratio": 1.766,
+      "pct_zero_spenders": 15.6,
+      "pct_top_decile_spenders": 3.6
+    },
+    {
+      "decile": 2,
+      "count": 368,
+      "tweedie_obs_predicted_range": [
+        2256.89,
+        2633.23
+      ],
+      "mean_predicted_tweedie_obs": 2438.26,
+      "mean_observed": 2022.39,
+      "observed_to_predicted_ratio": 0.829,
+      "pct_zero_spenders": 27.7,
+      "pct_top_decile_spenders": 1.6
+    },
+    {
+      "decile": 3,
+      "count": 374,
+      "tweedie_obs_predicted_range": [
+        2653.33,
+        3282.25
+      ],
+      "mean_predicted_tweedie_obs": 2968.74,
+      "mean_observed": 2870.91,
+      "observed_to_predicted_ratio": 0.967,
+      "pct_zero_spenders": 35.6,
+      "pct_top_decile_spenders": 2.9
+    },
+    {
+      "decile": 4,
+      "count": 370,
+      "tweedie_obs_predicted_range": [
+        3299.93,
+        4251.23
+      ],
+      "mean_predicted_tweedie_obs": 3751.75,
+      "mean_observed": 2960.69,
+      "observed_to_predicted_ratio": 0.789,
+      "pct_zero_spenders": 24.6,
+      "pct_top_decile_spenders": 2.2
+    },
+    {
+      "decile": 5,
+      "count": 378,
+      "tweedie_obs_predicted_range": [
+        4254.04,
+        5600.57
+      ],
+      "mean_predicted_tweedie_obs": 4937.54,
+      "mean_observed": 5446.51,
+      "observed_to_predicted_ratio": 1.103,
+      "pct_zero_spenders": 14.0,
+      "pct_top_decile_spenders": 5.0
+    },
+    {
+      "decile": 6,
+      "count": 373,
+      "tweedie_obs_predicted_range": [
+        5609.69,
+        7516.12
+      ],
+      "mean_predicted_tweedie_obs": 6514.51,
+      "mean_observed": 7450.31,
+      "observed_to_predicted_ratio": 1.144,
+      "pct_zero_spenders": 9.4,
+      "pct_top_decile_spenders": 8.0
+    },
+    {
+      "decile": 7,
+      "count": 375,
+      "tweedie_obs_predicted_range": [
+        7517.41,
+        9932.57
+      ],
+      "mean_predicted_tweedie_obs": 8715.17,
+      "mean_observed": 10009.06,
+      "observed_to_predicted_ratio": 1.148,
+      "pct_zero_spenders": 7.2,
+      "pct_top_decile_spenders": 13.3
+    },
+    {
+      "decile": 8,
+      "count": 377,
+      "tweedie_obs_predicted_range": [
+        9948.9,
+        13026.17
+      ],
+      "mean_predicted_tweedie_obs": 11490.37,
+      "mean_observed": 11316.24,
+      "observed_to_predicted_ratio": 0.985,
+      "pct_zero_spenders": 1.3,
+      "pct_top_decile_spenders": 14.6
+    },
+    {
+      "decile": 9,
+      "count": 375,
+      "tweedie_obs_predicted_range": [
+        13038.06,
+        17897.15
+      ],
+      "mean_predicted_tweedie_obs": 15123.32,
+      "mean_observed": 17270.42,
+      "observed_to_predicted_ratio": 1.142,
+      "pct_zero_spenders": 1.1,
+      "pct_top_decile_spenders": 21.1
+    },
+    {
+      "decile": 10,
+      "count": 375,
+      "tweedie_obs_predicted_range": [
+        17961.25,
+        67676.68
+      ],
+      "mean_predicted_tweedie_obs": 23846.37,
+      "mean_observed": 24659.24,
+      "observed_to_predicted_ratio": 1.034,
+      "pct_zero_spenders": 2.1,
+      "pct_top_decile_spenders": 30.4
+    }
+  ],
+  "reconciliation_summary_tweedie_observable": {
+    "test_sample_size": 3755,
+    "overall_observed_mean": 8764.62,
+    "overall_pred_tweedie_obs_mean": 8177.92,
+    "count_weighted_observed_mean": 8764.62,
+    "count_weighted_pred_tweedie_obs_mean": 8177.92,
+    "max_discrepancy": 0.0022,
+    "tolerance": 0.05,
+    "reconciled": true
+  },
+  "stratification_analysis_xgb_observable": [
+    {
+      "decile": 1,
+      "count": 376,
+      "xgb_obs_predicted_range": [
+        25.81,
+        103.07
+      ],
+      "mean_predicted_xgb_obs": 61.88,
+      "mean_predicted_tweedie": 2795.09,
+      "mean_predicted_twopart": 2004.92,
+      "mean_observed": 1979.9,
+      "xgb_underprediction_ratio": 31.994,
+      "pct_zero_spenders": 39.6,
+      "pct_top_decile_spenders": 1.6
+    },
+    {
+      "decile": 2,
+      "count": 381,
+      "xgb_obs_predicted_range": [
+        103.18,
+        230.43
+      ],
+      "mean_predicted_xgb_obs": 182.74,
+      "mean_predicted_tweedie": 2723.7,
+      "mean_predicted_twopart": 2320.03,
+      "mean_observed": 3387.33,
+      "xgb_underprediction_ratio": 18.536,
+      "pct_zero_spenders": 23.9,
+      "pct_top_decile_spenders": 2.4
+    },
+    {
+      "decile": 3,
+      "count": 377,
+      "xgb_obs_predicted_range": [
+        230.64,
+        274.61
+      ],
+      "mean_predicted_xgb_obs": 255.14,
+      "mean_predicted_tweedie": 2989.2,
+      "mean_predicted_twopart": 2629.04,
+      "mean_observed": 3686.97,
+      "xgb_underprediction_ratio": 14.451,
+      "pct_zero_spenders": 22.5,
+      "pct_top_decile_spenders": 4.2
+    },
+    {
+      "decile": 4,
+      "count": 382,
+      "xgb_obs_predicted_range": [
+        275.13,
+        411.08
+      ],
+      "mean_predicted_xgb_obs": 318.28,
+      "mean_predicted_tweedie": 3327.28,
+      "mean_predicted_twopart": 2914.06,
+      "mean_observed": 4013.33,
+      "xgb_underprediction_ratio": 12.609,
+      "pct_zero_spenders": 19.1,
+      "pct_top_decile_spenders": 2.9
+    },
+    {
+      "decile": 5,
+      "count": 362,
+      "xgb_obs_predicted_range": [
+        412.58,
+        913.69
+      ],
+      "mean_predicted_xgb_obs": 665.77,
+      "mean_predicted_tweedie": 4619.02,
+      "mean_predicted_twopart": 4457.54,
+      "mean_observed": 4090.41,
+      "xgb_underprediction_ratio": 6.144,
+      "pct_zero_spenders": 9.9,
+      "pct_top_decile_spenders": 4.1
+    },
+    {
+      "decile": 6,
+      "count": 375,
+      "xgb_obs_predicted_range": [
+        915.93,
+        1461.49
+      ],
+      "mean_predicted_xgb_obs": 1137.14,
+      "mean_predicted_tweedie": 6307.75,
+      "mean_predicted_twopart": 6460.39,
+      "mean_observed": 8184.84,
+      "xgb_underprediction_ratio": 7.198,
+      "pct_zero_spenders": 11.5,
+      "pct_top_decile_spenders": 9.3
+    },
+    {
+      "decile": 7,
+      "count": 378,
+      "xgb_obs_predicted_range": [
+        1461.56,
+        2744.96
+      ],
+      "mean_predicted_xgb_obs": 2068.48,
+      "mean_predicted_tweedie": 8797.18,
+      "mean_predicted_twopart": 9563.3,
+      "mean_observed": 9835.12,
+      "xgb_underprediction_ratio": 4.755,
+      "pct_zero_spenders": 5.6,
+      "pct_top_decile_spenders": 12.4
+    },
+    {
+      "decile": 8,
+      "count": 373,
+      "xgb_obs_predicted_range": [
+        2749.8,
+        4140.29
+      ],
+      "mean_predicted_xgb_obs": 3466.76,
+      "mean_predicted_tweedie": 11321.43,
+      "mean_predicted_twopart": 13352.95,
+      "mean_observed": 11978.64,
+      "xgb_underprediction_ratio": 3.455,
+      "pct_zero_spenders": 2.4,
+      "pct_top_decile_spenders": 15.0
+    },
+    {
+      "decile": 9,
+      "count": 375,
+      "xgb_obs_predicted_range": [
+        4143.65,
+        6772.45
+      ],
+      "mean_predicted_xgb_obs": 5307.46,
+      "mean_predicted_tweedie": 15120.72,
+      "mean_predicted_twopart": 19065.74,
+      "mean_observed": 15538.82,
+      "xgb_underprediction_ratio": 2.928,
+      "pct_zero_spenders": 1.6,
+      "pct_top_decile_spenders": 19.5
+    },
+    {
+      "decile": 10,
+      "count": 376,
+      "xgb_obs_predicted_range": [
+        6774.51,
+        23962.79
+      ],
+      "mean_predicted_xgb_obs": 10396.39,
+      "mean_predicted_tweedie": 24228.73,
+      "mean_predicted_twopart": 35117.73,
+      "mean_observed": 24974.08,
+      "xgb_underprediction_ratio": 2.402,
+      "pct_zero_spenders": 1.6,
+      "pct_top_decile_spenders": 31.4
+    }
+  ],
+  "reconciliation_summary_xgb_observable": {
+    "test_sample_size": 3755,
+    "overall_observed_mean": 8764.62,
+    "overall_pred_xgb_obs_mean": 2384.13,
+    "overall_pred_tweedie_mean": 8216.41,
+    "overall_pred_tweedie_obs_mean": 8177.92,
+    "overall_pred_twopart_mean": 9781.06,
+    "count_weighted_observed_mean": 8764.62,
+    "count_weighted_pred_xgb_obs_mean": 2384.13,
+    "count_weighted_pred_tweedie_mean": 8216.41,
+    "count_weighted_pred_twopart_mean": 9781.06,
+    "max_discrepancy": 0.0017,
+    "tolerance": 0.05,
+    "reconciled": true,
+    "count_weighted_pred_tweedie_obs_mean": 8177.92
+  },
+  "shap_importance": [
+    {
+      "feature": "Age_x_Comorbidity",
+      "mean_abs_shap": 0.8148,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    },
+    {
+      "feature": "Comorbidity_Count",
+      "mean_abs_shap": 0.4383,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    },
+    {
+      "feature": "Gender_Male",
+      "mean_abs_shap": 0.2922,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    },
+    {
+      "feature": "AGE23X",
+      "mean_abs_shap": 0.2417,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    },
+    {
+      "feature": "Multimorbidity_Penalty",
+      "mean_abs_shap": 0.1037,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    },
+    {
+      "feature": "Musculoskeletal_ACG",
+      "mean_abs_shap": 0.0501,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    },
+    {
+      "feature": "Cardio_ACG",
+      "mean_abs_shap": 0.0443,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    },
+    {
+      "feature": "Metabolic_ACG",
+      "mean_abs_shap": 0.0405,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    },
+    {
+      "feature": "Oncology_ACG",
+      "mean_abs_shap": 0.0368,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    },
+    {
+      "feature": "Respiratory_ACG",
+      "mean_abs_shap": 0.014,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    },
+    {
+      "feature": "Psychiatric_ACG",
+      "mean_abs_shap": 0.0125,
+      "interpretation": "Statistical contribution to model log-expenditure prediction (NOT a causal or clinical effect size)."
+    }
+  ]
+}

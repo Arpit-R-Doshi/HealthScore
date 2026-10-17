@@ -1,0 +1,224 @@
+{
+  "cohort": {
+    "raw_records": 18919,
+    "dropped_invalid_age": 148,
+    "zero_expenditure_records": 2611,
+    "zero_expenditure_dropped": 0,
+    "final_records": 18771
+  },
+  "thresholds": {
+    "unweighted_p90_expenditure_cutoff": 20360.5,
+    "weighted_p90_expenditure_cutoff": 17827.405977383045,
+    "description": "Thresholds derived strictly from training split (N=15,016) to prevent test-set data leakage."
+  },
+  "classifier_artifacts_metadata": {
+    "risk_model_classifier_observable_weighted_p90.pkl": {
+      "target_name": "Target 2: Survey-Weighted Population Top Decile",
+      "target_threshold_dollars": 17827.405977383045,
+      "target_prevalence_train_survey_weighted": 0.099888,
+      "baseline_brier_survey_weighted": 0.094108,
+      "baseline_brier_unweighted": 0.105877,
+      "feature_count": 11,
+      "feature_schema": "observable_11_features",
+      "algorithm": "LogisticRegression (Normalized Weighted Fit)",
+      "role": "Primary candidate for runtime integration testing (zero synthetic imputation)."
+    },
+    "risk_model_classifier_observable_unweighted_p90.pkl": {
+      "target_name": "Target 1: Unweighted Sample Top Decile",
+      "target_threshold_dollars": 20360.5,
+      "feature_count": 11,
+      "feature_schema": "observable_11_features",
+      "algorithm": "LogisticRegression (Unweighted Fit)",
+      "baseline_brier_unweighted": 0.092237
+    },
+    "risk_model_classifier_observable.pkl": {
+      "target_name": "Target 2: Survey-Weighted Population Top Decile",
+      "target_threshold_dollars": 17827.405977383045,
+      "feature_count": 11,
+      "feature_schema": "observable_11_features",
+      "algorithm": "LogisticRegression (Normalized Weighted Fit)",
+      "role": "Canonical alias for risk_model_classifier_observable_weighted_p90.pkl (primary candidate for integration testing)."
+    },
+    "risk_model_classifier_weighted_p90.pkl": {
+      "target_name": "Target 2: Survey-Weighted Population Top Decile",
+      "target_threshold_dollars": 17827.405977383045,
+      "feature_count": 14,
+      "feature_schema": "canonical_14_features",
+      "algorithm": "CalibratedClassifierCV(XGBClassifier, method='sigmoid', cv=5)"
+    },
+    "risk_model_classifier_unweighted_p90.pkl": {
+      "target_name": "Target 1: Unweighted Sample Top Decile",
+      "target_threshold_dollars": 20360.5,
+      "feature_count": 14,
+      "feature_schema": "canonical_14_features",
+      "algorithm": "CalibratedClassifierCV(XGBClassifier, method='sigmoid', cv=5)"
+    },
+    "risk_model_classifier.pkl": {
+      "target_name": "Target 1: Unweighted Sample Top Decile",
+      "target_threshold_dollars": 20360.5,
+      "feature_count": 14,
+      "feature_schema": "canonical_14_features",
+      "algorithm": "CalibratedClassifierCV(XGBClassifier, method='sigmoid', cv=5)",
+      "role": "Benchmark 14-feature classifier targeting unweighted sample P90."
+    }
+  },
+  "reconciliation_check": {
+    "test_sample_size": 3755,
+    "overall_observed_mean": 8764.62,
+    "overall_pred_xgb_obs_mean": 2384.13,
+    "overall_pred_tweedie_mean": 8216.41,
+    "overall_pred_tweedie_obs_mean": 8177.92,
+    "overall_pred_twopart_mean": 9781.06,
+    "count_weighted_observed_mean": 8764.62,
+    "count_weighted_pred_xgb_obs_mean": 2384.13,
+    "count_weighted_pred_tweedie_mean": 8216.41,
+    "count_weighted_pred_twopart_mean": 9781.06,
+    "max_discrepancy": 0.0017,
+    "tolerance": 0.05,
+    "reconciled": true,
+    "count_weighted_pred_tweedie_obs_mean": 8177.92
+  },
+  "reconciliation_check_tweedie_observable": {
+    "test_sample_size": 3755,
+    "overall_observed_mean": 8764.62,
+    "overall_pred_tweedie_obs_mean": 8177.92,
+    "count_weighted_observed_mean": 8764.62,
+    "count_weighted_pred_tweedie_obs_mean": 8177.92,
+    "max_discrepancy": 0.0022,
+    "tolerance": 0.05,
+    "reconciled": true
+  },
+  "conditional_imputation_lookup": {
+    "pediatric_tier_0": {
+      "perceived_health": 2.0,
+      "physical_limitation": 0.0183,
+      "cognitive_difficulty": 0.0204,
+      "k6_distress": 0.0,
+      "sample_size_total": 2392,
+      "sample_size_valid_saq": 0
+    },
+    "pediatric_tier_1": {
+      "perceived_health": 2.0,
+      "physical_limitation": 0.0526,
+      "cognitive_difficulty": 0.1335,
+      "k6_distress": 0.0,
+      "sample_size_total": 467,
+      "sample_size_valid_saq": 0
+    },
+    "pediatric_tier_2plus": {
+      "perceived_health": 2.0,
+      "physical_limitation": 0.0727,
+      "cognitive_difficulty": 0.3276,
+      "k6_distress": 0.0,
+      "sample_size_total": 58,
+      "sample_size_valid_saq": 0
+    },
+    "young_adult_tier_0": {
+      "perceived_health": 1.9145,
+      "physical_limitation": 0.0285,
+      "cognitive_difficulty": 0.0243,
+      "k6_distress": 1.6636,
+      "sample_size_total": 2258,
+      "sample_size_valid_saq": 1029
+    },
+    "young_adult_tier_1": {
+      "perceived_health": 2.2242,
+      "physical_limitation": 0.0797,
+      "cognitive_difficulty": 0.0591,
+      "k6_distress": 4.0787,
+      "sample_size_total": 1370,
+      "sample_size_valid_saq": 776
+    },
+    "young_adult_tier_2plus": {
+      "perceived_health": 2.7189,
+      "physical_limitation": 0.206,
+      "cognitive_difficulty": 0.146,
+      "k6_distress": 6.3878,
+      "sample_size_total": 1011,
+      "sample_size_valid_saq": 715
+    },
+    "middle_aged_tier_0": {
+      "perceived_health": 1.9716,
+      "physical_limitation": 0.0359,
+      "cognitive_difficulty": 0.0085,
+      "k6_distress": 1.0711,
+      "sample_size_total": 713,
+      "sample_size_valid_saq": 388
+    },
+    "middle_aged_tier_1": {
+      "perceived_health": 2.1417,
+      "physical_limitation": 0.1034,
+      "cognitive_difficulty": 0.0176,
+      "k6_distress": 1.9014,
+      "sample_size_total": 965,
+      "sample_size_valid_saq": 593
+    },
+    "middle_aged_tier_2plus": {
+      "perceived_health": 2.8276,
+      "physical_limitation": 0.3284,
+      "cognitive_difficulty": 0.1005,
+      "k6_distress": 4.2874,
+      "sample_size_total": 2192,
+      "sample_size_valid_saq": 1531
+    },
+    "senior_tier_0": {
+      "perceived_health": 1.8318,
+      "physical_limitation": 0.116,
+      "cognitive_difficulty": 0.0497,
+      "k6_distress": 0.7059,
+      "sample_size_total": 182,
+      "sample_size_valid_saq": 107
+    },
+    "senior_tier_1": {
+      "perceived_health": 2.1065,
+      "physical_limitation": 0.1932,
+      "cognitive_difficulty": 0.0471,
+      "k6_distress": 1.2706,
+      "sample_size_total": 446,
+      "sample_size_valid_saq": 310
+    },
+    "senior_tier_2plus": {
+      "perceived_health": 2.7156,
+      "physical_limitation": 0.4691,
+      "cognitive_difficulty": 0.1092,
+      "k6_distress": 2.7984,
+      "sample_size_total": 2962,
+      "sample_size_valid_saq": 2282
+    }
+  },
+  "observable_features": [
+    "AGE23X",
+    "Gender_Male",
+    "Cardio_ACG",
+    "Metabolic_ACG",
+    "Respiratory_ACG",
+    "Oncology_ACG",
+    "Musculoskeletal_ACG",
+    "Psychiatric_ACG",
+    "Comorbidity_Count",
+    "Multimorbidity_Penalty",
+    "Age_x_Comorbidity"
+  ],
+  "canonical_features": [
+    "AGE23X",
+    "Gender_Male",
+    "Cardio_ACG",
+    "Metabolic_ACG",
+    "Respiratory_ACG",
+    "Oncology_ACG",
+    "Musculoskeletal_ACG",
+    "Psychiatric_ACG",
+    "Comorbidity_Count",
+    "Multimorbidity_Penalty",
+    "Frailty_Index",
+    "Age_x_Frailty",
+    "Age_x_Comorbidity",
+    "K6SUM42"
+  ],
+  "weight_scale_audit": {
+    "raw_sum_train_weights": 265586855.01,
+    "raw_mean_train_weight": 17686.92,
+    "normalized_mean_train_weight": 1.0,
+    "note": "Normalized person weights (mean=1.0) used for ML solvers to preserve regularization balance."
+  }
+}

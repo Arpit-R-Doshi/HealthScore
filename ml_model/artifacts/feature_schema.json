@@ -1,0 +1,120 @@
+{
+  "features": [
+    "AGE23X",
+    "Gender_Male",
+    "Cardio_ACG",
+    "Metabolic_ACG",
+    "Respiratory_ACG",
+    "Oncology_ACG",
+    "Musculoskeletal_ACG",
+    "Psychiatric_ACG",
+    "Comorbidity_Count",
+    "Multimorbidity_Penalty",
+    "Frailty_Index",
+    "Age_x_Frailty",
+    "Age_x_Comorbidity",
+    "K6SUM42"
+  ],
+  "observable_features": [
+    "AGE23X",
+    "Gender_Male",
+    "Cardio_ACG",
+    "Metabolic_ACG",
+    "Respiratory_ACG",
+    "Oncology_ACG",
+    "Musculoskeletal_ACG",
+    "Psychiatric_ACG",
+    "Comorbidity_Count",
+    "Multimorbidity_Penalty",
+    "Age_x_Comorbidity"
+  ],
+  "count_canonical": 14,
+  "count_observable": 11,
+  "artifacts_feature_counts": {
+    "risk_model.pkl": 11,
+    "risk_model_observable.pkl": 11,
+    "risk_model_tweedie_observable.pkl": 11,
+    "risk_model_classifier_observable.pkl": 11,
+    "risk_model_classifier_observable_weighted_p90.pkl": 11,
+    "risk_model_classifier_observable_unweighted_p90.pkl": 11,
+    "risk_model_14feat_full.pkl": 14,
+    "risk_model_tweedie.pkl": 14,
+    "risk_model_classifier.pkl": 14,
+    "risk_model_classifier_weighted_p90.pkl": 14,
+    "risk_model_classifier_unweighted_p90.pkl": 14,
+    "risk_model_twopart.pkl": 14
+  },
+  "deployment_parity_declaration": "Input Availability Parity; Semantic Validation Pending. Equal feature counts do not establish semantic equivalence.",
+  "frontend_input_mapping": {
+    "AGE23X": {
+      "training_source": "Continuous person age (0-85) from variable AGE23X in MEPS HC-251.",
+      "runtime_source": "Exact numeric float value passed via 'age' in intake JSON.",
+      "parity_type": "Exact direct parity."
+    },
+    "Gender_Male": {
+      "training_source": "Binary indicator derived from SEX == 1 (1=Male, 0=Female).",
+      "runtime_source": "Binary indicator derived from 'gender' string (1 if 'male'/'m', else 0).",
+      "parity_type": "Exact direct parity."
+    },
+    "Cardio_ACG": {
+      "training_source": "Sum of 5 discrete MEPS clinician-confirmed binary condition indicators: HIBPDX (hypertension), CHDDX (coronary heart disease), ANGIDX (angina), MIDX (myocardial infarction), STRKDX (stroke). Range 0-5.",
+      "runtime_source": "Regex heuristic score on 'diseaseInput'. Range 0-2 (2 if severe terms stroke/heart attack/infarction/cad affirmed; 1 if hypertension/cardiac affirmed; 0 if negated/unmentioned).",
+      "parity_type": "Heuristic proxy; semantic validation pending."
+    },
+    "Metabolic_ACG": {
+      "training_source": "Sum of 2 MEPS binary flags: DIABDX_M18 (diabetes) + CHOLDX (hyperlipidemia). Range 0-2.",
+      "runtime_source": "Regex heuristic score on 'diseaseInput'. Range 0-2 (2 if diabetes AND cholesterol/lipids affirmed; 1 if either affirmed; 0 if negated/unmentioned).",
+      "parity_type": "Heuristic proxy; semantic validation pending."
+    },
+    "Respiratory_ACG": {
+      "training_source": "Sum of 3 MEPS binary flags: ASTHDX (asthma) + CHBRON (chronic bronchitis) + EMPHDX (emphysema). Range 0-3.",
+      "runtime_source": "Regex heuristic score on 'diseaseInput'. Range 0-2 (2 if COPD/emphysema affirmed; 1 if asthma/bronchitis affirmed; 0 if negated/unmentioned).",
+      "parity_type": "Heuristic proxy; semantic validation pending."
+    },
+    "Oncology_ACG": {
+      "training_source": "Single MEPS binary flag CANCERDX (any cancer diagnosis). Range 0-1.",
+      "runtime_source": "Regex heuristic score on 'diseaseInput'. Range 0-1 (1 if cancer/tumor terms affirmed; 0 if negated/unmentioned).",
+      "parity_type": "Heuristic proxy; semantic validation pending."
+    },
+    "Musculoskeletal_ACG": {
+      "training_source": "Single MEPS binary flag ARTHDX (arthritis diagnosis). Range 0-1.",
+      "runtime_source": "Regex heuristic score on 'diseaseInput'. Range 0-1 (1 if arthritis/joint terms affirmed; 0 if negated/unmentioned).",
+      "parity_type": "Heuristic proxy; semantic validation pending."
+    },
+    "Psychiatric_ACG": {
+      "training_source": "Sum of 2 MEPS binary flags: ADDPRS42 (past-2-week depression symptoms) + ADHDADDX (pediatric ADHD). Range 0-2.",
+      "runtime_source": "Regex heuristic score on 'diseaseInput'. Range 0-2 (2 if bipolar or depression+anxiety affirmed; 1 if depression/anxiety/adhd affirmed; 0 if negated/unmentioned).",
+      "parity_type": "Heuristic proxy; semantic validation pending."
+    },
+    "Comorbidity_Count": {
+      "training_source": "Count of positive clusters among the 6 chronic condition clusters (sum(I(cluster > 0))). Range 0-6.",
+      "runtime_source": "Identical formula applied to the 6 runtime cluster values.",
+      "parity_type": "Formulaic parity on proxy clusters."
+    },
+    "Multimorbidity_Penalty": {
+      "training_source": "Quadratic interaction Comorbidity_Count**2. Range 0-36.",
+      "runtime_source": "Identical quadratic interaction Comorbidity_Count**2.",
+      "parity_type": "Formulaic parity."
+    },
+    "Age_x_Comorbidity": {
+      "training_source": "Product AGE23X * Comorbidity_Count.",
+      "runtime_source": "Identical product age * Comorbidity_Count.",
+      "parity_type": "Formulaic parity."
+    },
+    "Frailty_Index": {
+      "training_source": "Composite ADGENH42 + 2*ANYLMI23 + 2*DFCOG42 from self-administered questionnaire. Range 1-9.",
+      "runtime_source": "Imputed conditional mean by age bracket and comorbidity tier from training lookup (unless explicit questionnaire inputs provided).",
+      "parity_type": "Imputed population expectation."
+    },
+    "Age_x_Frailty": {
+      "training_source": "Product AGE23X * Frailty_Index.",
+      "runtime_source": "Product age * imputed Frailty_Index.",
+      "parity_type": "Imputed interaction."
+    },
+    "K6SUM42": {
+      "training_source": "Kessler 6 psychological distress sum (0-24) from self-administered questionnaire.",
+      "runtime_source": "Imputed conditional mean by age bracket and comorbidity tier from training lookup (unless explicit questionnaire input provided).",
+      "parity_type": "Imputed population expectation."
+    }
+  }
+}
