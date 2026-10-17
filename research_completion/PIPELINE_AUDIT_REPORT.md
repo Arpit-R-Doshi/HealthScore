@@ -26,9 +26,9 @@ Every data dependency has been checksummed using cryptographic SHA-256 hashing t
 
 | Dataset | Release Year | Panel / Description | Rows | Columns | Verified SHA-256 Checksum |
 | :--- | :---: | :--- | :---: | :---: | :--- |
-| **MEPS HC-251** | 2023 | Full Year Consolidated | 18,919 | 1,615 | `30198e3b1c60f2fc12c8b746fb59d0fc107779d19a2e63cbfa31cbcf5b1bfe9d` |
-| **MEPS HC-256** | 2024 | Full Year Consolidated | 19,140 | 1,615 | `b4bde859b39f626345561c05570292bb7264dd92eb76ce0c1a14d6b89076aed5` |
-| **MEPS HC-257** | 2023–24 | Panel 28 Longitudinal | 8,872 | 2,837 | `08d1ff01044982a24e3d5983f54a9b911749728d2bb79156aa6efd4700720c86` |
+| **MEPS HC-251** | 2023 | Full Year Consolidated | 18,919 | 1,374 | `1de0133d0d5a4eeef1f08b60931e0d2669de1507007fd8fabdb84e1c0d15ffb5` |
+| **MEPS HC-256** | 2024 | Full Year Consolidated | 19,140 | 1,380 | `b4bde859b39f626345561c05570292bb7264dd92eb76ce0c1a14d6b89076aed5` |
+| **MEPS HC-257** | 2023–24 | Panel 28 Longitudinal | 8,872 | 2,125 | `08d1ff01044982a24e3d5983f54a9b911749728d2bb79156aa6efd4700720c86` |
 
 ### 2.2. Cohort Exclusion and Ingestion Flow
 Data cleaning strictly adheres to documented epidemiological inclusion criteria:

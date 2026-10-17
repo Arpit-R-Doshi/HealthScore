@@ -65,7 +65,7 @@ for name, path in files.items():
 ```
 
 Expected SHA-256 outputs:
-- `HC-251 (2023)`: `30198e3b1c60f2fc12c8b746fb59d0fc107779d19a2e63cbfa31cbcf5b1bfe9d`
+- `HC-251 (2023)`: `1de0133d0d5a4eeef1f08b60931e0d2669de1507007fd8fabdb84e1c0d15ffb5`
 - `HC-256 (2024)`: `b4bde859b39f626345561c05570292bb7264dd92eb76ce0c1a14d6b89076aed5`
 - `HC-257 (Panel 28)`: `08d1ff01044982a24e3d5983f54a9b911749728d2bb79156aa6efd4700720c86`
 
@@ -73,17 +73,28 @@ Expected SHA-256 outputs:
 
 ## 3. Automated Test Suite Execution
 
-To run the complete automated test suite (clinical semantics, external validation identities, pipeline leakage guards, and premium simulation invariants):
+### 3.1. Machine Learning & Runtime Parity Tests
+To run the complete automated Python ML test suite (clinical semantics, external validation identities, pipeline leakage guards, premium simulation invariants, and runtime model parity):
 
 ```bash
 ml_model/venv/bin/pytest ml_model/tests/
 ```
 
-**Expected Result:** **76 passed in ~1.2s**
+**Expected Result:** **85 passed in ~1.2s**
 - `test_phase2_clinical_semantics.py`: 21 passed
 - `test_phase2_external_validation.py`: 22 passed
 - `test_pipeline.py`: 26 passed
-- `test_premium_simulation.py`: 7 passed
+- `test_premium_simulation.py`: 9 passed
+- `test_runtime_parity.py`: 7 passed
+
+### 3.2. Backend Security & Authorization Tests
+To run the Node.js backend authentication, RBAC, cross-patient isolation, credential redaction, and payload size tests:
+
+```bash
+cd backend && npm test
+```
+
+**Expected Result:** **24 passed in ~0.6s** (0 failed, 0 cancelled)
 
 ---
 
