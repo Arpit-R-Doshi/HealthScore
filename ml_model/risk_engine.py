@@ -622,7 +622,7 @@ def parse_structured_clinical_conditions(structured_input, age=None):
 
 
 
-def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000):
+def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None):
     """
     Monte Carlo parametric Value-at-Risk (VaR) simulation using a synthetic Gamma loss distribution.
     
@@ -631,14 +631,28 @@ def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000):
     Current MEPS prediction metrics and statistical associations do NOT validate commercial insurance pricing,
     premium calculation, underwriting adequacy, or reserve solvency.
     """
-    if predicted_mean_cost <= 0:
+    if predicted_mean_cost is None:
+        predicted_mean_cost = 500.0
+    try:
+        val = float(predicted_mean_cost)
+        if np.isnan(val) or val <= 0:
+            predicted_mean_cost = 500.0
+        else:
+            predicted_mean_cost = min(val, 10_000_000.0)
+    except (ValueError, TypeError):
         predicted_mean_cost = 500.0
 
     shape = 1.5
     scale = predicted_mean_cost / shape
     base_cost = 500.0
 
-    simulated_costs = np.random.gamma(shape, scale, n_simulations) + base_cost
+    if seed is not None:
+        rng = np.random.default_rng(seed)
+        gamma_draws = rng.gamma(shape, scale, n_simulations)
+    else:
+        gamma_draws = np.random.gamma(shape, scale, n_simulations)
+
+    simulated_costs = np.maximum(base_cost, gamma_draws + base_cost)
     target_premium = float(np.percentile(simulated_costs, 95))
     p5 = float(np.percentile(simulated_costs, 5))
     p95 = float(np.percentile(simulated_costs, 95))
