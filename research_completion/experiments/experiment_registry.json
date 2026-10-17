@@ -1,18 +1,26 @@
 {
   "metadata": {
-    "execution_date": "2026-10-17",
+    "execution_timestamp_utc": "2026-10-17T16:44:36.710200+00:00",
+    "git_commit_sha": "02c796f1de64146255e99ecaceabe5361703b5a0",
     "environment": "Python 3.14.8, scikit-learn 1.9.1, xgboost 3.4.1, shap 0.53.0",
     "seed": 42,
     "datasets": {
       "HC-251_2023": "1de0133d0d5a4eeef1f08b60931e0d2669de1507007fd8fabdb84e1c0d15ffb5",
       "HC-256_2024": "b4bde859b39f626345561c05570292bb7264dd92eb76ce0c1a14d6b89076aed5",
       "HC-257_Panel28": "08d1ff01044982a24e3d5983f54a9b911749728d2bb79156aa6efd4700720c86"
-    }
+    },
+    "model_artifacts": {
+      "risk_model_ranker": "2ba4331510d688b1a21e67156bb5aab547c12e8c1ee109a851591b126a7d9c72",
+      "risk_model_tweedie_observable": "a7f185db46316c6ac5f9051f0d5e0e24c7e80f3bd1f7777cd26cd0e1b42fcbd8",
+      "risk_model_classifier_observable_weighted_p90": "3632f8201136a2740c3d5a564bbdbb29bc8511db51709fb42c1f8e271bf28c2a"
+    },
+    "data_provenance_notes": "MEPS HC-251 contains Panel 28 (Year 1) and Panel 27 (Year 2) observations. HC-257 tracks Panel 28 across 2023-2024; evaluation against HC-257 represents prospective longitudinal follow-up with disclosed participant overlap with HC-251, not an independent fresh sample. HC-251 test split has been used for iterative evaluation and is marked as benchmark test data."
   },
   "regression_comparisons": [
     {
       "model_name": "Baseline Median",
       "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "weighting_policy": "unweighted_median_baseline",
       "mean_predicted": 1824.5,
       "observed_mean": 8764.62,
       "mae_unweighted": 8286.54,
@@ -32,11 +40,13 @@
       ],
       "mae_weighted": 7069.26,
       "rmse_weighted": 21198.98,
-      "r2_weighted": -0.0765
+      "r2_weighted": -0.0765,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "Baseline Mean",
       "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "weighting_policy": "unweighted_mean_baseline",
       "mean_predicted": 8179.16,
       "observed_mean": 8764.62,
       "mae_unweighted": 10409.21,
@@ -56,11 +66,13 @@
       ],
       "mae_weighted": 9615.14,
       "rmse_weighted": 20443.8,
-      "r2_weighted": -0.0012
+      "r2_weighted": -0.0012,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "OLS Linear (Observable)",
       "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "weighting_policy": "unweighted_ols_log",
       "mean_predicted": 2557.06,
       "observed_mean": 8764.62,
       "mae_unweighted": 7626.08,
@@ -80,11 +92,13 @@
       ],
       "mae_weighted": 6549.55,
       "rmse_weighted": 20593.04,
-      "r2_weighted": -0.0159
+      "r2_weighted": -0.0159,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "Ridge \u03b1=10 (Observable)",
       "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "weighting_policy": "unweighted_ridge_log",
       "mean_predicted": 2551.15,
       "observed_mean": 8764.62,
       "mae_unweighted": 7624.74,
@@ -104,11 +118,13 @@
       ],
       "mae_weighted": 6548.63,
       "rmse_weighted": 20591.78,
-      "r2_weighted": -0.0157
+      "r2_weighted": -0.0157,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "Random Forest (Observable)",
       "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "weighting_policy": "unweighted_rf_log",
       "mean_predicted": 2449.69,
       "observed_mean": 8764.62,
       "mae_unweighted": 7538.79,
@@ -128,11 +144,13 @@
       ],
       "mae_weighted": 6477.02,
       "rmse_weighted": 20563.29,
-      "r2_weighted": -0.0129
+      "r2_weighted": -0.0129,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "XGBoost Regressor (Observable)",
       "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "weighting_policy": "frozen_artifact_unweighted_fit",
       "mean_predicted": 2384.13,
       "observed_mean": 8764.62,
       "mae_unweighted": 7516.26,
@@ -153,12 +171,12 @@
       "mae_weighted": 6464.45,
       "rmse_weighted": 20571.27,
       "r2_weighted": -0.0137,
-      "cv_5fold_r2_mean": -0.0014,
-      "cv_5fold_r2_std": 0.0086
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "Tweedie GLM (Observable)",
       "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "weighting_policy": "frozen_artifact_unweighted_fit_alpha1.0",
       "mean_predicted": 8177.92,
       "observed_mean": 8764.62,
       "mae_unweighted": 8987.94,
@@ -179,12 +197,12 @@
       "mae_weighted": 7841.15,
       "rmse_weighted": 19563.13,
       "r2_weighted": 0.0832,
-      "cv_5fold_r2_mean": 0.1125,
-      "cv_5fold_r2_std": 0.015
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "Two-Part Model (Observable)",
       "target": "Annual Healthcare Expenditure (TOTEXP23)",
+      "weighting_policy": "unweighted_twopart_duan_smearing",
       "mean_predicted": 9734.68,
       "observed_mean": 8764.62,
       "mae_unweighted": 9840.61,
@@ -204,13 +222,15 @@
       ],
       "mae_weighted": 8459.92,
       "rmse_weighted": 20153.57,
-      "r2_weighted": 0.027
+      "r2_weighted": 0.027,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     }
   ],
   "classification_comparisons": [
     {
       "model_name": "Constant Prevalence Baseline",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "weighting_policy": "uninformative_prior",
       "mean_pred_prob": 0.0999,
       "roc_auc": 0.5,
       "roc_auc_ci_95": [
@@ -226,16 +246,20 @@
       "bss_unweighted": -0.0036,
       "brier_weighted": 0.0941,
       "bss_weighted": 0.0,
+      "calibration_in_the_large_citl": 0.0,
       "cal_intercept": 0.0,
       "cal_slope": 0.0,
+      "calibration_estimator": "uninformative_baseline",
       "precision_at_10pct": 0.0,
       "recall_at_10pct": 0.0,
-      "f1_at_10pct": 0.0
+      "f1_at_10pct": 0.0,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "Demographic Baseline (Age+Sex)",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
-      "mean_pred_prob": 0.1184,
+      "weighting_policy": "normalized_person_weights",
+      "mean_pred_prob": 0.1156,
       "roc_auc": 0.7099,
       "roc_auc_ci_95": [
         0.6856,
@@ -247,42 +271,50 @@
         0.2489
       ],
       "brier_unweighted": 0.0996,
-      "bss_unweighted": 0.0557,
-      "brier_weighted": 0.0894,
-      "bss_weighted": 0.0501,
-      "cal_intercept": -0.1744,
-      "cal_slope": 0.8934,
-      "precision_at_10pct": 0.1928,
+      "bss_unweighted": 0.0561,
+      "brier_weighted": 0.0893,
+      "bss_weighted": 0.0506,
+      "calibration_in_the_large_citl": 0.0388,
+      "cal_intercept": -0.1844,
+      "cal_slope": 0.8859,
+      "calibration_estimator": "unpenalized_lbfgs",
+      "precision_at_10pct": 0.1949,
       "recall_at_10pct": 0.7867,
-      "f1_at_10pct": 0.3097
+      "f1_at_10pct": 0.3124,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "Clinical Conditions Only",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
-      "mean_pred_prob": 0.1155,
-      "roc_auc": 0.7617,
+      "weighting_policy": "normalized_person_weights",
+      "mean_pred_prob": 0.1119,
+      "roc_auc": 0.7619,
       "roc_auc_ci_95": [
-        0.739,
-        0.7859
+        0.7393,
+        0.7847
       ],
-      "pr_auc": 0.3104,
+      "pr_auc": 0.3083,
       "pr_auc_ci_95": [
-        0.2818,
-        0.3509
+        0.2794,
+        0.3464
       ],
-      "brier_unweighted": 0.0939,
-      "bss_unweighted": 0.1097,
+      "brier_unweighted": 0.0941,
+      "bss_unweighted": 0.1083,
       "brier_weighted": 0.0847,
-      "bss_weighted": 0.0998,
-      "cal_intercept": -0.0286,
-      "cal_slope": 0.9558,
-      "precision_at_10pct": 0.2236,
-      "recall_at_10pct": 0.7667,
-      "f1_at_10pct": 0.3462
+      "bss_weighted": 0.0996,
+      "calibration_in_the_large_citl": 0.0768,
+      "cal_intercept": -0.0111,
+      "cal_slope": 0.9539,
+      "calibration_estimator": "unpenalized_lbfgs",
+      "precision_at_10pct": 0.2291,
+      "recall_at_10pct": 0.7622,
+      "f1_at_10pct": 0.3523,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
-      "model_name": "Logistic Regression (11-Feat Observable)",
+      "model_name": "Logistic Regression (11-Feat Observable, Weighted Fit)",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "weighting_policy": "frozen_artifact_normalized_person_weights",
       "mean_pred_prob": 0.1151,
       "roc_auc": 0.7654,
       "roc_auc_ci_95": [
@@ -298,111 +330,131 @@
       "bss_unweighted": 0.1123,
       "brier_weighted": 0.0845,
       "bss_weighted": 0.1025,
-      "cal_intercept": 0.0157,
-      "cal_slope": 0.9788,
+      "calibration_in_the_large_citl": 0.0646,
+      "cal_intercept": -0.0409,
+      "cal_slope": 0.9438,
+      "calibration_estimator": "unpenalized_lbfgs",
       "precision_at_10pct": 0.2318,
       "recall_at_10pct": 0.7733,
-      "f1_at_10pct": 0.3567
+      "f1_at_10pct": 0.3567,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
-      "model_name": "Logistic Regression (11-Feat Wtd Fit)",
+      "model_name": "Logistic Regression (11-Feat Observable, Unweighted Fit)",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
-      "mean_pred_prob": 0.1151,
-      "roc_auc": 0.7654,
+      "weighting_policy": "unweighted_fit_exploratory_ablation",
+      "mean_pred_prob": 0.1165,
+      "roc_auc": 0.7652,
       "roc_auc_ci_95": [
-        0.7444,
-        0.7881
+        0.7433,
+        0.7882
       ],
-      "pr_auc": 0.3184,
+      "pr_auc": 0.3192,
       "pr_auc_ci_95": [
-        0.2876,
-        0.3556
+        0.2869,
+        0.3582
       ],
       "brier_unweighted": 0.0936,
-      "bss_unweighted": 0.1123,
+      "bss_unweighted": 0.1129,
       "brier_weighted": 0.0845,
       "bss_weighted": 0.1025,
-      "cal_intercept": 0.0157,
-      "cal_slope": 0.9788,
-      "precision_at_10pct": 0.2318,
-      "recall_at_10pct": 0.7733,
-      "f1_at_10pct": 0.3567
+      "calibration_in_the_large_citl": 0.057,
+      "cal_intercept": -0.1271,
+      "cal_slope": 0.9008,
+      "calibration_estimator": "unpenalized_lbfgs",
+      "precision_at_10pct": 0.2278,
+      "recall_at_10pct": 0.7644,
+      "f1_at_10pct": 0.351,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "Random Forest (11-Feat Observable)",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
-      "mean_pred_prob": 0.1162,
-      "roc_auc": 0.7707,
+      "weighting_policy": "normalized_person_weights",
+      "mean_pred_prob": 0.1154,
+      "roc_auc": 0.7693,
       "roc_auc_ci_95": [
-        0.748,
-        0.795
+        0.7458,
+        0.7928
       ],
-      "pr_auc": 0.3194,
+      "pr_auc": 0.3157,
       "pr_auc_ci_95": [
-        0.2863,
-        0.3584
+        0.2823,
+        0.355
       ],
-      "brier_unweighted": 0.0934,
-      "bss_unweighted": 0.1149,
-      "brier_weighted": 0.0843,
-      "bss_weighted": 0.1046,
-      "cal_intercept": 0.0055,
-      "cal_slope": 0.9798,
-      "precision_at_10pct": 0.2344,
-      "recall_at_10pct": 0.7667,
-      "f1_at_10pct": 0.359
+      "brier_unweighted": 0.0935,
+      "bss_unweighted": 0.1136,
+      "brier_weighted": 0.0841,
+      "bss_weighted": 0.1062,
+      "calibration_in_the_large_citl": 0.0601,
+      "cal_intercept": 0.0111,
+      "cal_slope": 0.9736,
+      "calibration_estimator": "unpenalized_lbfgs",
+      "precision_at_10pct": 0.2342,
+      "recall_at_10pct": 0.7556,
+      "f1_at_10pct": 0.3575,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "XGBoost (Uncalibrated)",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
-      "mean_pred_prob": 0.1171,
-      "roc_auc": 0.7687,
+      "weighting_policy": "normalized_person_weights",
+      "mean_pred_prob": 0.1157,
+      "roc_auc": 0.7705,
       "roc_auc_ci_95": [
-        0.7462,
-        0.7921
+        0.7482,
+        0.794
       ],
-      "pr_auc": 0.3184,
+      "pr_auc": 0.3196,
       "pr_auc_ci_95": [
-        0.2873,
-        0.3585
+        0.2853,
+        0.3598
       ],
-      "brier_unweighted": 0.0934,
-      "bss_unweighted": 0.115,
-      "brier_weighted": 0.0842,
-      "bss_weighted": 0.1057,
-      "cal_intercept": -0.0102,
-      "cal_slope": 0.976,
-      "precision_at_10pct": 0.2238,
-      "recall_at_10pct": 0.7956,
-      "f1_at_10pct": 0.3493
+      "brier_unweighted": 0.0932,
+      "bss_unweighted": 0.1166,
+      "brier_weighted": 0.0838,
+      "bss_weighted": 0.1093,
+      "calibration_in_the_large_citl": 0.0572,
+      "cal_intercept": 0.0434,
+      "cal_slope": 0.9926,
+      "calibration_estimator": "unpenalized_lbfgs",
+      "precision_at_10pct": 0.2262,
+      "recall_at_10pct": 0.8022,
+      "f1_at_10pct": 0.3529,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "XGBoost (Platt Calibrated)",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
-      "mean_pred_prob": 0.1168,
-      "roc_auc": 0.77,
+      "weighting_policy": "normalized_person_weights",
+      "mean_pred_prob": 0.1139,
+      "roc_auc": 0.7702,
       "roc_auc_ci_95": [
-        0.748,
-        0.7938
+        0.7472,
+        0.7936
       ],
-      "pr_auc": 0.3181,
+      "pr_auc": 0.3183,
       "pr_auc_ci_95": [
-        0.2878,
-        0.3586
+        0.2872,
+        0.358
       ],
-      "brier_unweighted": 0.0945,
-      "bss_unweighted": 0.104,
-      "brier_weighted": 0.085,
-      "bss_weighted": 0.0972,
-      "cal_intercept": -0.0248,
-      "cal_slope": 0.9673,
-      "precision_at_10pct": 0.251,
-      "recall_at_10pct": 0.68,
-      "f1_at_10pct": 0.3667
+      "brier_unweighted": 0.0944,
+      "bss_unweighted": 0.1048,
+      "brier_weighted": 0.0847,
+      "bss_weighted": 0.0998,
+      "calibration_in_the_large_citl": 0.0617,
+      "cal_intercept": 0.1279,
+      "cal_slope": 1.0335,
+      "calibration_estimator": "unpenalized_lbfgs",
+      "precision_at_10pct": 0.2535,
+      "recall_at_10pct": 0.6778,
+      "f1_at_10pct": 0.369,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     },
     {
       "model_name": "Logistic Regression (14-Feat Oracle)",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
+      "weighting_policy": "frozen_artifact_normalized_person_weights_14feat_oracle",
       "mean_pred_prob": 0.1172,
       "roc_auc": 0.7904,
       "roc_auc_ci_95": [
@@ -418,16 +470,20 @@
       "bss_unweighted": 0.1265,
       "brier_weighted": 0.0832,
       "bss_weighted": 0.1159,
-      "cal_intercept": 0.0578,
-      "cal_slope": 1.0158,
+      "calibration_in_the_large_citl": 0.0493,
+      "cal_intercept": 0.1691,
+      "cal_slope": 1.0609,
+      "calibration_estimator": "unpenalized_lbfgs",
       "precision_at_10pct": 0.2806,
       "recall_at_10pct": 0.6822,
-      "f1_at_10pct": 0.3977
+      "f1_at_10pct": 0.3977,
+      "ci_qualification": "unweighted_individual_bootstrap_non_design_based"
     }
   ],
   "feature_ablations": [
     {
       "ablation_label": "Full Observable Reference (11 Feat)",
+      "feature_tier": "observable_reference",
       "feature_count": 11,
       "features": [
         "AGE23X",
@@ -442,33 +498,41 @@
         "Multimorbidity_Penalty",
         "Age_x_Comorbidity"
       ],
-      "regression_mae": 8993.97,
-      "regression_rmse": 23558.96,
-      "regression_r2": 0.0786,
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 8987.94,
+      "regression_rmse": 23542.97,
+      "regression_r2": 0.0798,
       "delta_r2_vs_ref": 0.0,
       "delta_mae_vs_ref": 0.0,
-      "classification_roc_auc": 0.7652,
+      "classification_roc_auc": 0.7654,
       "classification_bss_weighted": 0.1025,
       "delta_bss_vs_ref": 0.0
     },
     {
       "ablation_label": "Demographics Only (Age + Sex)",
+      "feature_tier": "observable_ablation",
       "feature_count": 2,
       "features": [
         "AGE23X",
         "Gender_Male"
       ],
-      "regression_mae": 9702.32,
-      "regression_rmse": 24054.65,
-      "regression_r2": 0.0394,
-      "delta_r2_vs_ref": -0.0392,
-      "delta_mae_vs_ref": 708.35,
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 9701.48,
+      "regression_rmse": 24052.74,
+      "regression_r2": 0.0395,
+      "delta_r2_vs_ref": -0.0403,
+      "delta_mae_vs_ref": 713.54,
       "classification_roc_auc": 0.7099,
-      "classification_bss_weighted": 0.0501,
-      "delta_bss_vs_ref": -0.0524
+      "classification_bss_weighted": 0.0506,
+      "delta_bss_vs_ref": -0.0519
     },
     {
       "ablation_label": "Clinical Conditions Only (No Demographics)",
+      "feature_tier": "observable_ablation",
       "feature_count": 8,
       "features": [
         "Cardio_ACG",
@@ -480,17 +544,21 @@
         "Comorbidity_Count",
         "Multimorbidity_Penalty"
       ],
-      "regression_mae": 9029.65,
-      "regression_rmse": 23566.67,
-      "regression_r2": 0.078,
-      "delta_r2_vs_ref": -0.0006,
-      "delta_mae_vs_ref": 35.68,
-      "classification_roc_auc": 0.7617,
-      "classification_bss_weighted": 0.0998,
-      "delta_bss_vs_ref": -0.0027
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 9015.05,
+      "regression_rmse": 23552.09,
+      "regression_r2": 0.0791,
+      "delta_r2_vs_ref": -0.0007,
+      "delta_mae_vs_ref": 27.11,
+      "classification_roc_auc": 0.7619,
+      "classification_bss_weighted": 0.0996,
+      "delta_bss_vs_ref": -0.0029
     },
     {
       "ablation_label": "Without Psychiatric Condition",
+      "feature_tier": "observable_ablation",
       "feature_count": 10,
       "features": [
         "AGE23X",
@@ -504,17 +572,21 @@
         "Multimorbidity_Penalty",
         "Age_x_Comorbidity"
       ],
-      "regression_mae": 9015.62,
-      "regression_rmse": 23588.02,
-      "regression_r2": 0.0763,
-      "delta_r2_vs_ref": -0.0023,
-      "delta_mae_vs_ref": 21.65,
-      "classification_roc_auc": 0.7635,
-      "classification_bss_weighted": 0.1035,
-      "delta_bss_vs_ref": 0.001
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 9013.37,
+      "regression_rmse": 23574.09,
+      "regression_r2": 0.0774,
+      "delta_r2_vs_ref": -0.0024,
+      "delta_mae_vs_ref": 25.43,
+      "classification_roc_auc": 0.7634,
+      "classification_bss_weighted": 0.1026,
+      "delta_bss_vs_ref": 0.0001
     },
     {
       "ablation_label": "Without Multimorbidity & Interaction",
+      "feature_tier": "observable_ablation",
       "feature_count": 9,
       "features": [
         "AGE23X",
@@ -527,17 +599,21 @@
         "Psychiatric_ACG",
         "Comorbidity_Count"
       ],
-      "regression_mae": 9072.77,
-      "regression_rmse": 23575.9,
-      "regression_r2": 0.0772,
-      "delta_r2_vs_ref": -0.0013,
-      "delta_mae_vs_ref": 78.8,
-      "classification_roc_auc": 0.7654,
-      "classification_bss_weighted": 0.0997,
-      "delta_bss_vs_ref": -0.0027
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 9064.08,
+      "regression_rmse": 23556.92,
+      "regression_r2": 0.0787,
+      "delta_r2_vs_ref": -0.0011,
+      "delta_mae_vs_ref": 76.14,
+      "classification_roc_auc": 0.7657,
+      "classification_bss_weighted": 0.1004,
+      "delta_bss_vs_ref": -0.0021
     },
     {
       "ablation_label": "Without Oncology",
+      "feature_tier": "observable_ablation",
       "feature_count": 10,
       "features": [
         "AGE23X",
@@ -551,41 +627,49 @@
         "Multimorbidity_Penalty",
         "Age_x_Comorbidity"
       ],
-      "regression_mae": 9066.99,
-      "regression_rmse": 23562.95,
-      "regression_r2": 0.0783,
-      "delta_r2_vs_ref": -0.0003,
-      "delta_mae_vs_ref": 73.02,
-      "classification_roc_auc": 0.7622,
-      "classification_bss_weighted": 0.0966,
-      "delta_bss_vs_ref": -0.0058
-    },
-    {
-      "ablation_label": "Without Cardiovascular",
-      "feature_count": 10,
-      "features": [
-        "AGE23X",
-        "Gender_Male",
-        "Metabolic_ACG",
-        "Respiratory_ACG",
-        "Oncology_ACG",
-        "Musculoskeletal_ACG",
-        "Psychiatric_ACG",
-        "Comorbidity_Count",
-        "Multimorbidity_Penalty",
-        "Age_x_Comorbidity"
-      ],
-      "regression_mae": 9083.71,
-      "regression_rmse": 23567.95,
-      "regression_r2": 0.0779,
-      "delta_r2_vs_ref": -0.0007,
-      "delta_mae_vs_ref": 89.74,
-      "classification_roc_auc": 0.7605,
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 9065.05,
+      "regression_rmse": 23555.81,
+      "regression_r2": 0.0788,
+      "delta_r2_vs_ref": -0.001,
+      "delta_mae_vs_ref": 77.11,
+      "classification_roc_auc": 0.7626,
       "classification_bss_weighted": 0.0969,
       "delta_bss_vs_ref": -0.0056
     },
     {
+      "ablation_label": "Without Cardiovascular",
+      "feature_tier": "observable_ablation",
+      "feature_count": 10,
+      "features": [
+        "AGE23X",
+        "Gender_Male",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 9080.23,
+      "regression_rmse": 23559.86,
+      "regression_r2": 0.0785,
+      "delta_r2_vs_ref": -0.0013,
+      "delta_mae_vs_ref": 92.29,
+      "classification_roc_auc": 0.7611,
+      "classification_bss_weighted": 0.097,
+      "delta_bss_vs_ref": -0.0056
+    },
+    {
       "ablation_label": "Without Metabolic",
+      "feature_tier": "observable_ablation",
       "feature_count": 10,
       "features": [
         "AGE23X",
@@ -599,17 +683,21 @@
         "Multimorbidity_Penalty",
         "Age_x_Comorbidity"
       ],
-      "regression_mae": 9030.87,
-      "regression_rmse": 23561.19,
-      "regression_r2": 0.0784,
-      "delta_r2_vs_ref": -0.0002,
-      "delta_mae_vs_ref": 36.9,
-      "classification_roc_auc": 0.7602,
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 9024.35,
+      "regression_rmse": 23550.56,
+      "regression_r2": 0.0792,
+      "delta_r2_vs_ref": -0.0006,
+      "delta_mae_vs_ref": 36.41,
+      "classification_roc_auc": 0.7605,
       "classification_bss_weighted": 0.0957,
-      "delta_bss_vs_ref": -0.0068
+      "delta_bss_vs_ref": -0.0069
     },
     {
       "ablation_label": "Without Respiratory",
+      "feature_tier": "observable_ablation",
       "feature_count": 10,
       "features": [
         "AGE23X",
@@ -623,17 +711,21 @@
         "Multimorbidity_Penalty",
         "Age_x_Comorbidity"
       ],
-      "regression_mae": 9021.68,
-      "regression_rmse": 23603.25,
-      "regression_r2": 0.0751,
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 9016.55,
+      "regression_rmse": 23587.16,
+      "regression_r2": 0.0764,
       "delta_r2_vs_ref": -0.0035,
-      "delta_mae_vs_ref": 27.71,
-      "classification_roc_auc": 0.7629,
-      "classification_bss_weighted": 0.0971,
-      "delta_bss_vs_ref": -0.0054
+      "delta_mae_vs_ref": 28.61,
+      "classification_roc_auc": 0.7632,
+      "classification_bss_weighted": 0.0979,
+      "delta_bss_vs_ref": -0.0046
     },
     {
       "ablation_label": "Without Musculoskeletal",
+      "feature_tier": "observable_ablation",
       "feature_count": 10,
       "features": [
         "AGE23X",
@@ -647,17 +739,21 @@
         "Multimorbidity_Penalty",
         "Age_x_Comorbidity"
       ],
-      "regression_mae": 9029.09,
-      "regression_rmse": 23547.16,
-      "regression_r2": 0.0795,
-      "delta_r2_vs_ref": 0.0009,
-      "delta_mae_vs_ref": 35.12,
-      "classification_roc_auc": 0.7619,
-      "classification_bss_weighted": 0.1014,
-      "delta_bss_vs_ref": -0.0011
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 9024.09,
+      "regression_rmse": 23538.45,
+      "regression_r2": 0.0802,
+      "delta_r2_vs_ref": 0.0004,
+      "delta_mae_vs_ref": 36.15,
+      "classification_roc_auc": 0.7622,
+      "classification_bss_weighted": 0.1012,
+      "delta_bss_vs_ref": -0.0013
     },
     {
       "ablation_label": "Oracle 14 Features (with SAQ variables)",
+      "feature_tier": "oracle_upper_bound",
       "feature_count": 14,
       "features": [
         "AGE23X",
@@ -675,19 +771,57 @@
         "Age_x_Comorbidity",
         "K6SUM42"
       ],
-      "regression_mae": 8794.23,
-      "regression_rmse": 23403.55,
-      "regression_r2": 0.0907,
-      "delta_r2_vs_ref": 0.0121,
-      "delta_mae_vs_ref": -199.73,
-      "classification_roc_auc": 0.7869,
-      "classification_bss_weighted": 0.13,
-      "delta_bss_vs_ref": 0.0275
+      "candidate_role": "refit_exploratory_ablation",
+      "tweedie_alpha": 1.0,
+      "classification_weighting": "normalized_person_weights",
+      "regression_mae": 8784.16,
+      "regression_rmse": 23377.77,
+      "regression_r2": 0.0927,
+      "delta_r2_vs_ref": 0.0129,
+      "delta_mae_vs_ref": -203.77,
+      "classification_roc_auc": 0.7876,
+      "classification_bss_weighted": 0.1314,
+      "delta_bss_vs_ref": 0.0289
+    }
+  ],
+  "cross_validation_experiments": [
+    {
+      "experiment": "5-Fold CV on Candidate Architecture",
+      "model_architecture": "TweedieRegressor(power=1.5, link='log', alpha=1.0)",
+      "features": "11-feature observable",
+      "training_split": "MEPS HC-251 Training Split (N=15,016)",
+      "r2_mean": 0.1131,
+      "r2_std": 0.014,
+      "fold_r2_scores": [
+        0.1174,
+        0.1256,
+        0.108,
+        0.0884,
+        0.126
+      ],
+      "evaluation_provenance": "Refit per fold on training split; distinct from frozen artifact evaluation"
+    },
+    {
+      "experiment": "5-Fold CV on Candidate Architecture",
+      "model_architecture": "XGBRegressor(n_estimators=100, max_depth=4, lr=0.05)",
+      "features": "11-feature observable",
+      "training_split": "MEPS HC-251 Training Split (N=15,016)",
+      "r2_mean": -0.0014,
+      "r2_std": 0.0086,
+      "fold_r2_scores": [
+        -0.0004,
+        0.0089,
+        0.0058,
+        -0.015,
+        -0.0063
+      ],
+      "evaluation_provenance": "Refit per fold on training split; distinct from frozen artifact evaluation"
     }
   ],
   "shap_summary": {
     "max_additivity_error": 1.812e-05,
     "additivity_verified": true,
+    "rank_stability_spearman_min": 0.9818,
     "feature_importance": [
       {
         "feature": "Age_x_Comorbidity",
@@ -755,139 +889,178 @@
         "relative_importance_pct": 0.6,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       }
-    ],
-    "rank_stability_spearman_min": 0.9818
+    ]
   },
   "subgroup_fairness": [
     {
       "category": "Age Category",
       "subgroup": "Pediatric (<18)",
       "sample_size": 731,
-      "observed_mean": 3113.53,
-      "predicted_mean": 2534.91,
-      "ratio_obs_pred": 1.2283,
-      "mae": 3651.36,
-      "high_cost_prev": 0.0328,
-      "roc_auc": 0.4,
-      "brier_score": 0.032,
-      "brier_skill_score": -0.0085
+      "observed_mean_unweighted": 3113.53,
+      "predicted_mean_unweighted": 2534.91,
+      "ratio_obs_pred_unweighted": 1.2283,
+      "observed_mean_weighted": 2962.22,
+      "predicted_mean_weighted": 2515.01,
+      "ratio_obs_pred_weighted": 1.1778,
+      "mae_unweighted": 3651.36,
+      "high_cost_prev_unweighted": 0.0328,
+      "roc_auc_unweighted": 0.4,
+      "brier_score_unweighted": 0.032,
+      "brier_skill_score_unweighted": -0.0085,
+      "fairness_limitations": "Unweighted metrics reflect unweighted test split sample. Zero comorbidity indicates absence of mapped flags in MEPS, not guaranteed absence of unmeasured illness. Subgroup sample sizes reflect survey sampling constraints."
     },
     {
       "category": "Age Category",
       "subgroup": "Young Adult (18-44)",
       "sample_size": 1121,
-      "observed_mean": 5271.57,
-      "predicted_mean": 4778.56,
-      "ratio_obs_pred": 1.1032,
-      "mae": 6129.2,
-      "high_cost_prev": 0.0624,
-      "roc_auc": 0.6935,
-      "brier_score": 0.0555,
-      "brier_skill_score": 0.0514
+      "observed_mean_unweighted": 5271.57,
+      "predicted_mean_unweighted": 4778.56,
+      "ratio_obs_pred_unweighted": 1.1032,
+      "observed_mean_weighted": 4919.18,
+      "predicted_mean_weighted": 4691.24,
+      "ratio_obs_pred_weighted": 1.0486,
+      "mae_unweighted": 6129.2,
+      "high_cost_prev_unweighted": 0.0624,
+      "roc_auc_unweighted": 0.6935,
+      "brier_score_unweighted": 0.0555,
+      "brier_skill_score_unweighted": 0.0514,
+      "fairness_limitations": "Unweighted metrics reflect unweighted test split sample. Zero comorbidity indicates absence of mapped flags in MEPS, not guaranteed absence of unmeasured illness. Subgroup sample sizes reflect survey sampling constraints."
     },
     {
       "category": "Age Category",
       "subgroup": "Middle Age (45-64)",
       "sample_size": 954,
-      "observed_mean": 10389.33,
-      "predicted_mean": 9291.99,
-      "ratio_obs_pred": 1.1181,
-      "mae": 10510.5,
-      "high_cost_prev": 0.1499,
-      "roc_auc": 0.7283,
-      "brier_score": 0.1171,
-      "brier_skill_score": 0.0812
+      "observed_mean_unweighted": 10389.33,
+      "predicted_mean_unweighted": 9291.99,
+      "ratio_obs_pred_unweighted": 1.1181,
+      "observed_mean_weighted": 9901.68,
+      "predicted_mean_weighted": 9101.21,
+      "ratio_obs_pred_weighted": 1.088,
+      "mae_unweighted": 10510.5,
+      "high_cost_prev_unweighted": 0.1499,
+      "roc_auc_unweighted": 0.7283,
+      "brier_score_unweighted": 0.1171,
+      "brier_skill_score_unweighted": 0.0812,
+      "fairness_limitations": "Unweighted metrics reflect unweighted test split sample. Zero comorbidity indicates absence of mapped flags in MEPS, not guaranteed absence of unmeasured illness. Subgroup sample sizes reflect survey sampling constraints."
     },
     {
       "category": "Age Category",
       "subgroup": "Older Adult (65+)",
       "sample_size": 949,
-      "observed_mean": 15610.44,
-      "predicted_mean": 15420.16,
-      "ratio_obs_pred": 1.0123,
-      "mae": 14944.91,
-      "high_cost_prev": 0.2244,
-      "roc_auc": 0.6705,
-      "brier_score": 0.1626,
-      "brier_skill_score": 0.066
+      "observed_mean_unweighted": 15610.44,
+      "predicted_mean_unweighted": 15420.16,
+      "ratio_obs_pred_unweighted": 1.0123,
+      "observed_mean_weighted": 14402.25,
+      "predicted_mean_weighted": 14944.94,
+      "ratio_obs_pred_weighted": 0.9637,
+      "mae_unweighted": 14944.91,
+      "high_cost_prev_unweighted": 0.2244,
+      "roc_auc_unweighted": 0.6705,
+      "brier_score_unweighted": 0.1626,
+      "brier_skill_score_unweighted": 0.066,
+      "fairness_limitations": "Unweighted metrics reflect unweighted test split sample. Zero comorbidity indicates absence of mapped flags in MEPS, not guaranteed absence of unmeasured illness. Subgroup sample sizes reflect survey sampling constraints."
     },
     {
       "category": "Sex / Gender",
       "subgroup": "Female",
       "sample_size": 2003,
-      "observed_mean": 8674.37,
-      "predicted_mean": 8857.19,
-      "ratio_obs_pred": 0.9794,
-      "mae": 8710.62,
-      "high_cost_prev": 0.1318,
-      "roc_auc": 0.7449,
-      "brier_score": 0.1029,
-      "brier_skill_score": 0.1006
+      "observed_mean_unweighted": 8674.37,
+      "predicted_mean_unweighted": 8857.19,
+      "ratio_obs_pred_unweighted": 0.9794,
+      "observed_mean_weighted": 7831.54,
+      "predicted_mean_weighted": 7771.75,
+      "ratio_obs_pred_weighted": 1.0077,
+      "mae_unweighted": 8710.62,
+      "high_cost_prev_unweighted": 0.1318,
+      "roc_auc_unweighted": 0.7449,
+      "brier_score_unweighted": 0.1029,
+      "brier_skill_score_unweighted": 0.1006,
+      "fairness_limitations": "Unweighted metrics reflect unweighted test split sample. Zero comorbidity indicates absence of mapped flags in MEPS, not guaranteed absence of unmeasured illness. Subgroup sample sizes reflect survey sampling constraints."
     },
     {
       "category": "Sex / Gender",
       "subgroup": "Male",
       "sample_size": 1752,
-      "observed_mean": 8867.81,
-      "predicted_mean": 7401.33,
-      "ratio_obs_pred": 1.1981,
-      "mae": 9304.99,
-      "high_cost_prev": 0.1062,
-      "roc_auc": 0.7813,
-      "brier_score": 0.0831,
-      "brier_skill_score": 0.1247
+      "observed_mean_unweighted": 8867.81,
+      "predicted_mean_unweighted": 7401.33,
+      "ratio_obs_pred_unweighted": 1.1981,
+      "observed_mean_weighted": 7087.7,
+      "predicted_mean_weighted": 6582.38,
+      "ratio_obs_pred_weighted": 1.0768,
+      "mae_unweighted": 9304.99,
+      "high_cost_prev_unweighted": 0.1062,
+      "roc_auc_unweighted": 0.7813,
+      "brier_score_unweighted": 0.0831,
+      "brier_skill_score_unweighted": 0.1247,
+      "fairness_limitations": "Unweighted metrics reflect unweighted test split sample. Zero comorbidity indicates absence of mapped flags in MEPS, not guaranteed absence of unmeasured illness. Subgroup sample sizes reflect survey sampling constraints."
     },
     {
       "category": "Comorbidity Burden",
       "subgroup": "0 Comorbidities",
       "sample_size": 1358,
-      "observed_mean": 2851.17,
-      "predicted_mean": 2712.35,
-      "ratio_obs_pred": 1.0512,
-      "mae": 3738.4,
-      "high_cost_prev": 0.0339,
-      "roc_auc": 0.4943,
-      "brier_score": 0.0328,
-      "brier_skill_score": -0.0025
+      "observed_mean_unweighted": 2851.17,
+      "predicted_mean_unweighted": 2712.35,
+      "ratio_obs_pred_unweighted": 1.0512,
+      "observed_mean_weighted": 2888.41,
+      "predicted_mean_weighted": 2666.15,
+      "ratio_obs_pred_weighted": 1.0834,
+      "mae_unweighted": 3738.4,
+      "high_cost_prev_unweighted": 0.0339,
+      "roc_auc_unweighted": 0.4943,
+      "brier_score_unweighted": 0.0328,
+      "brier_skill_score_unweighted": -0.0025,
+      "fairness_limitations": "Unweighted metrics reflect unweighted test split sample. Zero comorbidity indicates absence of mapped flags in MEPS, not guaranteed absence of unmeasured illness. Subgroup sample sizes reflect survey sampling constraints."
     },
     {
       "category": "Comorbidity Burden",
       "subgroup": "1 Comorbidity",
       "sample_size": 827,
-      "observed_mean": 6052.22,
-      "predicted_mean": 5400.69,
-      "ratio_obs_pred": 1.1206,
-      "mae": 6926.5,
-      "high_cost_prev": 0.0726,
-      "roc_auc": 0.6734,
-      "brier_score": 0.0661,
-      "brier_skill_score": 0.017
+      "observed_mean_unweighted": 6052.22,
+      "predicted_mean_unweighted": 5400.69,
+      "ratio_obs_pred_unweighted": 1.1206,
+      "observed_mean_weighted": 5936.32,
+      "predicted_mean_weighted": 5282.52,
+      "ratio_obs_pred_weighted": 1.1238,
+      "mae_unweighted": 6926.5,
+      "high_cost_prev_unweighted": 0.0726,
+      "roc_auc_unweighted": 0.6734,
+      "brier_score_unweighted": 0.0661,
+      "brier_skill_score_unweighted": 0.017,
+      "fairness_limitations": "Unweighted metrics reflect unweighted test split sample. Zero comorbidity indicates absence of mapped flags in MEPS, not guaranteed absence of unmeasured illness. Subgroup sample sizes reflect survey sampling constraints."
     },
     {
       "category": "Comorbidity Burden",
       "subgroup": "2 Comorbidities",
       "sample_size": 673,
-      "observed_mean": 9882.55,
-      "predicted_mean": 9560.77,
-      "ratio_obs_pred": 1.0337,
-      "mae": 10350.03,
-      "high_cost_prev": 0.1352,
-      "roc_auc": 0.6193,
-      "brier_score": 0.1144,
-      "brier_skill_score": 0.022
+      "observed_mean_unweighted": 9882.55,
+      "predicted_mean_unweighted": 9560.77,
+      "ratio_obs_pred_unweighted": 1.0337,
+      "observed_mean_weighted": 9227.74,
+      "predicted_mean_weighted": 9279.5,
+      "ratio_obs_pred_weighted": 0.9944,
+      "mae_unweighted": 10350.03,
+      "high_cost_prev_unweighted": 0.1352,
+      "roc_auc_unweighted": 0.6193,
+      "brier_score_unweighted": 0.1144,
+      "brier_skill_score_unweighted": 0.022,
+      "fairness_limitations": "Unweighted metrics reflect unweighted test split sample. Zero comorbidity indicates absence of mapped flags in MEPS, not guaranteed absence of unmeasured illness. Subgroup sample sizes reflect survey sampling constraints."
     },
     {
       "category": "Comorbidity Burden",
       "subgroup": "3+ Comorbidities",
       "sample_size": 897,
-      "observed_mean": 19379.17,
-      "predicted_mean": 17975.41,
-      "ratio_obs_pred": 1.0781,
-      "mae": 17814.0,
-      "high_cost_prev": 0.2821,
-      "roc_auc": 0.6147,
-      "brier_score": 0.1956,
-      "brier_skill_score": 0.0342
+      "observed_mean_unweighted": 19379.17,
+      "predicted_mean_unweighted": 17975.41,
+      "ratio_obs_pred_unweighted": 1.0781,
+      "observed_mean_weighted": 17725.05,
+      "predicted_mean_weighted": 17512.48,
+      "ratio_obs_pred_weighted": 1.0121,
+      "mae_unweighted": 17814.0,
+      "high_cost_prev_unweighted": 0.2821,
+      "roc_auc_unweighted": 0.6147,
+      "brier_score_unweighted": 0.1956,
+      "brier_skill_score_unweighted": 0.0342,
+      "fairness_limitations": "Unweighted metrics reflect unweighted test split sample. Zero comorbidity indicates absence of mapped flags in MEPS, not guaranteed absence of unmeasured illness. Subgroup sample sizes reflect survey sampling constraints."
     }
   ]
 }
