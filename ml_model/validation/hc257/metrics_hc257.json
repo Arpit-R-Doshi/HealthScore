@@ -1,0 +1,292 @@
+{
+  "metadata": {
+    "validation_dataset": "MEPS HC-257 (2023-2024 Panel 28 Longitudinal)",
+    "data_file_sha256": "08d1ff01044982a24e3d5983f54a9b911749728d2bb79156aa6efd4700720c86",
+    "total_panel_sample": 8872,
+    "two_year_eligible_yearind_1": 8709,
+    "dropped_invalid_baseline_age": 1,
+    "dropped_non_two_year_attrited_or_entrant": 163,
+    "analysis_cohort_size": 8708,
+    "all_five_rounds_in_scope_all5rds": 8389,
+    "adult_saq_subcohort_lsaqwt_positive": 5630,
+    "adult_saq_both_rounds_saqrds24_1": 4337,
+    "adult_saq_round4_only_saqrds24_0": 1293,
+    "adult_saq_valid_baseline_addprs2": 4208,
+    "adult_saq_inapplicable_addprs2_round2": 1294,
+    "adult_saq_missing_addprs2_round2": 128,
+    "locked_2023_unweighted_p90": 20360.5,
+    "locked_2023_weighted_p90": 17827.41,
+    "observed_y2_unweighted_p90": 23426.9,
+    "observed_y2_weighted_p90": 20040.0
+  },
+  "adult_saq_subcohort_performance": {
+    "subcohort_sample_size": 5630,
+    "unweighted": {
+      "evaluation_prevalence": 0.1677,
+      "observed_mean": 11659.94,
+      "predicted_mean": 10293.86,
+      "tweedie_mae": 11095.08,
+      "tweedie_r2": 0.0644,
+      "classifier_roc_auc": 0.7444,
+      "classifier_brier": 0.12416,
+      "classifier_base_brier": 0.14227,
+      "classifier_brier_skill_score": 0.1273,
+      "calibration_intercept": 0.1652,
+      "calibration_slope": 0.9978,
+      "calibration_estimator": "LogisticRegression(C=inf)"
+    },
+    "lsaqwt_weighted": {
+      "evaluation_weighted_prevalence": 0.1422,
+      "observed_mean": 9866.56,
+      "predicted_mean": 8679.5,
+      "tweedie_mae": 9679.67,
+      "tweedie_r2": 0.0728,
+      "classifier_roc_auc": 0.7466,
+      "classifier_brier": 0.10874,
+      "classifier_base_brier": 0.12373,
+      "classifier_brier_skill_score": 0.1212,
+      "calibration_intercept": 0.1794,
+      "calibration_slope": 0.9898,
+      "calibration_estimator": "LogisticRegression(C=inf)"
+    },
+    "observed_mean_lsaqwt_weighted": 9866.56,
+    "predicted_mean_lsaqwt_weighted": 8679.5,
+    "tweedie_lsaqwt_weighted_mae": 9679.67,
+    "tweedie_lsaqwt_weighted_r2": 0.0728,
+    "classifier_lsaqwt_weighted_roc_auc": 0.7466,
+    "classifier_lsaqwt_weighted_brier": 0.10874,
+    "classifier_lsaqwt_weighted_base_brier": 0.12373,
+    "classifier_lsaqwt_weighted_brier_skill_score": 0.1212
+  },
+  "adult_saq_complete_case_valid_depression": {
+    "subcohort_sample_size": 4208,
+    "excluded_inapplicable_round2": 1294,
+    "excluded_missing_round2": 128,
+    "unweighted": {
+      "evaluation_prevalence": 0.1808,
+      "observed_mean": 12424.13,
+      "predicted_mean": 10967.08,
+      "tweedie_mae": 11511.04,
+      "tweedie_r2": 0.0606,
+      "classifier_roc_auc": 0.7359,
+      "classifier_brier": 0.13223,
+      "classifier_base_brier": 0.1524,
+      "classifier_brier_skill_score": 0.1323,
+      "calibration_intercept": 0.1685,
+      "calibration_slope": 0.9897,
+      "calibration_estimator": "LogisticRegression(C=inf)"
+    },
+    "lsaqwt_weighted": {
+      "evaluation_weighted_prevalence": 0.1546,
+      "observed_mean": 10621.24,
+      "predicted_mean": 9398.51,
+      "tweedie_mae": 10090.88,
+      "tweedie_r2": 0.0717,
+      "classifier_roc_auc": 0.742,
+      "classifier_brier": 0.1168,
+      "classifier_base_brier": 0.13366,
+      "classifier_brier_skill_score": 0.1261,
+      "calibration_intercept": 0.1772,
+      "calibration_slope": 0.9878,
+      "calibration_estimator": "LogisticRegression(C=inf)"
+    }
+  },
+  "target_distribution_y2": {
+    "observed_mean_unweighted": 9687.75,
+    "observed_mean_survey_weighted": 8434.02,
+    "observed_median": 2098.5,
+    "observed_std": 29223.4,
+    "observed_p95": 41365.3,
+    "observed_max": 1246195.0
+  },
+  "prospective_tweedie_regression": {
+    "predicted_mean_unweighted": 8585.17,
+    "predicted_mean_survey_weighted": 7319.12,
+    "unweighted_mae": 9631.83,
+    "survey_weighted_mae": 8573.07,
+    "unweighted_rmse": 28254.84,
+    "survey_weighted_rmse": 26746.92,
+    "unweighted_r2": 0.0652,
+    "survey_weighted_r2": 0.0559,
+    "decile_stratification": [
+      {
+        "decile": 1,
+        "count": 895,
+        "observed_y2_mean": 3404.23,
+        "predicted_mean": 2077.08,
+        "ratio_obs_to_pred": 1.6389
+      },
+      {
+        "decile": 2,
+        "count": 849,
+        "observed_y2_mean": 2174.21,
+        "predicted_mean": 2471.35,
+        "ratio_obs_to_pred": 0.8798
+      },
+      {
+        "decile": 3,
+        "count": 870,
+        "observed_y2_mean": 3815.57,
+        "predicted_mean": 3069.72,
+        "ratio_obs_to_pred": 1.243
+      },
+      {
+        "decile": 4,
+        "count": 870,
+        "observed_y2_mean": 4411.76,
+        "predicted_mean": 4032.6,
+        "ratio_obs_to_pred": 1.094
+      },
+      {
+        "decile": 5,
+        "count": 877,
+        "observed_y2_mean": 6507.89,
+        "predicted_mean": 5334.02,
+        "ratio_obs_to_pred": 1.2201
+      },
+      {
+        "decile": 6,
+        "count": 865,
+        "observed_y2_mean": 7837.34,
+        "predicted_mean": 7016.77,
+        "ratio_obs_to_pred": 1.1169
+      },
+      {
+        "decile": 7,
+        "count": 871,
+        "observed_y2_mean": 9718.19,
+        "predicted_mean": 9300.65,
+        "ratio_obs_to_pred": 1.0449
+      },
+      {
+        "decile": 8,
+        "count": 869,
+        "observed_y2_mean": 14414.39,
+        "predicted_mean": 12117.74,
+        "ratio_obs_to_pred": 1.1895
+      },
+      {
+        "decile": 9,
+        "count": 871,
+        "observed_y2_mean": 17907.39,
+        "predicted_mean": 15801.32,
+        "ratio_obs_to_pred": 1.1333
+      },
+      {
+        "decile": 10,
+        "count": 871,
+        "observed_y2_mean": 26677.13,
+        "predicted_mean": 24663.55,
+        "ratio_obs_to_pred": 1.0816
+      }
+    ]
+  },
+  "prospective_xgboost_regression": {
+    "predicted_mean_unweighted": 2541.79,
+    "predicted_mean_survey_weighted": 1960.93,
+    "unweighted_mae": 8267.14,
+    "survey_weighted_mae": 7351.6,
+    "unweighted_rmse": 29410.61,
+    "survey_weighted_rmse": 27715.7,
+    "unweighted_r2": -0.0129,
+    "survey_weighted_r2": -0.0137
+  },
+  "lagged_expenditure_baseline": {
+    "description": "Predicting 2024 spend directly with 2023 spend (TOTEXPY1)",
+    "unweighted_mae": 8625.76,
+    "survey_weighted_mae": 7845.73,
+    "unweighted_rmse": 27407.32,
+    "survey_weighted_rmse": 26142.63,
+    "unweighted_r2": 0.1204,
+    "survey_weighted_r2": 0.0981
+  },
+  "prospective_classifier_unweighted_p90": {
+    "locked_target_definition": "TOTEXPY2 >= $20,360.50",
+    "validation_prevalence": 0.1158,
+    "roc_auc": 0.7732,
+    "pr_auc": 0.3049,
+    "brier_score": 0.0912,
+    "training_baseline_brier": 0.1026,
+    "brier_skill_score": 0.1112,
+    "calibration_intercept": 0.0171,
+    "calibration_slope": 0.951,
+    "unweighted_calibration_intercept": 0.0171,
+    "unweighted_calibration_slope": 0.951,
+    "calibration_estimator": "LogisticRegression(C=inf)",
+    "unweighted_calibration_estimator": "LogisticRegression(C=inf)"
+  },
+  "prospective_classifier_weighted_p90": {
+    "locked_target_definition": "TOTEXPY2 >= $17,827.41 (Survey-Weighted)",
+    "validation_weighted_prevalence": 0.1125,
+    "roc_auc": 0.7807,
+    "pr_auc": 0.3296,
+    "survey_weighted_brier_score": 0.08737,
+    "training_baseline_weighted_brier": 0.09999,
+    "brier_skill_score": 0.1263,
+    "calibration_intercept": 0.2263,
+    "calibration_slope": 1.0519,
+    "survey_weighted_calibration_intercept": 0.2263,
+    "survey_weighted_calibration_slope": 1.0519,
+    "unweighted_calibration_intercept": 0.197,
+    "unweighted_calibration_slope": 1.0492,
+    "calibration_estimator": "LogisticRegression(C=inf)",
+    "survey_weighted_calibration_estimator": "LogisticRegression(C=inf)",
+    "unweighted_calibration_estimator": "LogisticRegression(C=inf)"
+  },
+  "subgroup_performance": [
+    {
+      "dimension": "Age Group",
+      "group": "<18",
+      "count": 1629,
+      "observed_y2_mean": 3278.14,
+      "tweedie_pred_mean": 2555.61,
+      "tweedie_mae": 3670.03,
+      "ratio_obs_to_tweedie": 1.2827
+    },
+    {
+      "dimension": "Age Group",
+      "group": "18-44",
+      "count": 2549,
+      "observed_y2_mean": 5470.46,
+      "tweedie_pred_mean": 5101.83,
+      "tweedie_mae": 6404.86,
+      "ratio_obs_to_tweedie": 1.0723
+    },
+    {
+      "dimension": "Age Group",
+      "group": "45-64",
+      "count": 2277,
+      "observed_y2_mean": 11839.5,
+      "tweedie_pred_mean": 9927.19,
+      "tweedie_mae": 11829.77,
+      "ratio_obs_to_tweedie": 1.1926
+    },
+    {
+      "dimension": "Age Group",
+      "group": "65+",
+      "count": 2253,
+      "observed_y2_mean": 16918.83,
+      "tweedie_pred_mean": 15529.44,
+      "tweedie_mae": 15371.99,
+      "ratio_obs_to_tweedie": 1.0895
+    },
+    {
+      "dimension": "Gender",
+      "group": "Female",
+      "count": 4551,
+      "observed_y2_mean": 10218.28,
+      "tweedie_pred_mean": 9376.04,
+      "tweedie_mae": 9923.65,
+      "ratio_obs_to_tweedie": 1.0898
+    },
+    {
+      "dimension": "Gender",
+      "group": "Male",
+      "count": 4157,
+      "observed_y2_mean": 9106.94,
+      "tweedie_pred_mean": 7719.35,
+      "tweedie_mae": 9312.35,
+      "ratio_obs_to_tweedie": 1.1798
+    }
+  ]
+}

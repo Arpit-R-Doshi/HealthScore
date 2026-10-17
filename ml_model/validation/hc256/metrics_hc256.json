@@ -1,0 +1,333 @@
+{
+  "metadata": {
+    "validation_dataset": "MEPS HC-256 (2024 Full Year Consolidated)",
+    "data_file_sha256": "b4bde859b39f626345561c05570292bb7264dd92eb76ce0c1a14d6b89076aed5",
+    "raw_record_count": 19140,
+    "invalid_age_dropped": 161,
+    "eligible_analysis_sample_size": 18979,
+    "zero_expenditure_count": 2612,
+    "zero_expenditure_pct": 13.76,
+    "locked_2023_unweighted_p90": 20360.5,
+    "locked_2023_weighted_p90": 17827.41,
+    "temporal_2024_unweighted_p90": 22567.0,
+    "temporal_2024_weighted_p90": 19776.0
+  },
+  "target_distribution_2024": {
+    "observed_mean_unweighted": 9266.75,
+    "observed_mean_survey_weighted": 8295.0,
+    "observed_median": 2017.0,
+    "observed_std": 26812.98,
+    "observed_p95": 40036.2,
+    "observed_p99": 106164.36,
+    "observed_max": 1246195.0
+  },
+  "observable_tweedie_regression": {
+    "predicted_mean_unweighted": 8473.71,
+    "predicted_mean_survey_weighted": 7429.89,
+    "unweighted_mae": 9268.83,
+    "survey_weighted_mae": 8446.19,
+    "unweighted_rmse": 25792.51,
+    "survey_weighted_rmse": 24633.01,
+    "unweighted_r2": 0.0747,
+    "survey_weighted_r2": 0.0674,
+    "decile_stratification": [
+      {
+        "decile": 1,
+        "count": 1958,
+        "observed_mean": 2870.51,
+        "predicted_mean": 2072.92,
+        "ratio_obs_to_pred": 1.3848
+      },
+      {
+        "decile": 2,
+        "count": 1888,
+        "observed_mean": 2054.1,
+        "predicted_mean": 2451.13,
+        "ratio_obs_to_pred": 0.838
+      },
+      {
+        "decile": 3,
+        "count": 1887,
+        "observed_mean": 3904.81,
+        "predicted_mean": 3012.33,
+        "ratio_obs_to_pred": 1.2963
+      },
+      {
+        "decile": 4,
+        "count": 1864,
+        "observed_mean": 4038.61,
+        "predicted_mean": 3918.91,
+        "ratio_obs_to_pred": 1.0305
+      },
+      {
+        "decile": 5,
+        "count": 1893,
+        "observed_mean": 5971.38,
+        "predicted_mean": 5149.62,
+        "ratio_obs_to_pred": 1.1596
+      },
+      {
+        "decile": 6,
+        "count": 1897,
+        "observed_mean": 7889.87,
+        "predicted_mean": 6843.23,
+        "ratio_obs_to_pred": 1.1529
+      },
+      {
+        "decile": 7,
+        "count": 1898,
+        "observed_mean": 9384.27,
+        "predicted_mean": 9001.14,
+        "ratio_obs_to_pred": 1.0426
+      },
+      {
+        "decile": 8,
+        "count": 1900,
+        "observed_mean": 13358.83,
+        "predicted_mean": 11831.46,
+        "ratio_obs_to_pred": 1.1291
+      },
+      {
+        "decile": 9,
+        "count": 1896,
+        "observed_mean": 17139.09,
+        "predicted_mean": 15703.69,
+        "ratio_obs_to_pred": 1.0914
+      },
+      {
+        "decile": 10,
+        "count": 1898,
+        "observed_mean": 26090.1,
+        "predicted_mean": 24804.5,
+        "ratio_obs_to_pred": 1.0518
+      }
+    ]
+  },
+  "observable_xgboost_regression": {
+    "predicted_mean_unweighted": 2508.52,
+    "predicted_mean_survey_weighted": 2019.05,
+    "unweighted_mae": 7928.64,
+    "survey_weighted_mae": 7216.3,
+    "unweighted_rmse": 26963.6,
+    "survey_weighted_rmse": 25677.61,
+    "unweighted_r2": -0.0113,
+    "survey_weighted_r2": -0.0133,
+    "decile_stratification": [
+      {
+        "decile": 1,
+        "count": 1907,
+        "observed_mean": 2573.04,
+        "predicted_mean": 61.09,
+        "ratio_obs_to_pred": 42.1161
+      },
+      {
+        "decile": 2,
+        "count": 1957,
+        "observed_mean": 2659.04,
+        "predicted_mean": 189.34,
+        "ratio_obs_to_pred": 14.0441
+      },
+      {
+        "decile": 3,
+        "count": 1910,
+        "observed_mean": 3159.87,
+        "predicted_mean": 261.06,
+        "ratio_obs_to_pred": 12.1041
+      },
+      {
+        "decile": 4,
+        "count": 1819,
+        "observed_mean": 4632.97,
+        "predicted_mean": 345.23,
+        "ratio_obs_to_pred": 13.4198
+      },
+      {
+        "decile": 5,
+        "count": 1902,
+        "observed_mean": 5571.01,
+        "predicted_mean": 729.3,
+        "ratio_obs_to_pred": 7.6388
+      },
+      {
+        "decile": 6,
+        "count": 1893,
+        "observed_mean": 7676.68,
+        "predicted_mean": 1212.43,
+        "ratio_obs_to_pred": 6.3316
+      },
+      {
+        "decile": 7,
+        "count": 1897,
+        "observed_mean": 10004.66,
+        "predicted_mean": 2214.6,
+        "ratio_obs_to_pred": 4.5176
+      },
+      {
+        "decile": 8,
+        "count": 1898,
+        "observed_mean": 12984.49,
+        "predicted_mean": 3621.49,
+        "ratio_obs_to_pred": 3.5854
+      },
+      {
+        "decile": 9,
+        "count": 1899,
+        "observed_mean": 17678.5,
+        "predicted_mean": 5659.02,
+        "ratio_obs_to_pred": 3.124
+      },
+      {
+        "decile": 10,
+        "count": 1897,
+        "observed_mean": 25818.44,
+        "predicted_mean": 10802.44,
+        "ratio_obs_to_pred": 2.3901
+      }
+    ]
+  },
+  "observable_classifier_unweighted_p90": {
+    "locked_target_definition": "TOTEXP24 >= $20,360.50",
+    "validation_prevalence": 0.1113,
+    "roc_auc": 0.7824,
+    "pr_auc": 0.3133,
+    "brier_score": 0.08714,
+    "training_baseline_brier": 0.09902,
+    "brier_skill_score": 0.12,
+    "calibration_intercept": 0.0543,
+    "calibration_slope": 0.9886,
+    "unweighted_calibration_intercept": 0.0543,
+    "unweighted_calibration_slope": 0.9886,
+    "calibration_estimator": "LogisticRegression(C=inf)",
+    "unweighted_calibration_estimator": "LogisticRegression(C=inf)"
+  },
+  "observable_classifier_weighted_p90": {
+    "locked_target_definition": "TOTEXP24 >= $17,827.41 (Survey-Weighted)",
+    "validation_weighted_prevalence": 0.1105,
+    "roc_auc": 0.7828,
+    "pr_auc": 0.3274,
+    "survey_weighted_brier_score": 0.08591,
+    "training_baseline_weighted_brier": 0.09837,
+    "brier_skill_score": 0.1266,
+    "calibration_intercept": 0.1933,
+    "calibration_slope": 1.0554,
+    "survey_weighted_calibration_intercept": 0.1933,
+    "survey_weighted_calibration_slope": 1.0554,
+    "unweighted_calibration_intercept": 0.1744,
+    "unweighted_calibration_slope": 1.0546,
+    "calibration_estimator": "LogisticRegression(C=inf)",
+    "survey_weighted_calibration_estimator": "LogisticRegression(C=inf)",
+    "unweighted_calibration_estimator": "LogisticRegression(C=inf)"
+  },
+  "subgroup_performance": [
+    {
+      "dimension": "Age Group",
+      "group": "<18",
+      "count": 3650,
+      "observed_mean": 3288.28,
+      "tweedie_pred_mean": 2556.12,
+      "xgb_pred_mean": 420.14,
+      "tweedie_mae": 3627.71,
+      "xgb_mae": 3068.36,
+      "ratio_obs_to_tweedie": 1.2864
+    },
+    {
+      "dimension": "Age Group",
+      "group": "18-44",
+      "count": 5672,
+      "observed_mean": 5577.12,
+      "tweedie_pred_mean": 5026.69,
+      "xgb_pred_mean": 798.71,
+      "tweedie_mae": 6397.1,
+      "xgb_mae": 5205.43,
+      "ratio_obs_to_tweedie": 1.1095
+    },
+    {
+      "dimension": "Age Group",
+      "group": "45-64",
+      "count": 4764,
+      "observed_mean": 11493.87,
+      "tweedie_pred_mean": 9919.72,
+      "xgb_pred_mean": 2690.12,
+      "tweedie_mae": 11565.67,
+      "xgb_mae": 10034.51,
+      "ratio_obs_to_tweedie": 1.1587
+    },
+    {
+      "dimension": "Age Group",
+      "group": "65+",
+      "count": 4893,
+      "observed_mean": 15835.13,
+      "tweedie_pred_mean": 15475.94,
+      "xgb_pred_mean": 5871.61,
+      "tweedie_mae": 14569.55,
+      "xgb_mae": 12660.66,
+      "ratio_obs_to_tweedie": 1.0232
+    },
+    {
+      "dimension": "Gender",
+      "group": "Female",
+      "count": 9885,
+      "observed_mean": 10089.89,
+      "tweedie_pred_mean": 9337.76,
+      "xgb_pred_mean": 2919.87,
+      "tweedie_mae": 9850.74,
+      "xgb_mae": 8534.22,
+      "ratio_obs_to_tweedie": 1.0805
+    },
+    {
+      "dimension": "Gender",
+      "group": "Male",
+      "count": 9094,
+      "observed_mean": 8372.02,
+      "tweedie_pred_mean": 7534.51,
+      "xgb_pred_mean": 2061.4,
+      "tweedie_mae": 8636.31,
+      "xgb_mae": 7270.39,
+      "ratio_obs_to_tweedie": 1.1112
+    },
+    {
+      "dimension": "Comorbidity Count",
+      "group": "0",
+      "count": 6551,
+      "observed_mean": 3092.25,
+      "tweedie_pred_mean": 2698.7,
+      "xgb_pred_mean": 204.35,
+      "tweedie_mae": 3844.3,
+      "xgb_mae": 3001.48,
+      "ratio_obs_to_tweedie": 1.1458
+    },
+    {
+      "dimension": "Comorbidity Count",
+      "group": "1",
+      "count": 4143,
+      "observed_mean": 6450.3,
+      "tweedie_pred_mean": 5403.54,
+      "xgb_pred_mean": 926.65,
+      "tweedie_mae": 7126.16,
+      "xgb_mae": 6002.97,
+      "ratio_obs_to_tweedie": 1.1937
+    },
+    {
+      "dimension": "Comorbidity Count",
+      "group": "2",
+      "count": 3339,
+      "observed_mean": 10023.77,
+      "tweedie_pred_mean": 9321.33,
+      "xgb_pred_mean": 2451.54,
+      "tweedie_mae": 10182.28,
+      "xgb_mae": 8723.8,
+      "ratio_obs_to_tweedie": 1.0754
+    },
+    {
+      "dimension": "Comorbidity Count",
+      "group": "3+",
+      "count": 4946,
+      "observed_mean": 19293.05,
+      "tweedie_pred_mean": 18122.23,
+      "xgb_pred_mean": 6923.93,
+      "tweedie_mae": 17631.8,
+      "xgb_mae": 15530.92,
+      "ratio_obs_to_tweedie": 1.0646
+    }
+  ]
+}

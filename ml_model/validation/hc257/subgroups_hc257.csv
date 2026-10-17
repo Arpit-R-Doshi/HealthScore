@@ -1,0 +1,7 @@
+dimension,group,count,observed_y2_mean,tweedie_pred_mean,tweedie_mae,ratio_obs_to_tweedie
+Age Group,<18,1629,3278.14,2555.61,3670.03,1.2827
+Age Group,18-44,2549,5470.46,5101.83,6404.86,1.0723
+Age Group,45-64,2277,11839.5,9927.19,11829.77,1.1926
+Age Group,65+,2253,16918.83,15529.44,15371.99,1.0895
+Gender,Female,4551,10218.28,9376.04,9923.65,1.0898
+Gender,Male,4157,9106.94,7719.35,9312.35,1.1798
