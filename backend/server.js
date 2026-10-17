@@ -21,11 +21,14 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const ADMIN_KEY = process.env.ADMIN_KEY; // NO default 'admin' fallback
 const PORT = process.env.PORT || 5001;
 
-// Cryptographic token secret: in production, an explicit JWT_SECRET is mandatory.
-const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? null : 'healthscore-dev-jwt-secret-key-change-in-production');
-if (process.env.NODE_ENV === 'production' && (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'healthscore-dev-jwt-secret-key-change-in-production')) {
-    console.error("FATAL: JWT_SECRET environment variable is required and must not use the dev fallback in production mode!");
-    process.exit(1);
+// Cryptographic token secret: in non-dev/test environments, an explicit JWT_SECRET is mandatory.
+const isDevOrTest = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+const JWT_SECRET = process.env.JWT_SECRET || (isDevOrTest ? 'healthscore-dev-jwt-secret-key-change-in-production' : null);
+if (!isDevOrTest && (!JWT_SECRET || JWT_SECRET === 'healthscore-dev-jwt-secret-key-change-in-production')) {
+    console.error("FATAL: JWT_SECRET environment variable is required and must not use the dev fallback in non-development/test mode!");
+    if (require.main === module) {
+        process.exit(1);
+    }
 }
 
 // CORS Policy: Restricted allowlist
@@ -115,17 +118,18 @@ function redactUser(user) {
  * Generates an HMAC-SHA256 signed bearer token with 24-hour expiration.
  */
 function generateToken(user) {
+    if (!JWT_SECRET) return null;
     const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
+    const now = Math.floor(Date.now() / 1000);
     const payload = Buffer.from(JSON.stringify({
         sub: user.id,
         username: user.username,
         role: user.role,
         name: user.name,
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + (24 * 3600) // 24 hours
+        iat: now,
+        exp: now + (24 * 3600) // 24 hours
     })).toString('base64url');
-    const secret = JWT_SECRET || 'dev-fallback';
-    const signature = crypto.createHmac('sha256', secret)
+    const signature = crypto.createHmac('sha256', JWT_SECRET)
         .update(`${header}.${payload}`)
         .digest('base64url');
     return `${header}.${payload}.${signature}`;
@@ -133,14 +137,17 @@ function generateToken(user) {
 
 /**
  * Validates token signature, structure, and expiration.
+ * Requires sub, role, iat, and an explicit finite unexpired exp.
+ * Fails closed if JWT_SECRET is missing.
  */
 function verifyToken(token) {
     if (!token || typeof token !== 'string') return null;
+    if (!JWT_SECRET) return null; // Fail closed if secret missing
+
     const parts = token.split('.');
     if (parts.length !== 3) return null;
     const [headerB64, payloadB64, sig] = parts;
-    const secret = JWT_SECRET || 'dev-fallback';
-    const expectedSig = crypto.createHmac('sha256', secret)
+    const expectedSig = crypto.createHmac('sha256', JWT_SECRET)
         .update(`${headerB64}.${payloadB64}`)
         .digest('base64url');
     if (sig.length !== expectedSig.length) return null;
@@ -148,8 +155,21 @@ function verifyToken(token) {
 
     try {
         const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString('utf8'));
+        if (!payload || typeof payload !== 'object') return null;
+
+        // Required claims: sub (string), role (string), iat (number), exp (number)
+        if (!payload.sub || typeof payload.sub !== 'string' || !payload.role || typeof payload.role !== 'string') {
+            return null;
+        }
+        if (typeof payload.iat !== 'number' || !Number.isFinite(payload.iat)) {
+            return null;
+        }
+        if (typeof payload.exp !== 'number' || !Number.isFinite(payload.exp)) {
+            return null;
+        }
+
         const now = Math.floor(Date.now() / 1000);
-        if (payload.exp && payload.exp < now) {
+        if (payload.exp <= now) {
             return null; // Expired
         }
         return payload;
@@ -158,10 +178,26 @@ function verifyToken(token) {
     }
 }
 
+/**
+ * Validates whether a doctor has an active care relationship with a patient.
+ * Checks medical team assignment, booked appointments, scan requests, or active prescriptions.
+ */
+function hasCareRelationship(doctorId, patient) {
+    if (!patient || !doctorId) return false;
+    const inMedicalTeam = (patient.medicalTeam || []).some(m => m.id === doctorId);
+    const hasAppointment = (patient.appointments || []).some(a => a.doctorId === doctorId);
+    const hasScanRequest = (patient.scanRequests || []).some(s => s.doctorId === doctorId);
+    const hasPrescription = (patient.prescriptions || []).some(p => p.doctorId === doctorId);
+    return inMedicalTeam || hasAppointment || hasScanRequest || hasPrescription;
+}
+
 // ── Rate Limiter for Sensitive Endpoints ──
 const rateLimits = new Map();
 function rateLimit({ windowMs = 15 * 60 * 1000, max = 50 } = {}) {
     return (req, res, next) => {
+        if (process.env.NODE_ENV === 'test') {
+            return next();
+        }
         const key = req.ip || req.socket.remoteAddress || 'unknown';
         const now = Date.now();
         let record = rateLimits.get(key);
@@ -289,8 +325,10 @@ function loadDatabase() {
                 saveData();
             }
         } else {
-            // Only seed demo users in development if explicitly requested
-            if (process.env.NODE_ENV !== 'production' || process.env.SEED_DEMO_USERS === 'true') {
+            // NEVER seed demo accounts in production/staging, even if SEED_DEMO_USERS=true
+            if (isDevOrTest && process.env.SEED_DEMO_USERS === 'true') {
+                resetDatabase();
+            } else if (isDevOrTest && process.env.NODE_ENV !== 'test') {
                 resetDatabase();
             } else {
                 USERS = [];
@@ -299,7 +337,7 @@ function loadDatabase() {
             }
         }
     } catch (err) {
-        if (process.env.NODE_ENV !== 'production') {
+        if (isDevOrTest) {
             resetDatabase();
         }
     }
@@ -581,7 +619,27 @@ app.get('/api/patient/:id', authenticateToken, (req, res) => {
         });
     }
 
-    if (role === 'Doctor' || role === 'Admin') {
+    if (role === 'Doctor') {
+        if (!hasCareRelationship(userId, patient)) {
+            return res.status(403).json({ error: "Forbidden: You do not have an active care relationship with this patient." });
+        }
+        return res.json({
+            id: patient.id,
+            name: patient.name,
+            age: patient.age,
+            weight: patient.weight,
+            height: patient.height,
+            history: patient.diseaseInput,
+            prescriptions: patient.prescriptions || [],
+            medicalFiles: patient.medicalFiles || [],
+            appointments: patient.appointments || [],
+            medicalTeam: patient.medicalTeam || [],
+            favoriteDoctors: patient.favoriteDoctors || [],
+            scanRequests: patient.scanRequests || []
+        });
+    }
+
+    if (role === 'Admin') {
         return res.json({
             id: patient.id,
             name: patient.name,
@@ -630,21 +688,26 @@ app.post('/api/patient/update', authenticateToken, (req, res) => {
     if (req.user.role === 'Patient' && req.user.sub !== id) {
         return res.status(403).json({ error: "Forbidden: You cannot modify another patient's profile." });
     }
-    if (!['Patient', 'Doctor', 'Admin'].includes(req.user.role)) {
+    const patient = USERS.find(u => u.id === id);
+    if (!patient) return res.status(404).json({ error: "Patient not found." });
+
+    if (req.user.role === 'Doctor') {
+        if (!hasCareRelationship(req.user.sub, patient)) {
+            return res.status(403).json({ error: "Forbidden: You do not have an active care relationship with this patient." });
+        }
+    } else if (req.user.role !== 'Admin') {
         return res.status(403).json({ error: "Forbidden: Insufficient privileges." });
     }
 
     const idx = USERS.findIndex(u => u.id === id);
-    if (idx === -1) return res.status(404).json({ error: "Patient not found." });
-
     if (weight !== undefined) USERS[idx].weight = Number(weight);
     if (history !== undefined) USERS[idx].diseaseInput = String(history);
     saveData();
     res.json({ success: true, message: "Patient profile updated." });
 });
 
-// PATIENT FAVORITES (Self only)
-app.post('/api/patient/toggle-favorite', authenticateToken, (req, res) => {
+// PATIENT FAVORITES (Self only or Admin)
+app.post('/api/patient/toggle-favorite', authenticateToken, requireRole('Patient', 'Admin'), (req, res) => {
     const { patientId, doctorId } = req.body;
     if (req.user.role === 'Patient' && req.user.sub !== patientId) {
         return res.status(403).json({ error: "Forbidden: Cross-patient modification disallowed." });
@@ -664,16 +727,22 @@ app.post('/api/patient/toggle-favorite', authenticateToken, (req, res) => {
 // ADD MEDICAL FILE
 app.post('/api/patient/add-file', authenticateToken, async (req, res) => {
     const { patientId, ipfsHash, fileName, category } = req.body;
-    if (req.user.role === 'Patient' && req.user.sub !== patientId) {
-        return res.status(403).json({ error: "Forbidden: Cannot upload files for another patient." });
-    }
-    if (!['Patient', 'Doctor', 'Admin'].includes(req.user.role)) {
+    const patient = USERS.find(u => u.id === patientId);
+    if (!patient) return res.status(404).json({ error: "Patient not found." });
+
+    if (req.user.role === 'Patient') {
+        if (req.user.sub !== patientId) {
+            return res.status(403).json({ error: "Forbidden: Cannot upload files for another patient." });
+        }
+    } else if (req.user.role === 'Doctor') {
+        if (!hasCareRelationship(req.user.sub, patient)) {
+            return res.status(403).json({ error: "Forbidden: You do not have an active care relationship with this patient." });
+        }
+    } else if (req.user.role !== 'Admin') {
         return res.status(403).json({ error: "Forbidden: Insufficient role." });
     }
 
     const idx = USERS.findIndex(u => u.id === patientId);
-    if (idx === -1) return res.status(404).json({ error: "Patient not found." });
-
     if (!USERS[idx].medicalFiles) USERS[idx].medicalFiles = [];
     USERS[idx].medicalFiles.push({
         hash: ipfsHash,
@@ -698,28 +767,38 @@ app.post('/api/patient/add-file', authenticateToken, async (req, res) => {
 
 app.post('/api/book-appointment', authenticateToken, (req, res) => {
     const { patientId, doctorId, doctorName, date, time } = req.body;
-    if (req.user.role === 'Patient' && req.user.sub !== patientId) {
-        return res.status(403).json({ error: "Forbidden: Cannot book appointments on behalf of another patient." });
+    if (!patientId || !doctorId) {
+        return res.status(400).json({ error: "Missing required fields: patientId and doctorId." });
     }
-    const patientIndex = USERS.findIndex(u => u.id === patientId);
-    if (patientIndex !== -1) {
-        if (!USERS[patientIndex].appointments) USERS[patientIndex].appointments = [];
-        const newAppointment = {
-            id: "APT-" + Date.now().toString().slice(-5),
-            doctorId,
-            doctorName,
-            date,
-            time,
-            status: 'Upcoming',
-            bookedAt: new Date().toISOString()
-        };
-        USERS[patientIndex].appointments.push(newAppointment);
-        saveData();
-        appointmentsTotal.inc({ action: 'booked' });
-        res.json({ success: true, message: `Appointment confirmed with ${doctorName} on ${date} at ${time}.`, appointment: newAppointment });
-    } else {
-        res.status(404).json({ error: "Patient not found." });
+    const patient = USERS.find(u => u.id === patientId && u.role === 'Patient');
+    if (!patient) return res.status(404).json({ error: "Patient not found." });
+
+    if (req.user.role === 'Patient') {
+        if (req.user.sub !== patientId) {
+            return res.status(403).json({ error: "Forbidden: Cannot book appointments on behalf of another patient." });
+        }
+    } else if (req.user.role === 'Doctor') {
+        if (req.user.sub !== doctorId) {
+            return res.status(403).json({ error: "Forbidden: Doctors may only schedule appointments for their own calendar." });
+        }
+    } else if (req.user.role !== 'Admin') {
+        return res.status(403).json({ error: `Forbidden: Role '${req.user.role}' cannot book appointments.` });
     }
+
+    if (!patient.appointments) patient.appointments = [];
+    const newAppointment = {
+        id: "APT-" + Date.now().toString().slice(-5),
+        doctorId,
+        doctorName: doctorName || "Doctor",
+        date: date || new Date().toISOString().split('T')[0],
+        time: time || "10:00 AM",
+        status: 'Upcoming',
+        bookedAt: new Date().toISOString()
+    };
+    patient.appointments.push(newAppointment);
+    saveData();
+    appointmentsTotal.inc({ action: 'booked' });
+    res.json({ success: true, message: `Appointment confirmed with ${newAppointment.doctorName} on ${newAppointment.date} at ${newAppointment.time}.`, appointment: newAppointment });
 });
 
 app.get('/api/doctor/appointments/:doctorId', authenticateToken, requireRole('Doctor', 'Admin'), (req, res) => {
@@ -966,16 +1045,25 @@ app.post('/api/bloodtest/complete-scan', authenticateToken, requireRole('Bloodte
 });
 
 app.get('/api/bloodtest/patients', authenticateToken, requireRole('Bloodtest', 'Doctor', 'Admin'), (req, res) => {
-    const patients = USERS
-        .filter(u => u.role === 'Patient' && u.scanRequests && u.scanRequests.length > 0)
-        .map(p => ({ id: p.id, name: p.name, age: p.age, scanRequests: p.scanRequests }));
+    let patientsWithScans = USERS.filter(u => u.role === 'Patient' && u.scanRequests && u.scanRequests.length > 0);
+    if (req.user.role === 'Doctor') {
+        patientsWithScans = patientsWithScans.filter(p => 
+            p.scanRequests.some(s => s.doctorId === req.user.sub) || hasCareRelationship(req.user.sub, p)
+        );
+    }
+    const patients = patientsWithScans.map(p => ({
+        id: p.id,
+        name: p.name,
+        age: p.age,
+        scanRequests: req.user.role === 'Doctor' ? p.scanRequests.filter(s => s.doctorId === req.user.sub || hasCareRelationship(req.user.sub, p)) : p.scanRequests
+    }));
     res.json(patients);
 });
 
 // =============================================================
 // 📤 SECURE IPFS UPLOAD
 // =============================================================
-app.post('/api/upload', authenticateToken, upload.single('file'), async (req, res) => {
+app.post('/api/upload', authenticateToken, rateLimit({ windowMs: 15 * 60 * 1000, max: 20 }), upload.single('file'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: "Missing uploaded file." });
     }
@@ -997,18 +1085,54 @@ app.post('/api/upload', authenticateToken, upload.single('file'), async (req, re
 });
 
 // =============================================================
-// 🤖 GROQ AI CHATBOT (Authenticated)
+// 🤖 GROQ AI CHATBOT (Authenticated & Identity-Verified)
 // =============================================================
-app.post('/api/chat', authenticateToken, async (req, res) => {
-    const { patientData, messages } = req.body;
+app.post('/api/chat', authenticateToken, rateLimit({ windowMs: 15 * 60 * 1000, max: 30 }), async (req, res) => {
+    const { patientData: clientPatientData, messages } = req.body;
     try {
         if (!GROQ_API_KEY) throw new Error("Missing GROQ_API_KEY");
 
+        // Verify patient profile details submitted to external AI service:
+        // Do not rely on body-supplied identity fields!
+        let authorizedProfile = null;
+        if (req.user.role === 'Patient') {
+            // Patient can only query about themselves; load strictly from authentic database record
+            const patient = USERS.find(u => u.id === req.user.sub && u.role === 'Patient');
+            if (patient) {
+                authorizedProfile = {
+                    name: patient.name,
+                    age: patient.age,
+                    weight: patient.weight,
+                    height: patient.height,
+                    diseaseInput: patient.diseaseInput
+                };
+            }
+        } else if (req.user.role === 'Doctor') {
+            if (clientPatientData?.id) {
+                const patient = USERS.find(u => u.id === clientPatientData.id && u.role === 'Patient');
+                if (!patient || !hasCareRelationship(req.user.sub, patient)) {
+                    return res.status(403).json({ error: "Forbidden: You do not have an active care relationship with this patient." });
+                }
+                authorizedProfile = {
+                    name: patient.name,
+                    age: patient.age,
+                    weight: patient.weight,
+                    height: patient.height,
+                    diseaseInput: patient.diseaseInput
+                };
+            }
+        } else if (req.user.role === 'Admin') {
+            authorizedProfile = clientPatientData;
+        } else {
+            return res.status(403).json({ error: `Forbidden: Role '${req.user.role}' is not authorized to access AI clinical assistant.` });
+        }
+
+        const profile = authorizedProfile || clientPatientData || {};
         const systemPrompt = {
             role: "system",
-            content: `You are HealthScore AI, an empathetic medical and fitness assistant for a patient named ${patientData?.name || 'User'}. 
-            Their profile: Age ${patientData?.age || 'Unknown'}, Weight ${patientData?.weight || 'Unknown'}kg, Height ${patientData?.height || 'Unknown'}cm.
-            Medical History: ${patientData?.diseaseInput || 'None reported'}.
+            content: `You are HealthScore AI, an empathetic medical and fitness assistant for a patient named ${profile.name || 'User'}. 
+            Their profile: Age ${profile.age || 'Unknown'}, Weight ${profile.weight || 'Unknown'}kg, Height ${profile.height || 'Unknown'}cm.
+            Medical History: ${profile.diseaseInput || 'None reported'}.
             
             IMPORTANT STRICT INSTRUCTIONS:
             1. You MUST ONLY answer questions related to health, fitness, nutrition, biology, and medical wellness.
@@ -1033,13 +1157,24 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
 });
 
 // =============================================================
-// 🧠 MACHINE LEARNING INFERENCE API (Authenticated)
+// 🧠 MACHINE LEARNING INFERENCE API (Authenticated & Role-Guarded)
 // =============================================================
-app.post('/api/calculate-score', authenticateToken, (req, res) => {
-    // Cross-patient authorization check:
-    // If patientId is specified, caller must be a Doctor, Admin, or the Patient themselves
-    if (req.body.patientId && req.user.role === 'Patient' && req.user.sub !== req.body.patientId) {
-        return res.status(403).json({ error: "Forbidden: You cannot evaluate risk scores for another patient." });
+app.post('/api/calculate-score', authenticateToken, requireRole('Patient', 'Doctor', 'Admin'), rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }), (req, res) => {
+    const { patientId } = req.body;
+
+    // Cross-patient & role authorization check:
+    // Only Patient (for self), Doctor (with care relationship), or Admin may calculate scores
+    if (patientId) {
+        const patient = USERS.find(u => u.id === patientId && u.role === 'Patient');
+        if (!patient) {
+            return res.status(404).json({ error: "Patient not found." });
+        }
+        if (req.user.role === 'Patient' && req.user.sub !== patientId) {
+            return res.status(403).json({ error: "Forbidden: You cannot evaluate risk scores for another patient." });
+        }
+        if (req.user.role === 'Doctor' && !hasCareRelationship(req.user.sub, patient)) {
+            return res.status(403).json({ error: "Forbidden: You do not have an authorized care relationship with this patient." });
+        }
     }
 
     const pythonPath = path.join(__dirname, '../ml_model/venv/bin/python3');
@@ -1058,10 +1193,10 @@ app.post('/api/calculate-score', authenticateToken, (req, res) => {
                 res.json(parsed);
 
                 // Write verified score to blockchain ledger via HospitalOrg (Fire & Forget)
-                if (req.body.patientId && parsed.health_score) {
+                if (patientId && parsed.health_score) {
                     try {
                         await fabricSubmit('hospital', 'updateHealthScore',
-                            req.body.patientId,
+                            patientId,
                             String(parsed.health_score),
                             String(parsed.risk_score || 0),
                             String(parsed.premium || 0)
@@ -1082,45 +1217,109 @@ app.post('/api/calculate-score', authenticateToken, (req, res) => {
 // =============================================================
 // ⛓  LEDGER QUERY ENDPOINTS (Authenticated & Guarded)
 // =============================================================
-app.get('/api/prescription/ledger/:id', authenticateToken, async (req, res) => {
+app.get('/api/prescription/ledger/:id', authenticateToken, rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }), async (req, res) => {
+    const rxId = req.params.id;
+    // Resolve prescription in local state to verify authorization before calling Fabric
+    let owningPatient = null;
+    let targetRx = null;
+    for (const u of USERS) {
+        if (u.role === 'Patient' && u.prescriptions) {
+            const found = u.prescriptions.find(r => r.id === rxId);
+            if (found) {
+                owningPatient = u;
+                targetRx = found;
+                break;
+            }
+        }
+    }
+
+    // Role & ownership authorization
+    if (req.user.role === 'Patient') {
+        if (!owningPatient || owningPatient.id !== req.user.sub) {
+            return res.status(403).json({ error: "Forbidden: Cannot view another patient's prescription ledger." });
+        }
+    } else if (req.user.role === 'Doctor') {
+        if (owningPatient && !hasCareRelationship(req.user.sub, owningPatient) && targetRx?.doctorId !== req.user.sub) {
+            return res.status(403).json({ error: "Forbidden: You are not authorized to view this prescription ledger." });
+        }
+    } else if (!['Pharmacist', 'Admin'].includes(req.user.role)) {
+        return res.status(403).json({ error: `Forbidden: role '${req.user.role}' is not authorized to query prescription ledger.` });
+    }
+
     try {
-        const result = await fabricQuery('hospital', 'viewPrescription', req.params.id);
+        const result = await fabricQuery('hospital', 'viewPrescription', rxId);
         res.json(result);
     } catch (e) {
         res.status(404).json({ error: "Not found on Blockchain" });
     }
 });
 
-app.get('/api/ledger/patient/:id', authenticateToken, async (req, res) => {
-    if (req.user.role === 'Patient' && req.user.sub !== req.params.id) {
-        return res.status(403).json({ error: "Forbidden: Cannot access another patient's ledger record." });
+app.get('/api/ledger/patient/:id', authenticateToken, rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }), async (req, res) => {
+    const patientId = req.params.id;
+    const patient = USERS.find(u => u.id === patientId && u.role === 'Patient');
+
+    if (req.user.role === 'Patient') {
+        if (req.user.sub !== patientId) {
+            return res.status(403).json({ error: "Forbidden: Cannot access another patient's ledger record." });
+        }
+    } else if (req.user.role === 'Doctor') {
+        if (patient && !hasCareRelationship(req.user.sub, patient)) {
+            return res.status(403).json({ error: "Forbidden: You do not have an active care relationship with this patient." });
+        }
+    } else if (req.user.role !== 'Admin') {
+        return res.status(403).json({ error: `Forbidden: role '${req.user.role}' is not authorized to access patient ledger records.` });
     }
+
     try {
-        const result = await fabricQuery('hospital', 'getPatientRecord', req.params.id);
+        const result = await fabricQuery('hospital', 'getPatientRecord', patientId);
         res.json(result);
     } catch (e) {
         res.status(404).json({ error: "Patient not found on ledger" });
     }
 });
 
-app.get('/api/ledger/prescriptions/:patientId', authenticateToken, async (req, res) => {
-    if (req.user.role === 'Patient' && req.user.sub !== req.params.patientId) {
-        return res.status(403).json({ error: "Forbidden: Cannot view another patient's prescriptions." });
+app.get('/api/ledger/prescriptions/:patientId', authenticateToken, rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }), async (req, res) => {
+    const patientId = req.params.patientId;
+    const patient = USERS.find(u => u.id === patientId && u.role === 'Patient');
+
+    if (req.user.role === 'Patient') {
+        if (req.user.sub !== patientId) {
+            return res.status(403).json({ error: "Forbidden: Cannot view another patient's prescriptions." });
+        }
+    } else if (req.user.role === 'Doctor') {
+        if (patient && !hasCareRelationship(req.user.sub, patient)) {
+            return res.status(403).json({ error: "Forbidden: You do not have an active care relationship with this patient." });
+        }
+    } else if (!['Pharmacist', 'Admin'].includes(req.user.role)) {
+        return res.status(403).json({ error: `Forbidden: role '${req.user.role}' is not authorized to query patient prescriptions.` });
     }
+
     try {
-        const result = await fabricQuery('hospital', 'getAllPrescriptions', req.params.patientId);
+        const result = await fabricQuery('hospital', 'getAllPrescriptions', patientId);
         res.json(result);
     } catch (e) {
         res.status(404).json({ error: "No prescriptions found on ledger" });
     }
 });
 
-app.get('/api/ledger/scans/:patientId', authenticateToken, async (req, res) => {
-    if (req.user.role === 'Patient' && req.user.sub !== req.params.patientId) {
-        return res.status(403).json({ error: "Forbidden: Cannot view another patient's scan orders." });
+app.get('/api/ledger/scans/:patientId', authenticateToken, rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }), async (req, res) => {
+    const patientId = req.params.patientId;
+    const patient = USERS.find(u => u.id === patientId && u.role === 'Patient');
+
+    if (req.user.role === 'Patient') {
+        if (req.user.sub !== patientId) {
+            return res.status(403).json({ error: "Forbidden: Cannot view another patient's scan orders." });
+        }
+    } else if (req.user.role === 'Doctor') {
+        if (patient && !hasCareRelationship(req.user.sub, patient)) {
+            return res.status(403).json({ error: "Forbidden: You do not have an active care relationship with this patient." });
+        }
+    } else if (!['Bloodtest', 'Admin'].includes(req.user.role)) {
+        return res.status(403).json({ error: `Forbidden: role '${req.user.role}' is not authorized to query patient scans.` });
     }
+
     try {
-        const result = await fabricQuery('hospital', 'getAllScanOrders', req.params.patientId);
+        const result = await fabricQuery('hospital', 'getAllScanOrders', patientId);
         res.json(result);
     } catch (e) {
         res.status(404).json({ error: "No scan orders found on ledger" });
@@ -1135,5 +1334,9 @@ app.USERS = USERS;
 app.INVENTORY = INVENTORY;
 app.generateToken = generateToken;
 app.hashPassword = hashPassword;
+app.verifyToken = verifyToken;
+app.hasCareRelationship = hasCareRelationship;
+app.resetDatabase = resetDatabase;
+app.loadDatabase = loadDatabase;
 
 module.exports = app;
