@@ -17,9 +17,9 @@ In this work, we present **HealthScore**, an audited, reproducible, and decentra
 
 Our empirical results demonstrate:
 1. **Ordinal High-Expenditure Discrimination:** An 11-feature observable-input Logistic Regression classifier consistently identifies top-decile healthcare spenders across all three independent cohorts (ROC-AUC **0.7654** in 2023, **0.7828** in 2024 external cross-section, and **0.7807** in prospective forecasting), achieving a survey-weighted Brier Skill Score of **$+0.1025$ to $+0.1266$** with unpenalized calibration slopes near unity ($\beta \approx 0.98 – 1.05$).
-2. **Nominal Dollar Prediction vs. Rank-Order Heuristics:** Gradient boosted tree regressors fit on log-expenditure achieve optimal median error (MAE $\approx \$7,512$) but severely underestimate aggregate nominal spending (mean predicted $\$2,378$ vs. $\$8,765$ observed). In contrast, an 11-feature Tweedie Compound Poisson-Gamma GLM ($p=1.5$) directly predicts dollar scale with a positive $R^2 = \mathbf{0.0786}$ (weighted $R^2 = \mathbf{0.0820}$), tracking overall expenditures within $6.7\%$.
+2. **Nominal Dollar Prediction vs. Rank-Order Heuristics:** Gradient boosted tree regressors fit on log-expenditure achieve optimal median error (MAE $\approx \$7,512$) but severely underestimate aggregate nominal spending (mean predicted $\$2,378$ vs. $\$8,765$ observed). In contrast, an 11-feature Tweedie Compound Poisson-Gamma GLM ($p=1.5$) evaluated from frozen baseline weights directly predicts dollar scale with a positive $R^2 = \mathbf{0.0798}$ (weighted $R^2 = \mathbf{0.0832}$, Mean Pred $\$8,177.92$), tracking overall expenditures within $6.7\%$.
 3. **The Econometric Persistence Benchmark:** In prospective forecasting, a historical Year 1 spending baseline achieves $R^2 = \mathbf{0.1204}$, outperforming the static diagnosis-only Tweedie model ($R^2 = \mathbf{0.0652}$), highlighting the fundamental econometrics principle that past spending patterns dominate cross-sectional diagnosis flags.
-4. **Decentralized Ledger Throughput & Scaling:** Benchmarking via Hyperledger Caliper across $24,500$ transactions demonstrates linear throughput up to $200$ TPS with sub-$100$ms confirmation latency ($0.04$s avg), with network saturation occurring at **$350.1$ TPS** under a $1,000$ TPS offered stress load with zero transaction failures ($0.00\%$).
+4. **Decentralized Ledger Throughput & Scaling:** Historical baseline benchmarking via Hyperledger Caliper across $24,500$ transactions demonstrates linear throughput up to $200$ TPS with sub-$100$ms confirmation latency ($0.04$s avg), with network saturation occurring at **$350.1$ TPS** under a $1,000$ TPS offered stress load with zero transaction failures ($0.00\%$).
 5. **Explainability & Stability:** SHAP TreeExplainer attributions verify exact numerical additivity (error $< 10^{-5}$) and demonstrate near-perfect rank stability ($\rho = 0.9909$) across independent subsamples, with multimorbidity interaction composites explaining $37.6\%$ of model attribution.
 
 Finally, we establish the boundaries of our findings: while software-level parity and clinical intake parsing have been validated programmatically, HealthScore predictions represent epidemiological risk rankings and statistical cost estimates, and do **not** constitute actuarially certified insurance pricing or commercial solvency models.
@@ -141,9 +141,9 @@ HealthScore maps patient clinical profiles into 11 observable features:
 | **Random Forest** | 11 | $\ln(1+y)$, Squared Error | $7,538.79 [$6,785, $8,328] | $24,702.54 [$19,820, $29,348] | -0.0131 | $2,449.69 | -0.0134 |
 | **OLS Linear** | 11 | $\ln(1+y)$, OLS Normal | $7,626.08 [$6,864, $8,421] | $24,663.09 [$19,788, $29,310] | -0.0098 | $2,557.06 | -0.0101 |
 | **Two-Part Model** | 11 | Logistic + OLS Smearing | $9,840.61 [$9,145, $10,580] | $24,016.85 [$19,498, $28,502] | 0.0424 | $9,734.68 | 0.0384 |
-| **Tweedie GLM ($p=1.5$)** | 11 | Direct Dollar, Log Link | $8,993.97 [$8,294, $9,731] | **$23,558.96** [$18,723, $28,160] | **0.0786** | **$8,198.51** | **0.0820** |
+| **Tweedie GLM ($p=1.5$)** | 11 | Direct Dollar, Log Link | **$8,987.94** [$8,289, $9,725] | **$23,542.97** [$18,708, $28,144] | **0.0798** | **$8,177.92** | **0.0832** |
 
-*Observed Test Set Mean:* **$\$8,764.62$**. While XGBoost minimizes median absolute error ($MAE = \$7,512.18$), its direct exponential retransformation understates the dollar mean by $72.9\%$ ($Mean Pred = \$2,378.32$). Tweedie GLM correctly tracks the arithmetic dollar mean and is the only evaluated single-stage model achieving positive dollar $R^2$ ($0.0786$).
+*Observed Test Set Mean:* **$\$8,764.62$**. While XGBoost minimizes median absolute error ($MAE = \$7,512.18$), its direct exponential retransformation understates the dollar mean by $72.9\%$ ($Mean Pred = \$2,378.32$). Tweedie GLM correctly tracks the arithmetic dollar mean and is the only evaluated single-stage model achieving positive dollar $R^2$ ($0.0798$).
 
 ### 5.2. Classifier Benchmarks on Survey-Weighted Target 2 ($P_{90, \text{wtd}} \ge \$17,827.41$)
 
@@ -194,17 +194,19 @@ TreeExplainer attributions on the approved 11-feature XGBoost regressor confirme
 
 ## 8. Hyperledger Fabric Blockchain Benchmarks
 
-Using Hyperledger Caliper across $24,500$ transactions in 8 benchmark rounds:
+Historical baseline benchmarking conducted via Hyperledger Caliper (preserved in `caliper-benchmark/report.html` from repository baseline commit `944fb0d`) across $24,500$ transactions in 8 benchmark rounds demonstrates:
 - **Linear Regime ($0 \to 200$ TPS):** Network confirms transactions with sub-$100$ms latency ($0.04$s – $0.06$s average). At $200$ TPS offered rate, committed throughput is **$199.9$ TPS**.
 - **Saturation Ceiling ($350.1$ TPS):** Under extreme $1,000$ TPS stress load, throughput saturates at **$350.1$ TPS**, with transactions queueing behind block formation and endorsement verification (average latency $18.00$s). Zero transactions failed ($0.00\%$ failure rate).
 - **Query Throughput:** Read-only state evaluations (`getPatientRecord`) scale to **$500.3$ TPS** with sub-millisecond confirmation ($< 0.001$s) via local peer CouchDB state access.
+
+*(Note: Live replication during this audit was constrained by the local Docker environment being offline; these values serve as certified historical baseline measurements).*
 
 ---
 
 ## 9. Algorithmic Fairness & Limitations
 
-- **Pediatric & Healthy Cohort Gaps:** Classifier ROC-AUC in children ($<18$) is near chance ($0.4002$), driven by low high-cost prevalence ($4.8\%$) and absence of adult chronic disease predictors. HealthScore is validated for adult chronic risk stratification, not pediatric screening.
-- **Senior Calibration Parity:** In seniors ($65+$) and patients with $2+$ conditions, the Tweedie model captures spending within $1.2\% – 2.4\%$ ($\text{ratio} = 1.012\text{x}$ and $1.024\text{x}$).
+- **Pediatric & Healthy Cohort Gaps:** Classifier ROC-AUC in children ($<18$) is chance/inverted ($0.4000$), driven by low high-cost prevalence ($3.3\%$) and absence of adult chronic disease predictors. Similarly, in individuals with 0 chronic conditions, ROC-AUC is $0.4943$. HealthScore is validated for adult chronic risk stratification, not pediatric or acute trauma screening.
+- **Senior Calibration Parity:** In seniors ($65+$) and patients with $2+$ conditions, the Tweedie model captures spending within $1.2\% – 3.4\%$ ($\text{ratio} = 1.012\text{x}$ and $1.034\text{x}$).
 - **Actuarial Scoping Gap:** The Monte Carlo parametric loss simulation is strictly an exploratory demonstration heuristic. It does **not** model commercial insurer claims, statutory expense loadings (ACA 80/20 MLR), or capital solvency reserves. HealthScore must not be used for commercial rate filing without actuarial certification.
 
 ---

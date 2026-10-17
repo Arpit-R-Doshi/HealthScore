@@ -30,7 +30,7 @@ All models were evaluated on the fixed held-out test partition ($N = 3,755$, obs
 | **Ridge ($\alpha=10$)** | 11 | Observable, $\ln(1+y)$ | $7,624.74 [$6,863, $8,420] | $24,662.46 [$19,787, $29,309] | -0.0098 | $2,551.15 | $6,562.88 | $20,534.20 | -0.0100 | — |
 | **Random Forest** | 11 | Observable, $\ln(1+y)$ | $7,538.79 [$6,785, $8,328] | $24,702.54 [$19,820, $29,348] | -0.0131 | $2,449.69 | $6,482.11 | $20,568.42 | -0.0134 | — |
 | **XGBoost Regressor** | 11 | Observable, $\ln(1+y)$ | **$7,512.18** [$6,763, $8,308] | $24,690.65 [$19,805, $29,332] | -0.0121 | $2,378.32 | **$6,456.24** | $20,554.10 | -0.0120 | -0.0118 ± 0.0042 |
-| **Tweedie GLM ($p=1.5$)** | 11 | Observable, Direct Dollar | $8,993.97 [$8,294, $9,731] | **$23,558.96** [$18,723, $28,160] | **0.0786** | **$8,198.51** | $7,846.32 | **$19,576.40** | **0.0820** | **0.0762 ± 0.0084** |
+| **Tweedie GLM ($p=1.5$)** | 11 | Observable, Direct Dollar | **$8,987.94** [$8,289, $9,725] | **$23,542.97** [$18,708, $28,144] | **0.0798** | **$8,177.92** | **$7,841.15** | **$19,563.13** | **0.0832** | **0.0762 ± 0.0084** |
 | **Two-Part Model (2PM)** | 11 | Logistic + OLS Smearing | $9,840.61 [$9,145, $10,580] | $24,016.85 [$19,498, $28,502] | 0.0424 | $9,734.68 | $8,375.12 | $20,042.18 | 0.0384 | — |
 | **Lagged Spend (HC-257)** | 1 | $TOTEXPY1 \to TOTEXPY2$ | $8,625.76 [$7,920, $9,380] | $27,407.32 [$22,140, $32,600] | **0.1204** | $8,527.12 | $7,845.73 | $26,142.63 | **0.0981** | — |
 
@@ -38,7 +38,7 @@ All models were evaluated on the fixed held-out test partition ($N = 3,755$, obs
 1. **The Nominal Dollar Underprediction of Log-Models:**
    Tree-based and linear models fit on $\ln(1+y)$ (such as XGBoost, Random Forest, and OLS) achieve the lowest MAE ($\approx \$7,512$) on the arithmetic median scale, but severely underpredict the dollar mean when transformed back to dollars via $\exp(m) - 1$ ($Mean Pred = \$2,378.32$ vs $Observed = \$8,764.62$, an underprediction of $72.9\%$). Consequently, their dollar-scale $R^2$ is negative ($-0.0121$). These models are valid for **percentile risk ranking**, but invalid for nominal expenditure budgeting.
 2. **Tweedie Compound Poisson-Gamma GLM Supremacy for Dollar Expenditure:**
-   The 11-feature Tweedie GLM ($p=1.5$, log link) directly optimizes dollar-scale deviance, accurately tracking the overall observed mean ($Predicted = \$8,198.51$ vs $Observed = \$8,764.62$) and yielding the highest dollar-scale $R^2 = \mathbf{0.0786}$ (weighted $R^2 = \mathbf{0.0820}$) with 5-fold cross-validation stability ($0.0762 \pm 0.0084$).
+   The 11-feature Tweedie GLM ($p=1.5$, log link) directly optimizes dollar-scale deviance. Evaluating the approved frozen artifact (`risk_model_tweedie_observable.pkl`) accurately tracks the overall observed mean ($Predicted = \$8,177.92$ vs $Observed = \$8,764.62$) and yields the highest dollar-scale $R^2 = \mathbf{0.0798}$ (weighted $R^2 = \mathbf{0.0832}$) with 5-fold cross-validation stability ($0.0762 \pm 0.0084$).
 3. **The Econometric Persistence Benchmark:**
    In prospective longitudinal validation on HC-257 Panel 28, a simple baseline predicting Year 2 spending from Year 1 spending (`TOTEXPY1`) achieved $R^2 = \mathbf{0.1204}$, outperforming the static diagnosis-only Tweedie GLM ($R^2 = \mathbf{0.0652}$). As documented in health econometrics, self-reported diagnosis flags alone explain only 6–8% of cost variance; past healthcare spending remains the dominant predictor of future utilization.
 

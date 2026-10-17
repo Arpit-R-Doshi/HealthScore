@@ -4,7 +4,7 @@
 **Completion Date:** October 2026
 **Project Lead:** Autonomous Research Agent & Systems Engineering Reviewer
 **Repository Branch:** `feature/ml-pipeline-rebuild`
-**Test Suite Status:** 76 Passing Tests (`pytest ml_model/tests/`)
+**Test Suite Status:** 77 Passing Tests (`pytest ml_model/tests/`)
 **Deliverables Directory:** [`research_completion/`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/)
 
 ---
@@ -80,7 +80,7 @@ Five publication-quality figures generated at 300 DPI are stored in `research_co
 | **Target 2 Training Weighted Prev** | $0.1156$ (Incorrectly assigned) | **0.099888** | Exact survey-weighted prevalence using `PERWT23F`. |
 | **Target 2 Baseline Weighted Brier** | $0.1059$ | **0.094108** | Evaluated strictly against training weighted prevalence. |
 | **XGBoost Predicted Dollar Mean** | Overlooked in early drafts | **$2,378.32** | Disclosed $72.9\%$ underprediction of observed mean ($8,764.62). |
-| **Tweedie Predicted Dollar Mean** | Unreported in early drafts | **$8,198.51** | Accurately tracks observed mean with positive $R^2 = 0.0786$. |
+| **Tweedie Predicted Dollar Mean** | Unreported in early drafts | **$8,177.92** | Accurately tracks observed mean with positive $R^2 = 0.0798$. |
 | **HC-256 Weighted Classifier AUC** | Reference: $0.7828$ | **0.7828** (BSS: **+0.1266**) | Re-executed on independent 2024 population ($N=18,979$). |
 | **HC-257 Prospective Classifier AUC**| Reference: $0.7807$ | **0.7807** (BSS: **+0.1263**) | Re-executed on prospective Panel 28 ($N=8,708$). |
 | **Lagged Spend Baseline $R^2$** | Unreported in initial paper | **0.1204** (MAE: **$8,625.76**) | Established econometric benchmark for multi-year spending. |
@@ -92,7 +92,7 @@ Five publication-quality figures generated at 300 DPI are stored in `research_co
 ## 5. Four Formal Readiness Judgments
 
 ### 1. Software and Pipeline Readiness: **READY (HIGH ASSURANCE)**
-- **Evidence:** 76 automated unit and integration tests passing in `ml_model/tests/`. Zero target leakage, zero feature order mismatch, and clean child-process API routing verified.
+- **Evidence:** 77 automated unit and integration tests passing in `ml_model/tests/`. Zero target leakage, zero feature order mismatch, and clean child-process API routing verified.
 - **Scope:** Software compilation, input parsing, error handling, and deterministic reproducibility are fully validated.
 
 ### 2. Predictive Modeling and External-Validation Readiness: **READY (HIGH ASSURANCE)**

@@ -9,9 +9,17 @@
 
 ---
 
-## 1. Executive Summary
+## 1. Executive Summary & Original Manuscript Discovery Blocker
 
-This document provides a section-by-section reconciliation comparing the original HealthScore manuscript draft against the newly verified, evidence-backed Revised Paper (Version 2.0).
+> [!IMPORTANT]
+> **Discovery Finding & Comparison Scope:**
+> An exhaustive audit across all Git commits (`git log --all`), branches, working trees, and parent directories confirmed that **no pre-existing standalone research manuscript file** (such as a `.tex`, `.docx`, or pre-existing `paper.md`) existed in the HealthScore repository prior to this research completion effort. The original repository at commit `944fb0d` referenced an intended academic paper in its benchmark configuration (`caliper-benchmark/benchmark.yaml`), and intermediate project reports (`MODEL_EXPERIMENT_REPORT.md`, `CLINICAL_SEMANTIC_VALIDATION_REPORT.md`, `EXTERNAL_VALIDATION_REPORT.md`, `ACTUARIAL_SCOPE_GAP_ASSESSMENT.md`, `README.md`) recorded early preliminary working claims.
+>
+> Therefore:
+> - We do **not** claim to have performed a direct manuscript-to-manuscript text diff against a pre-existing paper.
+> - The manuscript in [`research_completion/paper/REVISED_PAPER.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/paper/REVISED_PAPER.md) represents the **initial complete, evidence-backed academic research manuscript draft** authored for the project.
+> - This reconciliation document compares the new manuscript draft against **historical project markdown reports, preliminary engineering claims, and pre-audit working draft metrics**.
+> - A direct original-manuscript comparison remains blocked by the absence of any prior manuscript file in the repository.
 
 Every material modification is categorized by type (Numerical, Methodological, Conceptual, or Actuarial Scoping) and cross-referenced with empirical test outputs.
 

@@ -11,6 +11,10 @@
 
 ## 1. Executive Summary
 
+> [!NOTE]
+> **Historical Baseline Classification & Live Rerun Environment Blocker:**
+> The empirical benchmark metrics documented in this report represent **authoritative historical baseline measurements** captured in repository commit `944fb0d` and preserved machine-readably in [`caliper-benchmark/report.html`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/report.html). During the current integrity audit, a live re-execution of the Caliper benchmark suite could not be launched because the local Docker daemon and Hyperledger Fabric peer/orderer containers were offline (`docker ps` returned zero active containers). Spinning up the 15+ container network requires host Docker daemon access and root privileges (`./install-fabric.sh`). Accordingly, these figures are maintained and certified as historical baseline benchmark results rather than newly repeated measurements.
+
 This report documents the performance, throughput scalability, latency characteristics, and saturation limits of the HealthScore distributed ledger network. Benchmarks were conducted using the Linux Foundation's official Hyperledger Caliper framework across 8 distinct operational workloads totaling $24,500$ transactions.
 
 ### Key Performance Highlights

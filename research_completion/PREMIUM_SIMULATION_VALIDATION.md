@@ -4,7 +4,7 @@
 **Evaluation Date:** October 2026
 **Auditor:** Autonomous Actuarial-Engineering Reviewer & Senior Healthcare Systems Architect
 **Implementation Source:** [`ml_model/risk_engine.py`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/ml_model/risk_engine.py)
-**Test Suite:** [`ml_model/tests/test_premium_simulation.py`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/ml_model/tests/test_premium_simulation.py) (7/7 Passing Tests)
+**Test Suite:** [`ml_model/tests/test_premium_simulation.py`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/ml_model/tests/test_premium_simulation.py) (8/8 Passing Tests)
 
 ---
 
@@ -27,7 +27,7 @@ Where:
 - $\hat{C}$: Model-predicted expected annual healthcare expenditure (derived from the 11-feature Observable Tweedie GLM in USD).
 - $k = 1.5$: Fixed Gamma shape parameter reflecting moderate positive skewness in individual healthcare claims.
 - $\theta = \frac{\hat{C}}{k}$: Scale parameter matching the expected loss mean ($\mathbb{E}[\text{Gamma}] = k\theta = \hat{C}$).
-- $B = \$500.00$: Fixed base expenditure floor representing basic preventative care and administrative baseline overhead.
+- $B = \$500.00$: Configurable base expenditure floor (defaulting to $\$500.00$, originating as an arbitrary administrative scalar in prototype commit `af6a322`).
 - $N = 5,000$: Number of independent pseudo-random synthetic loss draws.
 - $\text{Premium} = \text{VaR}_{0.95}(X)$: 95th-percentile Value-at-Risk of the simulated annual loss distribution.
 - $\text{Confidence Interval} = [\text{VaR}_{0.05}(X), \text{VaR}_{0.95}(X)]$.
@@ -39,19 +39,21 @@ Where:
 During Phase 3 engineering, the original implementation in `risk_engine.py` was enhanced to resolve potential edge-case failures:
 
 1. **Deterministic Random Seed Support:**
-   Added an optional `seed` parameter (`monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None)`). When provided, an independent `np.random.default_rng(seed)` generator is used, ensuring exact bit-level determinism down to the cent across calls.
+   Added an optional `seed` parameter (`monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None, base_cost=500.0)`). When provided, an independent `np.random.default_rng(seed)` generator is used, ensuring exact bit-level determinism down to the cent across calls.
 2. **Robust Boundary & Missing Input Guards:**
    Implemented explicit type-casting and boundary checks:
-   - If `predicted_mean_cost` is `None`, `NaN`, non-numeric, or $\le 0$, it is safely clamped to the baseline floor of $\$500.00$.
+   - If `predicted_mean_cost` is `None`, `NaN`, non-numeric, or $\le 0$, it is safely clamped to the baseline floor (`base_cost`, default $\$500.00$).
    - Extreme outlier values are capped at $\$10,000,000.00$ to prevent numerical overflow in floating-point Gamma samplers.
-3. **Strict Non-Negativity Invariant:**
-   Enforced floor bounding via `np.maximum(base_cost, gamma_draws + base_cost)`, guaranteeing that simulated draws and final premiums never evaluate below $\$500.00$.
+3. **Configurable Base Cost Scenario Parameter:**
+   Rather than hard-coding an unalterable rule, `base_cost` is an explicit keyword argument (default `500.0`), allowing empirical sensitivity analysis (e.g. testing $\$0$, $\$250$, or $\$500$).
+4. **Strict Non-Negativity Invariant:**
+   Enforced floor bounding via `np.maximum(base_cost, gamma_draws + base_cost)`, guaranteeing that simulated draws and final premiums never evaluate below the specified base floor.
 
 ---
 
 ## 4. Automated Invariant & Scenario Test Suite
 
-Seven automated invariant tests were implemented in [`test_premium_simulation.py`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/ml_model/tests/test_premium_simulation.py):
+Eight automated invariant tests were implemented in [`test_premium_simulation.py`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/ml_model/tests/test_premium_simulation.py):
 
 | Test Case Name | Invariant Tested | Verified Behavior | Status |
 | :--- | :--- | :--- | :---: |
@@ -61,6 +63,7 @@ Seven automated invariant tests were implemented in [`test_premium_simulation.py
 | `test_monotonicity_under_fixed_seed` | Stochastic Dominance | Increasing expected costs ($\$500 \to \$25,000$) produce monotonically non-decreasing premiums. | **PASSED** |
 | `test_extreme_and_invalid_inputs` | Edge Robustness | Graceful handling of `None`, `NaN`, $-9999.0$, and $\$10,000,000.0$ without unhandled exceptions. | **PASSED** |
 | `test_loading_and_risk_margin` | Risk Margin Coverage | Target premium exceeds expected mean cost ($\text{VaR}_{0.95} > \hat{C}$), providing reserve margin. | **PASSED** |
+| `test_configurable_base_cost_scenario` | Parameter Sensitivity | Monotonic scaling with custom base floors ($\$0 < \$250 < \$500$). | **PASSED** |
 | `test_engine_integration_and_disclaimers` | System Integration | Integrated `calculate_risk` returns structured premium, CI, and explicit disclaimer qualifications. | **PASSED** |
 
 ---

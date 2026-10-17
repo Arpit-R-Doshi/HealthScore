@@ -78,26 +78,26 @@ We evaluated model predictions across demographic and clinically distinct subpop
 
 | Subgroup Category | Subpopulation | Sample Size ($N$) | Observed Mean ($) | Tweedie Pred Mean ($) | Ratio (Obs / Pred) | Classifier ROC-AUC | Outcome Prev (%) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Age Category** | **Pediatric ($<18$)** | 731 | $3,113.53 | $2,529.17 | 1.231x | 0.4002 | 4.8% |
-| | **Young Adult ($18–44$)** | 1,121 | $5,271.57 | $4,808.84 | 1.096x | 0.6866 | 7.9% |
-| | **Middle Age ($45–64$)** | 954 | $10,389.33 | $9,332.94 | 1.113x | 0.7312 | 15.6% |
-| | **Older Adult ($65+$)** | 949 | $15,610.44 | $15,429.11 | **1.012x** | 0.6748 | 18.9% |
-| **Sex / Gender** | **Female** | 2,003 | $8,674.37 | $8,892.67 | **0.975x** | 0.7443 | 12.1% |
-| | **Male** | 1,752 | $8,867.81 | $7,404.89 | 1.198x | **0.7821** | 11.9% |
-| **Comorbidity Tier** | **0 Comorbidities** | 1,358 | $2,851.17 | $2,674.46 | 1.066x | 0.4897 | 3.2% |
-| | **1 Comorbidity** | 827 | $6,052.22 | $5,447.10 | 1.111x | 0.6636 | 10.3% |
-| | **2 Comorbidities** | 673 | $9,882.55 | $9,652.82 | **1.024x** | 0.6204 | 16.2% |
-| | **3+ Comorbidities** | 897 | $19,379.17 | $18,007.11 | 1.076x | 0.6175 | 24.3% |
+| **Age Category** | **Pediatric ($<18$)** | 731 | $3,113.53 | $2,534.91 | 1.228x | 0.4000 | 3.3% |
+| | **Young Adult ($18–44$)** | 1,121 | $5,271.57 | $4,778.56 | 1.103x | 0.6935 | 6.2% |
+| | **Middle Age ($45–64$)** | 954 | $10,389.33 | $9,291.99 | 1.118x | 0.7283 | 15.0% |
+| | **Older Adult ($65+$)** | 949 | $15,610.44 | $15,420.16 | **1.012x** | 0.6705 | 22.4% |
+| **Sex / Gender** | **Female** | 2,003 | $8,674.37 | $8,857.19 | **0.979x** | 0.7449 | 13.2% |
+| | **Male** | 1,752 | $8,867.81 | $7,401.33 | 1.198x | **0.7813** | 10.6% |
+| **Comorbidity Tier** | **0 Comorbidities** | 1,358 | $2,851.17 | $2,712.35 | 1.051x | 0.4943 | 3.4% |
+| | **1 Comorbidity** | 827 | $6,052.22 | $5,400.69 | 1.121x | 0.6734 | 7.3% |
+| | **2 Comorbidities** | 673 | $9,882.55 | $9,560.77 | **1.034x** | 0.6193 | 13.5% |
+| | **3+ Comorbidities** | 897 | $19,379.17 | $17,975.41 | 1.078x | 0.6147 | 28.2% |
 
 ---
 
 ## 5. Fairness Findings & Policy Implications
 
 1. **Pediatric & Healthy Cohort Discrimination Gaps:**
-   In healthy individuals ($0$ comorbidities) and pediatric populations ($<18$), the classifier displays near-chance ROC-AUC ($0.4002$ – $0.4897$). This is driven by extreme class imbalance (only $3.2\%$ and $4.8\%$ positive outcomes) and the absence of adult chronic disease predictors. The model cannot reliably distinguish which healthy child will experience a rare high-cost event (e.g. accidental trauma or acute surgery). This limitation must be explicitly disclosed: **HealthScore is effective for adult chronic disease stratification, but uninformative for pediatric or asymptomatic healthy risk discrimination.**
+   In healthy individuals ($0$ comorbidities) and pediatric populations ($<18$), the classifier displays chance or inverted ROC-AUC ($0.4000$ and $0.4943$). This is driven by class imbalance (only $3.3\%$ and $3.4\%$ positive outcomes) and the absence of adult chronic disease predictors. The model cannot reliably distinguish which healthy child will experience a rare high-cost event (e.g. accidental trauma or acute surgery). This limitation must be explicitly disclosed: **HealthScore is effective for adult chronic disease stratification, but uninformative for pediatric or asymptomatic healthy risk discrimination.**
 2. **Senior and Multimorbid Calibration Parity:**
-   Among seniors ($65+$) and patients with $2+$ chronic conditions, the Tweedie GLM achieves exceptional dollar calibration: Observed-to-Predicted ratios are **$1.012\text{x}$** ($65+$) and **$1.024\text{x}$** ($2$ comorbidities), accurately capturing senior healthcare costs within $1.2\% – 2.4\%$.
+   Among seniors ($65+$) and patients with $2+$ chronic conditions, the Tweedie GLM achieves exceptional dollar calibration: Observed-to-Predicted ratios are **$1.012\text{x}$** ($65+$) and **$1.034\text{x}$** ($2$ comorbidities), accurately capturing senior healthcare costs within $1.2\% – 3.4\%$.
 3. **Gender Disparity in Expenditure Scaling:**
-   The model exhibits a slight underprediction among males ($\text{ratio} = 1.198\text{x}$) compared to females ($\text{ratio} = 0.975\text{x}$). While female spending is higher across reproductive and preventive services, males in older cohorts experience steeper acute catastrophic hospitalizations.
+   The model exhibits a slight underprediction among males ($\text{ratio} = 1.198\text{x}$) compared to females ($\text{ratio} = 0.979\text{x}$). While female spending is higher across reproductive and preventive services, males in older cohorts experience steeper acute catastrophic hospitalizations.
 4. **Ethical & Underwriting Disclaimer:**
    Under the Affordable Care Act (ACA) and global healthcare rating regulations, individual health insurance underwriting based on gender or pre-existing medical conditions is strictly prohibited. HealthScore's predictions represent statistical epidemiological risk assessments and must **not** be used for discriminatory underwriting, medical exclusion, or individual premium loading.
