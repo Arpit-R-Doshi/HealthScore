@@ -799,38 +799,75 @@ def main():
     shap_summary = run_shap_analysis(xgb_obs, X_te_obs, splits["observable_feature_cols"])
 
     # 8. Export Model Artifacts
-    # Primary deployment model is the 11-feature observable-inputs model!
-    with open(PRIMARY_MODEL_FILE, "wb") as f:
+    # By default, preserve frozen approved artifacts and write to candidates directory
+    import argparse
+    parser = argparse.ArgumentParser(description="HealthScore Model Training Pipeline")
+    parser.add_argument("--overwrite-approved-artifacts", action="store_true", help="Promote newly trained models to approved production artifacts")
+    parser.add_argument("--update-manifest", action="store_true", help="Update model_manifest.json with new artifact SHA-256 hashes")
+    args, _ = parser.parse_known_args()
+
+    if args.overwrite_approved_artifacts:
+        print("\n[PROMOTION] Overwriting manifested production model artifacts...")
+        export_base = BASE_DIR
+        export_artifacts = ARTIFACTS_DIR
+    else:
+        print("\n[PRESERVATION] Preserving frozen approved production artifacts.")
+        print("  Exporting newly trained model candidates to artifacts/candidates/")
+        print("  Pass --overwrite-approved-artifacts --update-manifest to promote candidates.")
+        export_base = os.path.join(ARTIFACTS_DIR, "candidates")
+        export_artifacts = os.path.join(ARTIFACTS_DIR, "candidates")
+        os.makedirs(export_artifacts, exist_ok=True)
+
+    with open(os.path.join(export_base, "risk_model.pkl"), "wb") as f:
         pickle.dump(xgb_obs, f)
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_observable.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_observable.pkl"), "wb") as f:
         pickle.dump(xgb_obs, f)
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_14feat_full.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_14feat_full.pkl"), "wb") as f:
         pickle.dump(xgb_full, f)
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_tweedie.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_tweedie.pkl"), "wb") as f:
         pickle.dump(tw_unw, f)
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_tweedie_observable.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_tweedie_observable.pkl"), "wb") as f:
         pickle.dump(tw_obs, f)
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_twopart.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_twopart.pkl"), "wb") as f:
         pickle.dump({"part1_clf": part1_clf, "part2_reg": part2_reg, "duan_smear": duan_smear}, f)
 
-    # Export classifiers with explicitly named artifacts and declared targets
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_classifier.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_classifier.pkl"), "wb") as f:
         pickle.dump(cal_xgb_unw, f)
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_classifier_unweighted_p90.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_classifier_unweighted_p90.pkl"), "wb") as f:
         pickle.dump(cal_xgb_unw, f)
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_classifier_weighted_p90.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_classifier_weighted_p90.pkl"), "wb") as f:
         pickle.dump(cal_xgb_tgt2, f)
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_classifier_observable.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_classifier_observable.pkl"), "wb") as f:
         pickle.dump(lr_obs_tgt2, f)
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_classifier_observable_weighted_p90.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_classifier_observable_weighted_p90.pkl"), "wb") as f:
         pickle.dump(lr_obs_tgt2, f)
-    with open(os.path.join(ARTIFACTS_DIR, "risk_model_classifier_observable_unweighted_p90.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "risk_model_classifier_observable_unweighted_p90.pkl"), "wb") as f:
         pickle.dump(lr_obs_unw, f)
 
-    with open(BENCHMARK_FILE, "wb") as f:
+    with open(os.path.join(export_base, "benchmark_costs.pkl"), "wb") as f:
         pickle.dump(benchmark_bundle, f)
-    with open(os.path.join(ARTIFACTS_DIR, "benchmark_costs_oof.pkl"), "wb") as f:
+    with open(os.path.join(export_artifacts, "benchmark_costs_oof.pkl"), "wb") as f:
         pickle.dump(benchmark_bundle["predicted_costs_oof"], f)
+
+    if args.overwrite_approved_artifacts and args.update_manifest:
+        import hashlib
+        manifest_path = os.path.join(BASE_DIR, "model_manifest.json")
+        if os.path.exists(manifest_path):
+            with open(manifest_path, "r") as mf:
+                mdata = json.load(mf)
+            for mkey, mspec in mdata.get("approved_models", {}).items():
+                mpath = os.path.join(BASE_DIR, mspec["artifact_path"])
+                if os.path.exists(mpath):
+                    with open(mpath, "rb") as bf:
+                        mspec["sha256"] = hashlib.sha256(bf.read()).hexdigest()
+            if "auxiliary_artifacts" in mdata and "benchmark_distribution" in mdata["auxiliary_artifacts"]:
+                bpath = os.path.join(BASE_DIR, mdata["auxiliary_artifacts"]["benchmark_distribution"]["artifact_path"])
+                if os.path.exists(bpath):
+                    with open(bpath, "rb") as bf:
+                        mdata["auxiliary_artifacts"]["benchmark_distribution"]["sha256"] = hashlib.sha256(bf.read()).hexdigest()
+            with open(manifest_path, "w") as mf:
+                json.dump(mdata, mf, indent=2)
+            print("[MANIFEST] Updated model_manifest.json with verified artifact SHA-256 hashes.")
 
     # 9. Export Comprehensive Evaluation Metrics
     evaluation_metrics = {

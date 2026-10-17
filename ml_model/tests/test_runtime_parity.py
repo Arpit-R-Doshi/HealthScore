@@ -52,11 +52,12 @@ class TestRuntimeParityAndModelManifest:
 
     def test_production_feature_columns_and_order(self, manifest_bundle):
         """All three approved models use exactly the 11 observable feature columns in identical order."""
-        _, verified = manifest_bundle
+        manifest, verified = manifest_bundle
         expected_schema = list(OBSERVABLE_COLS)
         assert len(expected_schema) == 11
 
-        for model_key, info in verified.items():
+        for model_key in manifest["approved_models"]:
+            info = verified[model_key]
             model = info["model"]
             spec = info["spec"]
 
@@ -191,3 +192,124 @@ class TestRuntimeParityAndModelManifest:
         assert "high_cost_probability" in res
         assert "premium" in res
         assert "simulated_loss_percentiles" in res
+
+    def test_auxiliary_benchmark_distribution_integrity_and_hash_match(self, manifest_bundle):
+        """Benchmark cost distribution artifact matches manifest SHA-256 and loads safely."""
+        manifest, verified = manifest_bundle
+        auxiliary = manifest.get("auxiliary_artifacts", {})
+        assert "benchmark_distribution" in auxiliary
+        bench_spec = auxiliary["benchmark_distribution"]
+
+        assert "benchmark_distribution" in verified
+        bench_info = verified["benchmark_distribution"]
+        assert os.path.exists(bench_info["path"])
+
+        with open(bench_info["path"], "rb") as f:
+            actual_hash = hashlib.sha256(f.read()).hexdigest()
+
+        assert actual_hash.lower() == bench_spec["sha256"].lower()
+        bench_data = bench_info["data"]
+        assert isinstance(bench_data, dict)
+        assert "predicted_costs_oof" in bench_data
+        assert len(bench_data["predicted_costs_oof"]) > 1000
+
+    def test_missing_manifest_fails_closed(self):
+        """Missing manifest path fails closed with clear FileNotFoundError."""
+        with pytest.raises(FileNotFoundError, match="Model manifest not found"):
+            load_and_verify_manifest("/nonexistent/manifest.json")
+
+    def test_tampered_benchmark_pickle_hash_fails_closed(self):
+        """Tampered auxiliary benchmark pickle hash fails closed with RuntimeError."""
+        with open(MANIFEST_PATH, "r") as f:
+            manifest = json.load(f)
+
+        tampered = dict(manifest)
+        tampered["auxiliary_artifacts"] = {
+            "benchmark_distribution": {
+                "artifact_path": "benchmark_costs.pkl",
+                "sha256": "f" * 64,
+                "description": "tampered"
+            }
+        }
+
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as tf:
+            json.dump(tampered, tf)
+            temp_path = tf.name
+
+        try:
+            with pytest.raises(RuntimeError, match="Artifact hash mismatch for 'benchmark_distribution'"):
+                load_and_verify_manifest(temp_path)
+        finally:
+            if os.path.exists(temp_path):
+                os.unlink(temp_path)
+
+    def test_missing_benchmark_pickle_file_fails_closed(self):
+        """Missing auxiliary benchmark pickle file fails closed with FileNotFoundError."""
+        with open(MANIFEST_PATH, "r") as f:
+            manifest = json.load(f)
+
+        tampered = dict(manifest)
+        tampered["auxiliary_artifacts"] = {
+            "benchmark_distribution": {
+                "artifact_path": "nonexistent_costs.pkl",
+                "sha256": "0" * 64
+            }
+        }
+
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as tf:
+            json.dump(tampered, tf)
+            temp_path = tf.name
+
+        try:
+            with pytest.raises(FileNotFoundError, match="Auxiliary artifact 'benchmark_distribution' missing"):
+                load_and_verify_manifest(temp_path)
+        finally:
+            if os.path.exists(temp_path):
+                os.unlink(temp_path)
+
+    def test_mismatched_feature_schema_fails_closed(self):
+        """Manifest feature schema mismatch fails closed with ValueError."""
+        with open(MANIFEST_PATH, "r") as f:
+            manifest = json.load(f)
+
+        tampered = dict(manifest)
+        tampered["approved_models"]["relative_expenditure_ranker"]["feature_schema"] = [
+            "wrong_feature_name"
+        ] * 11
+
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as tf:
+            json.dump(tampered, tf)
+            temp_path = tf.name
+
+        try:
+            with pytest.raises(ValueError, match="Feature schema mismatch"):
+                load_and_verify_manifest(temp_path)
+        finally:
+            if os.path.exists(temp_path):
+                os.unlink(temp_path)
+
+    def test_mismatched_feature_count_fails_closed(self):
+        """Manifest feature count mismatch fails closed with ValueError."""
+        with open(MANIFEST_PATH, "r") as f:
+            manifest = json.load(f)
+
+        tampered = dict(manifest)
+        tampered["approved_models"]["relative_expenditure_ranker"]["feature_count"] = 12
+
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as tf:
+            json.dump(tampered, tf)
+            temp_path = tf.name
+
+        try:
+            with pytest.raises(ValueError, match="Feature count mismatch"):
+                load_and_verify_manifest(temp_path)
+        finally:
+            if os.path.exists(temp_path):
+                os.unlink(temp_path)
+
+    def test_tampered_manifest_sha256_root_of_trust_fails_closed(self, monkeypatch):
+        """When HEALTHSCORE_MANIFEST_SHA256 environment variable is set, mismatched hash fails closed."""
+        monkeypatch.setenv("HEALTHSCORE_MANIFEST_SHA256", "e" * 64)
+        with pytest.raises(RuntimeError, match="Trusted manifest root hash mismatch"):
+            load_and_verify_manifest(MANIFEST_PATH)
+

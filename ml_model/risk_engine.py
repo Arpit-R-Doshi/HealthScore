@@ -59,14 +59,26 @@ def load_and_verify_manifest(manifest_path=MANIFEST_PATH):
     """
     Loads and validates the machine-readable model manifest against serialized disk artifacts.
     Enforces exact SHA-256 hash matching, feature schema and count verification, and intended runtime role.
+    Verifies auxiliary distribution artifacts (benchmark_costs.pkl) before deserialization.
+    Optionally checks HEALTHSCORE_MANIFEST_SHA256 root of trust if specified in environment.
     FAILS CLOSED if any artifact is missing, hash mismatches, or schema differs.
     """
     import hashlib
     if not os.path.exists(manifest_path):
         raise FileNotFoundError(f"Model manifest not found at {manifest_path}")
 
-    with open(manifest_path, "r") as f:
-        manifest = json.load(f)
+    with open(manifest_path, "rb") as f:
+        manifest_bytes = f.read()
+
+    trusted_manifest_hash = os.environ.get("HEALTHSCORE_MANIFEST_SHA256")
+    if trusted_manifest_hash:
+        current_manifest_hash = hashlib.sha256(manifest_bytes).hexdigest()
+        if current_manifest_hash.lower() != trusted_manifest_hash.lower():
+            raise RuntimeError(
+                f"Trusted manifest root hash mismatch: expected {trusted_manifest_hash}, got {current_manifest_hash}. Fail closed."
+            )
+
+    manifest = json.loads(manifest_bytes.decode('utf-8'))
 
     approved = manifest.get("approved_models", {})
     verified_artifacts = {}
@@ -116,33 +128,58 @@ def load_and_verify_manifest(manifest_path=MANIFEST_PATH):
             "sha256": computed_hash
         }
 
+    # Verify auxiliary artifacts (e.g. benchmark cost distribution)
+    auxiliary = manifest.get("auxiliary_artifacts", {})
+    if "benchmark_distribution" in auxiliary:
+        bench_spec = auxiliary["benchmark_distribution"]
+        rel_bench_path = bench_spec["artifact_path"]
+        abs_bench_path = os.path.join(BASE_DIR, rel_bench_path) if not os.path.isabs(rel_bench_path) else rel_bench_path
+
+        if not os.path.exists(abs_bench_path):
+            raise FileNotFoundError(f"Auxiliary artifact 'benchmark_distribution' missing at {abs_bench_path}")
+
+        with open(abs_bench_path, "rb") as f:
+            bench_data = f.read()
+
+        bench_computed_hash = hashlib.sha256(bench_data).hexdigest()
+        bench_expected_hash = bench_spec["sha256"]
+
+        if bench_computed_hash.lower() != bench_expected_hash.lower():
+            raise RuntimeError(
+                f"Artifact hash mismatch for 'benchmark_distribution' ({abs_bench_path}): "
+                f"expected {bench_expected_hash}, got {bench_computed_hash}. Fail closed."
+            )
+
+        verified_artifacts["benchmark_distribution"] = {
+            "data": pickle.loads(bench_data),
+            "spec": bench_spec,
+            "path": abs_bench_path,
+            "sha256": bench_computed_hash
+        }
+    else:
+        raise ValueError("Model manifest missing required 'auxiliary_artifacts.benchmark_distribution' specification. Fail closed.")
+
     return manifest, verified_artifacts
 
 
 def get_models():
-    """Loads and caches regression, classification, Tweedie models and benchmark distributions via manifest verification."""
+    """
+    Loads and caches regression, classification, Tweedie models and benchmark distributions via manifest verification.
+    FAILS CLOSED if model manifest is missing or invalid. Unverified pickle deserialization is strictly prohibited.
+    """
     global _REG_MODEL, _TWEEDIE_MODEL, _CLS_MODEL, _BENCHMARK_DATA, _IMPUTATION_LOOKUP, _MANIFEST, _VERIFIED_ARTIFACTS
 
     if _VERIFIED_ARTIFACTS is None:
-        if os.path.exists(MANIFEST_PATH):
-            _MANIFEST, _VERIFIED_ARTIFACTS = load_and_verify_manifest(MANIFEST_PATH)
-            _REG_MODEL = _VERIFIED_ARTIFACTS["relative_expenditure_ranker"]["model"]
-            _TWEEDIE_MODEL = _VERIFIED_ARTIFACTS["direct_dollar_regressor"]["model"]
-            _CLS_MODEL = _VERIFIED_ARTIFACTS["high_cost_classifier"]["model"]
-        else:
-            if _REG_MODEL is None and os.path.exists(REG_MODEL_PATH):
-                with open(REG_MODEL_PATH, "rb") as f:
-                    _REG_MODEL = pickle.load(f)
-            if _TWEEDIE_MODEL is None and os.path.exists(TWEEDIE_MODEL_PATH):
-                with open(TWEEDIE_MODEL_PATH, "rb") as f:
-                    _TWEEDIE_MODEL = pickle.load(f)
-            if _CLS_MODEL is None and os.path.exists(CLS_MODEL_PATH):
-                with open(CLS_MODEL_PATH, "rb") as f:
-                    _CLS_MODEL = pickle.load(f)
-
-    if _BENCHMARK_DATA is None and os.path.exists(BENCHMARK_PATH):
-        with open(BENCHMARK_PATH, "rb") as f:
-            _BENCHMARK_DATA = pickle.load(f)
+        if not os.path.exists(MANIFEST_PATH):
+            raise FileNotFoundError(
+                f"CRITICAL CONFIGURATION ERROR: Model manifest not found at {MANIFEST_PATH}. "
+                f"Production inference requires a verified model manifest and fails closed. Raw unverified pickle deserialization is prohibited."
+            )
+        _MANIFEST, _VERIFIED_ARTIFACTS = load_and_verify_manifest(MANIFEST_PATH)
+        _REG_MODEL = _VERIFIED_ARTIFACTS["relative_expenditure_ranker"]["model"]
+        _TWEEDIE_MODEL = _VERIFIED_ARTIFACTS["direct_dollar_regressor"]["model"]
+        _CLS_MODEL = _VERIFIED_ARTIFACTS["high_cost_classifier"]["model"]
+        _BENCHMARK_DATA = _VERIFIED_ARTIFACTS["benchmark_distribution"]["data"]
 
     if _IMPUTATION_LOOKUP is None and os.path.exists(METADATA_PATH):
         try:
