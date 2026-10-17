@@ -1,0 +1,92 @@
+{
+  "manifest_version": "1.0.0",
+  "provenance_description": "HealthScore research-approved frozen model artifacts for production runtime inference",
+  "approved_models": {
+    "relative_expenditure_ranker": {
+      "intended_runtime_role": "relative_expenditure_ranking",
+      "artifact_path": "risk_model.pkl",
+      "sha256": "2ba4331510d688b1a21e67156bb5aab547c12e8c1ee109a851591b126a7d9c72",
+      "algorithm": "xgboost.sklearn.XGBRegressor",
+      "feature_count": 11,
+      "feature_schema": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "target_name": "log1p_expenditure",
+      "target_definition": "log1p(TOTEXP23)",
+      "target_threshold_dollars": null,
+      "weighting_policy": "unweighted_fit_with_survey_weighted_eval",
+      "model_version": "frozen_phase1_v1",
+      "provenance": "MEPS HC-251 training split (N=15,016)"
+    },
+    "direct_dollar_regressor": {
+      "intended_runtime_role": "direct_dollar_expenditure_prediction",
+      "artifact_path": "artifacts/risk_model_tweedie_observable.pkl",
+      "sha256": "a7f185db46316c6ac5f9051f0d5e0e24c7e80f3bd1f7777cd26cd0e1b42fcbd8",
+      "algorithm": "sklearn.linear_model.TweedieRegressor",
+      "feature_count": 11,
+      "feature_schema": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "target_name": "dollar_expenditure",
+      "target_definition": "TOTEXP23 (untransformed dollar expenditure)",
+      "target_threshold_dollars": null,
+      "weighting_policy": "unweighted_fit_with_survey_weighted_eval",
+      "model_version": "frozen_phase1_v1",
+      "provenance": "MEPS HC-251 training split (N=15,016)"
+    },
+    "high_cost_classifier": {
+      "intended_runtime_role": "high_expenditure_classification",
+      "artifact_path": "artifacts/risk_model_classifier_observable_weighted_p90.pkl",
+      "sha256": "3632f8201136a2740c3d5a564bbdbb29bc8511db51709fb42c1f8e271bf28c2a",
+      "algorithm": "sklearn.linear_model.LogisticRegression",
+      "feature_count": 11,
+      "feature_schema": [
+        "AGE23X",
+        "Gender_Male",
+        "Cardio_ACG",
+        "Metabolic_ACG",
+        "Respiratory_ACG",
+        "Oncology_ACG",
+        "Musculoskeletal_ACG",
+        "Psychiatric_ACG",
+        "Comorbidity_Count",
+        "Multimorbidity_Penalty",
+        "Age_x_Comorbidity"
+      ],
+      "target_name": "Target 2: Survey-Weighted Population Top Decile",
+      "target_definition": "TOTEXP23 > 17827.405977383045 (derived from training survey weights)",
+      "target_threshold_dollars": 17827.405977383045,
+      "weighting_policy": "normalized_person_weights",
+      "model_version": "frozen_phase1_v1",
+      "provenance": "MEPS HC-251 training split (N=15,016)"
+    }
+  },
+  "auxiliary_artifacts": {
+    "benchmark_distribution": {
+      "artifact_path": "benchmark_costs.pkl",
+      "sha256": "03537b28f71a1bea2a94322fee85c9c4e9734acc618894335b9f22196d09b820",
+      "intended_runtime_role": "percentile_benchmark_cohort",
+      "provenance": "MEPS HC-251 out-of-fold training distributions"
+    }
+  }
+}

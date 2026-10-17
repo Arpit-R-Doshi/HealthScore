@@ -13,7 +13,7 @@ class TestPremiumSimulationInvariants:
 
     def test_non_negativity_and_base_floor(self):
         """Premiums and simulated percentiles must always be strictly positive and >= base floor ($500)."""
-        test_costs = [0, -100, 50, 500, 2500, 10000, 50000]
+        test_costs = [0.0, 50.0, 500.0, 2500.0, 10000.0, 50000.0]
         for cost in test_costs:
             prem, p5, p95 = monte_carlo_simulation(cost, seed=42)
             assert prem >= 500.0, f"Premium {prem} below base floor for cost {cost}"
@@ -44,21 +44,49 @@ class TestPremiumSimulationInvariants:
                 f"but cost {costs[i+1]} gave {premiums[i+1]}"
             )
 
-    def test_extreme_and_invalid_inputs(self):
-        """Robust handling of negative, zero, None, string, NaN, and extreme values."""
+    def test_explicit_validation_of_invalid_inputs(self):
+        """Fails closed with ValueError on None, NaN, Inf, negative, non-numeric, or invalid parameters."""
         # None input
-        prem_none, _, _ = monte_carlo_simulation(None, seed=42)
-        assert prem_none >= 500.0
+        with pytest.raises(ValueError, match="cannot be None"):
+            monte_carlo_simulation(None, seed=42)
 
         # NaN input
-        prem_nan, _, _ = monte_carlo_simulation(float('nan'), seed=42)
-        assert prem_nan >= 500.0
+        with pytest.raises(ValueError, match="finite non-negative"):
+            monte_carlo_simulation(float('nan'), seed=42)
 
         # Negative input
-        prem_neg, _, _ = monte_carlo_simulation(-9999.0, seed=42)
-        assert prem_neg >= 500.0
+        with pytest.raises(ValueError, match="finite non-negative"):
+            monte_carlo_simulation(-9999.0, seed=42)
 
-        # Extreme high input (should not overflow)
+        # Infinite input
+        with pytest.raises(ValueError, match="finite non-negative"):
+            monte_carlo_simulation(float('inf'), seed=42)
+
+        # Non-numeric string input
+        with pytest.raises(ValueError, match="convertible to float"):
+            monte_carlo_simulation("invalid_string", seed=42)
+
+        # Invalid n_simulations (<= 0 or non-int)
+        with pytest.raises(ValueError, match="positive integer"):
+            monte_carlo_simulation(5000.0, n_simulations=0)
+        with pytest.raises(ValueError, match="positive integer"):
+            monte_carlo_simulation(5000.0, n_simulations=-100)
+        with pytest.raises(ValueError, match="positive integer"):
+            monte_carlo_simulation(5000.0, n_simulations=10.5)
+
+        # Invalid base_cost (< 0 or non-finite)
+        with pytest.raises(ValueError, match="finite non-negative"):
+            monte_carlo_simulation(5000.0, base_cost=-50.0)
+        with pytest.raises(ValueError, match="finite non-negative"):
+            monte_carlo_simulation(5000.0, base_cost=float('nan'))
+
+    def test_boundary_zero_and_extreme_high_inputs(self):
+        """Boundary zero cost returns base_cost exactly; extreme high values do not overflow."""
+        prem_zero, p5_zero, p95_zero = monte_carlo_simulation(0.0, seed=42, base_cost=500.0)
+        assert prem_zero == 500.0
+        assert p5_zero == 500.0
+        assert p95_zero == 500.0
+
         prem_large, p5_large, p95_large = monte_carlo_simulation(10_000_000.0, seed=42)
         assert not math.isnan(prem_large)
         assert not math.isinf(prem_large)
@@ -80,7 +108,7 @@ class TestPremiumSimulationInvariants:
         assert prem_zero < prem_250 < prem_default, "Custom base_cost did not scale premium monotonically"
 
     def test_engine_integration_and_disclaimers(self):
-        """Integrated risk assessment returns properly structured premium and semantic qualifications."""
+        """Integrated risk assessment returns properly structured premium, loss percentiles, and semantic qualifications."""
         patient_data = {
             "age": 55,
             "gender": "male",
@@ -88,10 +116,15 @@ class TestPremiumSimulationInvariants:
         }
         res = calculate_risk(patient_data)
         assert "premium" in res
+        assert "simulated_loss_percentiles" in res
+        assert "p5" in res["simulated_loss_percentiles"]
+        assert "p95" in res["simulated_loss_percentiles"]
+        assert "p95_loss_heuristic" in res["simulated_loss_percentiles"]
         assert "confidence_interval" in res
         assert "p5" in res["confidence_interval"]
         assert "p95" in res["confidence_interval"]
+        assert res["confidence_interval"]["status"] == "deprecated_alias_for_simulated_loss_percentiles"
         assert res["premium"] >= 500.0
-        assert res["confidence_interval"]["p5"] <= res["confidence_interval"]["p95"]
+        assert res["simulated_loss_percentiles"]["p5"] <= res["simulated_loss_percentiles"]["p95"]
         assert "score_semantics" in res
         assert "dollar_prediction_qualification" in res["score_semantics"]

@@ -22,10 +22,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ARTIFACTS_DIR = os.path.join(BASE_DIR, "artifacts")
 
 REG_MODEL_PATH = os.path.join(BASE_DIR, "risk_model.pkl")
-TWEEDIE_MODEL_PATH = os.path.join(ARTIFACTS_DIR, "risk_model_tweedie.pkl")
-CLS_MODEL_PATH = os.path.join(ARTIFACTS_DIR, "risk_model_classifier.pkl")
+TWEEDIE_MODEL_PATH = os.path.join(ARTIFACTS_DIR, "risk_model_tweedie_observable.pkl")
+CLS_MODEL_PATH = os.path.join(ARTIFACTS_DIR, "risk_model_classifier_observable_weighted_p90.pkl")
 BENCHMARK_PATH = os.path.join(BASE_DIR, "benchmark_costs.pkl")
 METADATA_PATH = os.path.join(ARTIFACTS_DIR, "training_metadata.json")
+MANIFEST_PATH = os.path.join(BASE_DIR, "model_manifest.json")
 
 # Observable feature columns (direct data parity with frontend patient intake)
 OBSERVABLE_COLS = [
@@ -50,28 +51,94 @@ _TWEEDIE_MODEL = None
 _CLS_MODEL = None
 _BENCHMARK_DATA = None
 _IMPUTATION_LOOKUP = None
+_MANIFEST = None
+_VERIFIED_ARTIFACTS = None
+
+
+def load_and_verify_manifest(manifest_path=MANIFEST_PATH):
+    """
+    Loads and validates the machine-readable model manifest against serialized disk artifacts.
+    Enforces exact SHA-256 hash matching, feature schema and count verification, and intended runtime role.
+    FAILS CLOSED if any artifact is missing, hash mismatches, or schema differs.
+    """
+    import hashlib
+    if not os.path.exists(manifest_path):
+        raise FileNotFoundError(f"Model manifest not found at {manifest_path}")
+
+    with open(manifest_path, "r") as f:
+        manifest = json.load(f)
+
+    approved = manifest.get("approved_models", {})
+    verified_artifacts = {}
+
+    for model_key, spec in approved.items():
+        rel_path = spec["artifact_path"]
+        abs_path = os.path.join(BASE_DIR, rel_path) if not os.path.isabs(rel_path) else rel_path
+
+        if not os.path.exists(abs_path):
+            raise FileNotFoundError(f"Approved artifact for '{model_key}' missing at {abs_path}")
+
+        with open(abs_path, "rb") as f:
+            data = f.read()
+
+        computed_hash = hashlib.sha256(data).hexdigest()
+        expected_hash = spec["sha256"]
+
+        if computed_hash.lower() != expected_hash.lower():
+            raise RuntimeError(
+                f"Artifact hash mismatch for '{model_key}' ({abs_path}): "
+                f"expected {expected_hash}, got {computed_hash}. Fail closed."
+            )
+
+        obj = pickle.loads(data)
+        expected_feature_count = spec.get("feature_count")
+        if expected_feature_count is not None and hasattr(obj, "n_features_in_"):
+            if obj.n_features_in_ != expected_feature_count:
+                raise ValueError(
+                    f"Feature count mismatch for '{model_key}': "
+                    f"model has {obj.n_features_in_}, manifest expected {expected_feature_count}"
+                )
+
+        expected_schema = spec.get("feature_schema")
+        if expected_schema and hasattr(obj, "feature_names_in_"):
+            model_features = [str(x) for x in obj.feature_names_in_]
+            expected_features = [str(x) for x in expected_schema]
+            if model_features != expected_features:
+                raise ValueError(
+                    f"Feature schema mismatch for '{model_key}': "
+                    f"model has {model_features}, manifest expected {expected_features}"
+                )
+
+        verified_artifacts[model_key] = {
+            "model": obj,
+            "spec": spec,
+            "path": abs_path,
+            "sha256": computed_hash
+        }
+
+    return manifest, verified_artifacts
 
 
 def get_models():
-    """Loads and caches regression, classification, Tweedie models and benchmark distributions."""
-    global _REG_MODEL, _TWEEDIE_MODEL, _CLS_MODEL, _BENCHMARK_DATA, _IMPUTATION_LOOKUP
-    if _REG_MODEL is None and os.path.exists(REG_MODEL_PATH):
-        with open(REG_MODEL_PATH, "rb") as f:
-            _REG_MODEL = pickle.load(f)
+    """Loads and caches regression, classification, Tweedie models and benchmark distributions via manifest verification."""
+    global _REG_MODEL, _TWEEDIE_MODEL, _CLS_MODEL, _BENCHMARK_DATA, _IMPUTATION_LOOKUP, _MANIFEST, _VERIFIED_ARTIFACTS
 
-    if _TWEEDIE_MODEL is None and os.path.exists(TWEEDIE_MODEL_PATH):
-        try:
-            with open(TWEEDIE_MODEL_PATH, "rb") as f:
-                _TWEEDIE_MODEL = pickle.load(f)
-        except Exception:
-            _TWEEDIE_MODEL = None
-
-    if _CLS_MODEL is None and os.path.exists(CLS_MODEL_PATH):
-        try:
-            with open(CLS_MODEL_PATH, "rb") as f:
-                _CLS_MODEL = pickle.load(f)
-        except Exception:
-            _CLS_MODEL = None
+    if _VERIFIED_ARTIFACTS is None:
+        if os.path.exists(MANIFEST_PATH):
+            _MANIFEST, _VERIFIED_ARTIFACTS = load_and_verify_manifest(MANIFEST_PATH)
+            _REG_MODEL = _VERIFIED_ARTIFACTS["relative_expenditure_ranker"]["model"]
+            _TWEEDIE_MODEL = _VERIFIED_ARTIFACTS["direct_dollar_regressor"]["model"]
+            _CLS_MODEL = _VERIFIED_ARTIFACTS["high_cost_classifier"]["model"]
+        else:
+            if _REG_MODEL is None and os.path.exists(REG_MODEL_PATH):
+                with open(REG_MODEL_PATH, "rb") as f:
+                    _REG_MODEL = pickle.load(f)
+            if _TWEEDIE_MODEL is None and os.path.exists(TWEEDIE_MODEL_PATH):
+                with open(TWEEDIE_MODEL_PATH, "rb") as f:
+                    _TWEEDIE_MODEL = pickle.load(f)
+            if _CLS_MODEL is None and os.path.exists(CLS_MODEL_PATH):
+                with open(CLS_MODEL_PATH, "rb") as f:
+                    _CLS_MODEL = pickle.load(f)
 
     if _BENCHMARK_DATA is None and os.path.exists(BENCHMARK_PATH):
         with open(BENCHMARK_PATH, "rb") as f:
@@ -630,22 +697,38 @@ def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None, b
     This output is strictly an exploratory parametric loss simulation heuristic for technical demonstration.
     Current MEPS prediction metrics and statistical associations do NOT validate commercial insurance pricing,
     premium calculation, underwriting adequacy, or reserve solvency.
+    Output describes an exploratory simulated loss percentile heuristic, NOT an insurance quote.
 
     NOTE ON BASE_COST FLOOR:
-    The default base_cost ($500.00) originated in prototype commit af6a322 as an arbitrary additive scalar
-    representing baseline administrative/preventative overhead. It is NOT derived from statutory filings or
-    actuarial tables and is configurable here for empirical sensitivity analysis.
+    The default base_cost ($500.00) is an empirical heuristic baseline offset representing baseline
+    administrative/preventative overhead. It is NOT derived from statutory filings or actuarial standards,
+    and is configurable here for empirical sensitivity analysis.
     """
+    # 1. Validate n_simulations as positive integer
+    if not isinstance(n_simulations, (int, np.integer)) or isinstance(n_simulations, bool) or n_simulations <= 0:
+        raise ValueError(f"n_simulations must be a positive integer, got {n_simulations}")
+
+    # 2. Validate base_cost as finite non-negative number
+    if not isinstance(base_cost, (int, float, np.floating, np.integer)) or isinstance(base_cost, bool) or not np.isfinite(base_cost) or base_cost < 0:
+        raise ValueError(f"base_cost must be a finite non-negative number, got {base_cost}")
+    base_cost = float(base_cost)
+
+    # 3. Validate predicted_mean_cost: handle invalid model outputs explicitly instead of silently masking
     if predicted_mean_cost is None:
-        predicted_mean_cost = base_cost
+        raise ValueError("predicted_mean_cost cannot be None. Expected finite non-negative predicted expenditure.")
     try:
         val = float(predicted_mean_cost)
-        if np.isnan(val) or val <= 0:
-            predicted_mean_cost = base_cost
-        else:
-            predicted_mean_cost = min(val, 10_000_000.0)
     except (ValueError, TypeError):
-        predicted_mean_cost = base_cost
+        raise ValueError(f"Invalid predicted_mean_cost '{predicted_mean_cost}': must be convertible to float.")
+
+    if not np.isfinite(val) or val < 0:
+        raise ValueError(f"Invalid predicted_mean_cost '{predicted_mean_cost}': must be a finite non-negative number.")
+
+    predicted_mean_cost = min(val, 10_000_000.0)
+
+    # Boundary case: zero predicted expenditure
+    if predicted_mean_cost == 0.0:
+        return round(base_cost, 2), round(base_cost, 2), round(base_cost, 2)
 
     shape = 1.5
     scale = predicted_mean_cost / shape
@@ -938,9 +1021,17 @@ def calculate_risk(data, require_structured_inputs=False):
         "ranking_expenditure_expm1": round(expected_log_cost_dollar, 2),
         "premium": target_premium,
         "high_cost_probability": high_cost_prob,
+        "simulated_loss_percentiles": {
+            "p5": p5,
+            "p95": p95,
+            "p95_loss_heuristic": target_premium,
+            "description": "Exploratory simulated loss percentiles from Gamma Monte Carlo heuristic, NOT an actuarial confidence interval."
+        },
         "confidence_interval": {
             "p5": p5,
-            "p95": p95
+            "p95": p95,
+            "status": "deprecated_alias_for_simulated_loss_percentiles",
+            "qualification": "Describes empirical simulated loss percentiles (P5, P95) from exploratory heuristic, NOT an actuarial confidence interval for estimated VaR."
         },
         "top_risk_factors": risk_factors,
         "score_semantics": {

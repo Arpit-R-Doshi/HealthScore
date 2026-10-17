@@ -10,3 +10,10 @@ uploads/
 /healthscore-network/channel-artifacts/
 /healthscore-network/system-genesis-block/
 .DS_Store
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+ml_model/validation/hc256/data/
+ml_model/validation/hc257/data/

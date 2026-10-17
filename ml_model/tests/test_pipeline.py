@@ -324,12 +324,16 @@ class TestInferenceEngineSmokeTests:
     def test_unobserved_vs_explicit_input_handling(self):
         # Case 1: unobserved distress
         res_default = calculate_risk({"age": 30, "gender": "male", "diseaseInput": ""})
-        # Case 2: explicit high distress
+        # Case 2: explicit high distress (tracks in diagnostics)
         res_explicit = calculate_risk({"age": 30, "gender": "male", "diseaseInput": "", "k6_distress": 20})
-        # Explicit high distress should yield higher predicted cost and report k6_distress as observed
+        # Explicit high distress is reported as observed vs imputed in diagnostics
         assert "k6_distress" in res_explicit["data_parity_diagnostics"]["features_observed"]
         assert "k6_distress" in res_default["data_parity_diagnostics"]["features_imputed"]
-        assert res_explicit["risk_score"] > res_default["risk_score"]
+
+        # Case 3: observable condition affects 11-feature deployment predictions
+        res_condition = calculate_risk({"age": 30, "gender": "male", "diseaseInput": "hypertension"})
+        assert res_condition["risk_score"] > res_default["risk_score"]
+        assert res_condition["health_score"] < res_default["health_score"]
 
     def test_input_validation_errors(self):
         with pytest.raises(ValueError, match="Missing required field"):
