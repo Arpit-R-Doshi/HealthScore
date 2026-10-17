@@ -1,11 +1,12 @@
 test:
   name: healthscore-network-benchmark
-  description: Benchmarking the HealthScore network's throughput and latency for the academic paper.
+  description: Comprehensive benchmarking of the HealthScore Fabric network throughput, latency, saturation, and query scalability.
   workers:
     number: 5
   rounds:
+    # ── Write Scalability Sweep (createPatientRecord) ──────────────────────────
     - label: createPatientRecord-50-tps
-      description: Create patient records at 50 TPS.
+      description: Create patient records at low offered rate (50 TPS).
       txNumber: 500
       rateControl:
         type: fixed-rate
@@ -16,9 +17,10 @@ test:
         arguments:
           chaincodeId: healthscore
           targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
 
     - label: createPatientRecord-100-tps
-      description: Create patient records at 100 TPS.
+      description: Create patient records at moderate offered rate (100 TPS).
       txNumber: 1000
       rateControl:
         type: fixed-rate
@@ -29,9 +31,10 @@ test:
         arguments:
           chaincodeId: healthscore
           targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
 
     - label: createPatientRecord-200-tps
-      description: Create patient records at 200 TPS.
+      description: Create patient records at standard production operating rate (200 TPS).
       txNumber: 2000
       rateControl:
         type: fixed-rate
@@ -42,9 +45,24 @@ test:
         arguments:
           chaincodeId: healthscore
           targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
+
+    - label: createPatientRecord-350-tps
+      description: Create patient records near saturation knee boundary (350 TPS).
+      txNumber: 3500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 350
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
 
     - label: createPatientRecord-1000-tps
-      description: Create patient records at 1000 TPS.
+      description: Stress test write capacity under severe over-saturation load (1000 TPS).
       txNumber: 10000
       rateControl:
         type: fixed-rate
@@ -55,9 +73,11 @@ test:
         arguments:
           chaincodeId: healthscore
           targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
 
+    # ── Multi-Function Write Invariance at 200 TPS ─────────────────────────────
     - label: updateHealthScore-200-tps
-      description: Update health scores at 200 TPS.
+      description: Update health scores with state mutation and index update (200 TPS).
       txNumber: 2000
       rateControl:
         type: fixed-rate
@@ -68,9 +88,11 @@ test:
         arguments:
           chaincodeId: healthscore
           targetFunction: updateHealthScore
+          invokerIdentity: HospitalOrgAdmin
+          preSeedCount: 200
 
     - label: createPrescription-200-tps
-      description: Create prescriptions at 200 TPS.
+      description: Create digital prescriptions on ledger (200 TPS).
       txNumber: 2000
       rateControl:
         type: fixed-rate
@@ -81,9 +103,10 @@ test:
         arguments:
           chaincodeId: healthscore
           targetFunction: createPrescription
+          invokerIdentity: HospitalOrgAdmin
 
     - label: requestScan-200-tps
-      description: Request scans at 200 TPS.
+      description: Request diagnostic scans on ledger (200 TPS).
       txNumber: 2000
       rateControl:
         type: fixed-rate
@@ -94,9 +117,41 @@ test:
         arguments:
           chaincodeId: healthscore
           targetFunction: requestScan
+          invokerIdentity: HospitalOrgAdmin
+
+    # ── Read Query Scalability Sweep (getPatientRecord) ───────────────────────
+    - label: getPatientRecord-100-tps
+      description: Baseline query throughput at low read load (100 TPS).
+      txNumber: 1000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 100
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: getPatientRecord
+          invokerIdentity: HospitalOrgAdmin
+          preSeedCount: 200
+
+    - label: getPatientRecord-250-tps
+      description: Intermediate query throughput at medium read load (250 TPS).
+      txNumber: 2500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 250
+      workload:
+        module: workload.js
+        arguments:
+          chaincodeId: healthscore
+          targetFunction: getPatientRecord
+          invokerIdentity: HospitalOrgAdmin
+          preSeedCount: 200
 
     - label: getPatientRecord-500-tps
-      description: Query patient records at 500 TPS.
+      description: High-throughput local peer state query without consensus overhead (500 TPS).
       txNumber: 5000
       rateControl:
         type: fixed-rate
@@ -107,3 +162,5 @@ test:
         arguments:
           chaincodeId: healthscore
           targetFunction: getPatientRecord
+          invokerIdentity: HospitalOrgAdmin
+          preSeedCount: 200
