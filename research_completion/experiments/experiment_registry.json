@@ -133,52 +133,52 @@
     {
       "model_name": "XGBoost Regressor (Observable)",
       "target": "Annual Healthcare Expenditure (TOTEXP23)",
-      "mean_predicted": 2378.32,
+      "mean_predicted": 2384.13,
       "observed_mean": 8764.62,
-      "mae_unweighted": 7512.18,
+      "mae_unweighted": 7516.26,
       "mae_ci_95": [
-        6813.56,
-        8300.37
+        6822.77,
+        8314.39
       ],
-      "rmse_unweighted": 24690.65,
+      "rmse_unweighted": 24706.5,
       "rmse_ci_95": [
-        19576.02,
-        29937.95
+        19590.51,
+        29946.52
       ],
-      "r2_unweighted": -0.0121,
+      "r2_unweighted": -0.0134,
       "r2_ci_95": [
-        -0.0256,
-        0.0004
+        -0.027,
+        -0.0015
       ],
-      "mae_weighted": 6463.53,
-      "rmse_weighted": 20563.35,
-      "r2_weighted": -0.0129,
+      "mae_weighted": 6464.45,
+      "rmse_weighted": 20571.27,
+      "r2_weighted": -0.0137,
       "cv_5fold_r2_mean": -0.0014,
       "cv_5fold_r2_std": 0.0086
     },
     {
       "model_name": "Tweedie GLM (Observable)",
       "target": "Annual Healthcare Expenditure (TOTEXP23)",
-      "mean_predicted": 8198.51,
+      "mean_predicted": 8177.92,
       "observed_mean": 8764.62,
-      "mae_unweighted": 8993.97,
+      "mae_unweighted": 8987.94,
       "mae_ci_95": [
-        8338.11,
-        9753.46
+        8327.43,
+        9744.22
       ],
-      "rmse_unweighted": 23558.96,
+      "rmse_unweighted": 23542.97,
       "rmse_ci_95": [
-        18478.98,
-        28820.9
+        18452.0,
+        28784.45
       ],
-      "r2_unweighted": 0.0786,
+      "r2_unweighted": 0.0798,
       "r2_ci_95": [
-        0.0567,
-        0.1087
+        0.058,
+        0.1106
       ],
-      "mae_weighted": 7846.12,
-      "rmse_weighted": 19580.77,
-      "r2_weighted": 0.0816,
+      "mae_weighted": 7841.15,
+      "rmse_weighted": 19563.13,
+      "r2_weighted": 0.0832,
       "cv_5fold_r2_mean": 0.1125,
       "cv_5fold_r2_std": 0.015
     },
@@ -283,26 +283,26 @@
     {
       "model_name": "Logistic Regression (11-Feat Observable)",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
-      "mean_pred_prob": 0.1165,
-      "roc_auc": 0.7652,
+      "mean_pred_prob": 0.1151,
+      "roc_auc": 0.7654,
       "roc_auc_ci_95": [
-        0.7433,
-        0.7882
+        0.7444,
+        0.7881
       ],
-      "pr_auc": 0.3192,
+      "pr_auc": 0.3184,
       "pr_auc_ci_95": [
-        0.2869,
-        0.3582
+        0.2876,
+        0.3556
       ],
       "brier_unweighted": 0.0936,
-      "bss_unweighted": 0.1129,
+      "bss_unweighted": 0.1123,
       "brier_weighted": 0.0845,
       "bss_weighted": 0.1025,
-      "cal_intercept": -0.0638,
-      "cal_slope": 0.9405,
-      "precision_at_10pct": 0.2278,
-      "recall_at_10pct": 0.7644,
-      "f1_at_10pct": 0.351
+      "cal_intercept": 0.0157,
+      "cal_slope": 0.9788,
+      "precision_at_10pct": 0.2318,
+      "recall_at_10pct": 0.7733,
+      "f1_at_10pct": 0.3567
     },
     {
       "model_name": "Logistic Regression (11-Feat Wtd Fit)",
@@ -403,26 +403,26 @@
     {
       "model_name": "Logistic Regression (14-Feat Oracle)",
       "target": "High Expenditure P90 Threshold ($17,827.41)",
-      "mean_pred_prob": 0.117,
-      "roc_auc": 0.7869,
+      "mean_pred_prob": 0.1172,
+      "roc_auc": 0.7904,
       "roc_auc_ci_95": [
-        0.7645,
-        0.8101
+        0.7684,
+        0.8121
       ],
-      "pr_auc": 0.3607,
+      "pr_auc": 0.3472,
       "pr_auc_ci_95": [
-        0.3215,
-        0.3966
+        0.3143,
+        0.3917
       ],
-      "brier_unweighted": 0.0903,
-      "bss_unweighted": 0.1443,
-      "brier_weighted": 0.0819,
-      "bss_weighted": 0.13,
-      "cal_intercept": 0.0033,
-      "cal_slope": 0.9823,
-      "precision_at_10pct": 0.2509,
-      "recall_at_10pct": 0.7733,
-      "f1_at_10pct": 0.3789
+      "brier_unweighted": 0.0922,
+      "bss_unweighted": 0.1265,
+      "brier_weighted": 0.0832,
+      "bss_weighted": 0.1159,
+      "cal_intercept": 0.0578,
+      "cal_slope": 1.0158,
+      "precision_at_10pct": 0.2806,
+      "recall_at_10pct": 0.6822,
+      "f1_at_10pct": 0.3977
     }
   ],
   "feature_ablations": [
@@ -686,77 +686,77 @@
     }
   ],
   "shap_summary": {
-    "max_additivity_error": 9.54e-06,
+    "max_additivity_error": 1.812e-05,
     "additivity_verified": true,
     "feature_importance": [
       {
         "feature": "Age_x_Comorbidity",
-        "mean_abs_shap_log_scale": 0.7724,
-        "relative_importance_pct": 37.6,
+        "mean_abs_shap_log_scale": 0.8148,
+        "relative_importance_pct": 39.01,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       },
       {
         "feature": "Comorbidity_Count",
-        "mean_abs_shap_log_scale": 0.4601,
-        "relative_importance_pct": 22.4,
+        "mean_abs_shap_log_scale": 0.4383,
+        "relative_importance_pct": 20.99,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       },
       {
         "feature": "Gender_Male",
-        "mean_abs_shap_log_scale": 0.2928,
-        "relative_importance_pct": 14.25,
+        "mean_abs_shap_log_scale": 0.2922,
+        "relative_importance_pct": 13.99,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       },
       {
         "feature": "AGE23X",
-        "mean_abs_shap_log_scale": 0.246,
-        "relative_importance_pct": 11.98,
+        "mean_abs_shap_log_scale": 0.2417,
+        "relative_importance_pct": 11.57,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       },
       {
         "feature": "Multimorbidity_Penalty",
-        "mean_abs_shap_log_scale": 0.0702,
-        "relative_importance_pct": 3.42,
+        "mean_abs_shap_log_scale": 0.1037,
+        "relative_importance_pct": 4.96,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       },
       {
         "feature": "Musculoskeletal_ACG",
-        "mean_abs_shap_log_scale": 0.0609,
-        "relative_importance_pct": 2.96,
+        "mean_abs_shap_log_scale": 0.0501,
+        "relative_importance_pct": 2.4,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       },
       {
         "feature": "Cardio_ACG",
-        "mean_abs_shap_log_scale": 0.0427,
-        "relative_importance_pct": 2.08,
-        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
-      },
-      {
-        "feature": "Oncology_ACG",
-        "mean_abs_shap_log_scale": 0.042,
-        "relative_importance_pct": 2.04,
+        "mean_abs_shap_log_scale": 0.0443,
+        "relative_importance_pct": 2.12,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       },
       {
         "feature": "Metabolic_ACG",
-        "mean_abs_shap_log_scale": 0.0351,
-        "relative_importance_pct": 1.71,
+        "mean_abs_shap_log_scale": 0.0405,
+        "relative_importance_pct": 1.94,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       },
       {
-        "feature": "Psychiatric_ACG",
-        "mean_abs_shap_log_scale": 0.0168,
-        "relative_importance_pct": 0.82,
+        "feature": "Oncology_ACG",
+        "mean_abs_shap_log_scale": 0.0368,
+        "relative_importance_pct": 1.76,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       },
       {
         "feature": "Respiratory_ACG",
-        "mean_abs_shap_log_scale": 0.0152,
-        "relative_importance_pct": 0.74,
+        "mean_abs_shap_log_scale": 0.014,
+        "relative_importance_pct": 0.67,
+        "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
+      },
+      {
+        "feature": "Psychiatric_ACG",
+        "mean_abs_shap_log_scale": 0.0125,
+        "relative_importance_pct": 0.6,
         "interpretation": "Statistical contribution to log-expenditure prediction (statistical attribution, not causal effect)"
       }
     ],
-    "rank_stability_spearman_min": 0.9909
+    "rank_stability_spearman_min": 0.9818
   },
   "subgroup_fairness": [
     {
@@ -764,130 +764,130 @@
       "subgroup": "Pediatric (<18)",
       "sample_size": 731,
       "observed_mean": 3113.53,
-      "predicted_mean": 2529.17,
-      "ratio_obs_pred": 1.231,
-      "mae": 3646.56,
+      "predicted_mean": 2534.91,
+      "ratio_obs_pred": 1.2283,
+      "mae": 3651.36,
       "high_cost_prev": 0.0328,
-      "roc_auc": 0.4002,
-      "brier_score": 0.0321,
-      "brier_skill_score": -0.0105
+      "roc_auc": 0.4,
+      "brier_score": 0.032,
+      "brier_skill_score": -0.0085
     },
     {
       "category": "Age Category",
       "subgroup": "Young Adult (18-44)",
       "sample_size": 1121,
       "observed_mean": 5271.57,
-      "predicted_mean": 4808.84,
-      "ratio_obs_pred": 1.0962,
-      "mae": 6135.33,
+      "predicted_mean": 4778.56,
+      "ratio_obs_pred": 1.1032,
+      "mae": 6129.2,
       "high_cost_prev": 0.0624,
-      "roc_auc": 0.6866,
-      "brier_score": 0.0558,
-      "brier_skill_score": 0.047
+      "roc_auc": 0.6935,
+      "brier_score": 0.0555,
+      "brier_skill_score": 0.0514
     },
     {
       "category": "Age Category",
       "subgroup": "Middle Age (45-64)",
       "sample_size": 954,
       "observed_mean": 10389.33,
-      "predicted_mean": 9332.94,
-      "ratio_obs_pred": 1.1132,
-      "mae": 10513.89,
+      "predicted_mean": 9291.99,
+      "ratio_obs_pred": 1.1181,
+      "mae": 10510.5,
       "high_cost_prev": 0.1499,
-      "roc_auc": 0.7312,
+      "roc_auc": 0.7283,
       "brier_score": 0.1171,
-      "brier_skill_score": 0.0807
+      "brier_skill_score": 0.0812
     },
     {
       "category": "Age Category",
       "subgroup": "Older Adult (65+)",
       "sample_size": 949,
       "observed_mean": 15610.44,
-      "predicted_mean": 15429.11,
-      "ratio_obs_pred": 1.0118,
-      "mae": 14961.81,
+      "predicted_mean": 15420.16,
+      "ratio_obs_pred": 1.0123,
+      "mae": 14944.91,
       "high_cost_prev": 0.2244,
-      "roc_auc": 0.6748,
-      "brier_score": 0.1619,
-      "brier_skill_score": 0.0699
+      "roc_auc": 0.6705,
+      "brier_score": 0.1626,
+      "brier_skill_score": 0.066
     },
     {
       "category": "Sex / Gender",
       "subgroup": "Female",
       "sample_size": 2003,
       "observed_mean": 8674.37,
-      "predicted_mean": 8892.67,
-      "ratio_obs_pred": 0.9755,
-      "mae": 8728.97,
+      "predicted_mean": 8857.19,
+      "ratio_obs_pred": 0.9794,
+      "mae": 8710.62,
       "high_cost_prev": 0.1318,
-      "roc_auc": 0.7443,
-      "brier_score": 0.1031,
-      "brier_skill_score": 0.0989
+      "roc_auc": 0.7449,
+      "brier_score": 0.1029,
+      "brier_skill_score": 0.1006
     },
     {
       "category": "Sex / Gender",
       "subgroup": "Male",
       "sample_size": 1752,
       "observed_mean": 8867.81,
-      "predicted_mean": 7404.89,
-      "ratio_obs_pred": 1.1976,
-      "mae": 9296.93,
+      "predicted_mean": 7401.33,
+      "ratio_obs_pred": 1.1981,
+      "mae": 9304.99,
       "high_cost_prev": 0.1062,
-      "roc_auc": 0.7821,
-      "brier_score": 0.0827,
-      "brier_skill_score": 0.1285
+      "roc_auc": 0.7813,
+      "brier_score": 0.0831,
+      "brier_skill_score": 0.1247
     },
     {
       "category": "Comorbidity Burden",
       "subgroup": "0 Comorbidities",
       "sample_size": 1358,
       "observed_mean": 2851.17,
-      "predicted_mean": 2674.46,
-      "ratio_obs_pred": 1.0661,
-      "mae": 3713.56,
+      "predicted_mean": 2712.35,
+      "ratio_obs_pred": 1.0512,
+      "mae": 3738.4,
       "high_cost_prev": 0.0339,
-      "roc_auc": 0.4897,
+      "roc_auc": 0.4943,
       "brier_score": 0.0328,
-      "brier_skill_score": -0.0037
+      "brier_skill_score": -0.0025
     },
     {
       "category": "Comorbidity Burden",
       "subgroup": "1 Comorbidity",
       "sample_size": 827,
       "observed_mean": 6052.22,
-      "predicted_mean": 5447.1,
-      "ratio_obs_pred": 1.1111,
-      "mae": 6943.64,
+      "predicted_mean": 5400.69,
+      "ratio_obs_pred": 1.1206,
+      "mae": 6926.5,
       "high_cost_prev": 0.0726,
-      "roc_auc": 0.6636,
-      "brier_score": 0.0663,
-      "brier_skill_score": 0.0148
+      "roc_auc": 0.6734,
+      "brier_score": 0.0661,
+      "brier_skill_score": 0.017
     },
     {
       "category": "Comorbidity Burden",
       "subgroup": "2 Comorbidities",
       "sample_size": 673,
       "observed_mean": 9882.55,
-      "predicted_mean": 9652.82,
-      "ratio_obs_pred": 1.0238,
-      "mae": 10382.21,
+      "predicted_mean": 9560.77,
+      "ratio_obs_pred": 1.0337,
+      "mae": 10350.03,
       "high_cost_prev": 0.1352,
-      "roc_auc": 0.6204,
-      "brier_score": 0.1142,
-      "brier_skill_score": 0.0236
+      "roc_auc": 0.6193,
+      "brier_score": 0.1144,
+      "brier_skill_score": 0.022
     },
     {
       "category": "Comorbidity Burden",
       "subgroup": "3+ Comorbidities",
       "sample_size": 897,
       "observed_mean": 19379.17,
-      "predicted_mean": 18007.11,
-      "ratio_obs_pred": 1.0762,
-      "mae": 17836.91,
+      "predicted_mean": 17975.41,
+      "ratio_obs_pred": 1.0781,
+      "mae": 17814.0,
       "high_cost_prev": 0.2821,
-      "roc_auc": 0.6175,
-      "brier_score": 0.1953,
-      "brier_skill_score": 0.0358
+      "roc_auc": 0.6147,
+      "brier_score": 0.1956,
+      "brier_skill_score": 0.0342
     }
   ]
 }

@@ -7,6 +7,7 @@ and figure generation. Outputs machine-readable EXPERIMENT_REGISTRY.json and rep
 import os
 import sys
 import json
+import pickle
 import math
 import hashlib
 import warnings
@@ -210,19 +211,16 @@ def main():
     p_rf = np.expm1(rf_reg.predict(X_test_obs))
     reg_models["Random Forest (Observable)"] = p_rf
 
-    # 2.6 XGBoost Regressor (Observable, log scale)
-    xgb_reg = xgb.XGBRegressor(
-        n_estimators=100, max_depth=4, learning_rate=0.05,
-        subsample=0.8, colsample_bytree=0.8, random_state=42, n_jobs=-1
-    )
-    xgb_reg.fit(X_train_obs, y_train_log)
-    p_xgb_obs = np.expm1(xgb_reg.predict(X_test_obs))
+    # 2.6 XGBoost Regressor (Observable, log scale) - Evaluated directly from frozen artifact
+    with open(os.path.join(REPO_ROOT, "ml_model", "risk_model.pkl"), "rb") as f:
+        frozen_xgb_reg = pickle.load(f)
+    p_xgb_obs = np.expm1(frozen_xgb_reg.predict(X_test_obs))
     reg_models["XGBoost Regressor (Observable)"] = p_xgb_obs
 
-    # 2.7 Tweedie GLM (Observable, direct dollars)
-    tw_obs = TweedieRegressor(power=1.5, link='log', max_iter=500, alpha=0.1)
-    tw_obs.fit(X_train_obs, y_train_raw)
-    p_tw_obs = tw_obs.predict(X_test_obs)
+    # 2.7 Tweedie GLM (Observable, direct dollars) - Evaluated directly from frozen artifact
+    with open(os.path.join(REPO_ROOT, "ml_model", "artifacts", "risk_model_tweedie_observable.pkl"), "rb") as f:
+        frozen_tw_obs = pickle.load(f)
+    p_tw_obs = frozen_tw_obs.predict(X_test_obs)
     reg_models["Tweedie GLM (Observable)"] = p_tw_obs
 
     # 2.8 Two-Part Model (Part 1 Logistic + Part 2 OLS with Duan smearing on 14-feat)
@@ -316,22 +314,18 @@ def main():
     lr_clin.fit(X_train_obs[clin_cols], y_train_cls_tgt2)
     cls_models["Clinical Conditions Only"] = lr_clin.predict_proba(X_test_obs[clin_cols])[:, 1]
 
-    # 3.4 Full Observable Logistic Regression (Unweighted fit)
-    lr_obs_unw = LogisticRegression(max_iter=500, random_state=42)
-    lr_obs_unw.fit(X_train_obs, y_train_cls_tgt2)
-    cls_models["Logistic Regression (11-Feat Observable)"] = lr_obs_unw.predict_proba(X_test_obs)[:, 1]
+    # 3.4 Full Observable Logistic Regression (Weighted fit) - Evaluated directly from frozen artifact
+    with open(os.path.join(REPO_ROOT, "ml_model", "artifacts", "risk_model_classifier_observable_weighted_p90.pkl"), "rb") as f:
+        frozen_lr_wtd = pickle.load(f)
+    cls_models["Logistic Regression (11-Feat Observable)"] = frozen_lr_wtd.predict_proba(X_test_obs)[:, 1]
+    cls_models["Logistic Regression (11-Feat Wtd Fit)"] = frozen_lr_wtd.predict_proba(X_test_obs)[:, 1]
 
-    # 3.5 Full Observable Logistic Regression (Weighted fit)
-    lr_obs_wtd = LogisticRegression(max_iter=500, random_state=42)
-    lr_obs_wtd.fit(X_train_obs, y_train_cls_tgt2, sample_weight=w_train_norm)
-    cls_models["Logistic Regression (11-Feat Wtd Fit)"] = lr_obs_wtd.predict_proba(X_test_obs)[:, 1]
-
-    # 3.6 Random Forest Classifier (11-Feat Observable)
+    # 3.5 Random Forest Classifier (11-Feat Observable)
     rf_cls = RandomForestClassifier(n_estimators=100, max_depth=6, random_state=42, n_jobs=-1)
     rf_cls.fit(X_train_obs, y_train_cls_tgt2)
     cls_models["Random Forest (11-Feat Observable)"] = rf_cls.predict_proba(X_test_obs)[:, 1]
 
-    # 3.7 XGBoost Classifier (Uncalibrated & Platt Calibrated)
+    # 3.6 XGBoost Classifier (Uncalibrated & Platt Calibrated)
     xgb_cls = xgb.XGBClassifier(n_estimators=100, max_depth=3, learning_rate=0.05, random_state=42, n_jobs=-1, eval_metric='logloss')
     xgb_cls.fit(X_train_obs, y_train_cls_tgt2)
     cls_models["XGBoost (Uncalibrated)"] = xgb_cls.predict_proba(X_test_obs)[:, 1]
@@ -340,10 +334,10 @@ def main():
     cal_xgb.fit(X_train_obs, y_train_cls_tgt2)
     cls_models["XGBoost (Platt Calibrated)"] = cal_xgb.predict_proba(X_test_obs)[:, 1]
 
-    # 3.8 14-Feature Oracle Logistic Regression
-    lr_oracle = LogisticRegression(max_iter=500, random_state=42)
-    lr_oracle.fit(X_train_full, y_train_cls_tgt2)
-    cls_models["Logistic Regression (14-Feat Oracle)"] = lr_oracle.predict_proba(X_test_full)[:, 1]
+    # 3.7 14-Feature Oracle Logistic Regression - Evaluated directly from frozen artifact
+    with open(os.path.join(REPO_ROOT, "ml_model", "artifacts", "risk_model_classifier_weighted_p90.pkl"), "rb") as f:
+        frozen_lr_oracle = pickle.load(f)
+    cls_models["Logistic Regression (14-Feat Oracle)"] = frozen_lr_oracle.predict_proba(X_test_full)[:, 1]
 
     for name, prob in cls_models.items():
         roc = float(roc_auc_score(y_test_cls_tgt2, prob)) if len(np.unique(prob)) > 1 else 0.5
@@ -463,12 +457,12 @@ def main():
     # =========================================================================
     print("\n--- Running SHAP Explainability & Stability Audit ---")
 
-    explainer = shap.TreeExplainer(xgb_reg)
+    explainer = shap.TreeExplainer(frozen_xgb_reg)
     shap_vals = explainer.shap_values(X_test_obs)
 
     # 5.1 Numerical additivity check
     base_val = explainer.expected_value
-    pred_log_direct = xgb_reg.predict(X_test_obs)
+    pred_log_direct = frozen_xgb_reg.predict(X_test_obs)
     sum_shap = np.sum(shap_vals, axis=1) + base_val
     max_additivity_error = float(np.max(np.abs(pred_log_direct - sum_shap)))
     print(f"SHAP Numerical Additivity Check: Max Error = {max_additivity_error:.8f} (Valid: {max_additivity_error < 1e-4})")
@@ -723,6 +717,7 @@ def main():
     ax2.legend(loc='upper left', fontsize=9)
     ax2.grid(True, alpha=0.3)
 
+    fig.suptitle("Hyperledger Fabric 5-Org Performance (Historical Baseline Benchmark: Commit 944fb0d | Network Offline)", fontsize=11, style='italic')
     plt.tight_layout()
     fig5_path = os.path.join(FIG_DIR, "fig5_blockchain_benchmarks.png")
     plt.savefig(fig5_path)

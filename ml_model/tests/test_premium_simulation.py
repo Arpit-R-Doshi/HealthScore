@@ -71,6 +71,14 @@ class TestPremiumSimulationInvariants:
             prem, p5, p95 = monte_carlo_simulation(c, seed=42)
             assert prem > c, f"Premium ({prem}) does not exceed expected cost ({c})"
 
+    def test_configurable_base_cost_scenario(self):
+        """Allows sensitivity testing with custom base floors (e.g. $0 or $250)."""
+        cost = 5000.0
+        prem_default, _, _ = monte_carlo_simulation(cost, seed=42, base_cost=500.0)
+        prem_zero, _, _ = monte_carlo_simulation(cost, seed=42, base_cost=0.0)
+        prem_250, _, _ = monte_carlo_simulation(cost, seed=42, base_cost=250.0)
+        assert prem_zero < prem_250 < prem_default, "Custom base_cost did not scale premium monotonically"
+
     def test_engine_integration_and_disclaimers(self):
         """Integrated risk assessment returns properly structured premium and semantic qualifications."""
         patient_data = {

@@ -622,7 +622,7 @@ def parse_structured_clinical_conditions(structured_input, age=None):
 
 
 
-def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None):
+def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None, base_cost=500.0):
     """
     Monte Carlo parametric Value-at-Risk (VaR) simulation using a synthetic Gamma loss distribution.
     
@@ -630,21 +630,25 @@ def monte_carlo_simulation(predicted_mean_cost, n_simulations=5000, seed=None):
     This output is strictly an exploratory parametric loss simulation heuristic for technical demonstration.
     Current MEPS prediction metrics and statistical associations do NOT validate commercial insurance pricing,
     premium calculation, underwriting adequacy, or reserve solvency.
+
+    NOTE ON BASE_COST FLOOR:
+    The default base_cost ($500.00) originated in prototype commit af6a322 as an arbitrary additive scalar
+    representing baseline administrative/preventative overhead. It is NOT derived from statutory filings or
+    actuarial tables and is configurable here for empirical sensitivity analysis.
     """
     if predicted_mean_cost is None:
-        predicted_mean_cost = 500.0
+        predicted_mean_cost = base_cost
     try:
         val = float(predicted_mean_cost)
         if np.isnan(val) or val <= 0:
-            predicted_mean_cost = 500.0
+            predicted_mean_cost = base_cost
         else:
             predicted_mean_cost = min(val, 10_000_000.0)
     except (ValueError, TypeError):
-        predicted_mean_cost = 500.0
+        predicted_mean_cost = base_cost
 
     shape = 1.5
     scale = predicted_mean_cost / shape
-    base_cost = 500.0
 
     if seed is not None:
         rng = np.random.default_rng(seed)
