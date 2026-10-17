@@ -1,0 +1,157 @@
+{
+  "benchmark_type": "LIVE_EMPIRICAL_CALIPER_BENCHMARK",
+  "status": "COMPLETED_SUCCESSFULLY",
+  "start_timestamp_utc": "2026-10-17T19:32:31Z",
+  "end_timestamp_utc": "2026-10-17T19:43:17Z",
+  "total_duration_seconds": 646.16,
+  "total_rounds_configured": 11,
+  "total_rounds_completed": 11,
+  "total_rounds_failed": 0,
+  "total_transactions_submitted": 31500,
+  "total_transactions_successful": 31500,
+  "total_transactions_failed": 0,
+  "overall_success_rate_percent": 100.0,
+  "git_commit_sha": "70247833ecbb13442817545ec2321ea9dbeb3852",
+  "artifact_hashes": {
+    "workload_js_sha256": "a34ab13b7a5d27e0f301f017ca83b3d20e121994b434035fd7cd2b2a9a4cb736",
+    "benchmark_yaml_sha256": "69aa52f4caafd2ce2985e33b1f95577be10b1c5eda25ffd951ee6eec1d19e6b1",
+    "networkconfig_yaml_sha256": "2462e8b854db66e555b53b611d48cf8cec8b50149e00793d9439bc2d12aa9931",
+    "connection_json_sha256": "685b79e712eb2d32d4e5a5b54e36e745168ed2866c83b2dbe2e9ab79441dee3e",
+    "generated_report_html_sha256": "540ebecf57a2727f26b255794bd38ab3357596e2d0b809c7ee606875ecf8ad05",
+    "historical_report_html_sha256": "af935716155e10e457f593c2bd22ad55776af362c1095bd84a8a76025c856672"
+  },
+  "environment": {
+    "host_os": "macOS 15.5 Darwin Kernel (arm64, Apple Silicon)",
+    "cpu_cores": 10,
+    "allocated_ram_gb": 8.0,
+    "docker_version": "29.8.2",
+    "caliper_version": "0.5.0",
+    "fabric_gateway_sdk": "1.0.1",
+    "fabric_peer_image": "hyperledger/fabric-peer:latest (v2.5.15)",
+    "fabric_orderer_image": "hyperledger/fabric-orderer:latest (v2.5.15)",
+    "fabric_nodeenv_image": "hyperledger/fabric-nodeenv:2.5",
+    "fabric_tools_image": "hyperledger/fabric-tools:latest (v2.5.16)",
+    "node_runner_image": "node:20-alpine",
+    "chaincode_name": "healthscore",
+    "chaincode_version": "2.0",
+    "chaincode_language": "node (fabric-contract-api v2.5.8)",
+    "network_topology": "5 Peer Organizations (HospitalOrg, PatientOrg, PharmacyOrg, LabOrg, InsuranceOrg) + 1 Raft OrdererOrg",
+    "channel_name": "healthscorechannel",
+    "endorsement_policy": "OutOf(3, HospitalOrgMSP.peer, PatientOrgMSP.peer, PharmacyOrgMSP.peer, LabOrgMSP.peer, InsuranceOrgMSP.peer)",
+    "consensus_type": "etcdraft (Raft CFT)",
+    "invoker_client_identity": "HospitalOrgAdmin (HospitalOrgMSP)",
+    "workers_count": 5
+  },
+  "round_metrics": [
+    {
+      "Name": "createPatientRecord-50-tps",
+      "Succ": "500",
+      "Fail": "0",
+      "Send Rate (TPS)": "50.5",
+      "Max Latency (s)": "0.27",
+      "Min Latency (s)": "0.02",
+      "Avg Latency (s)": "0.09",
+      "Throughput (TPS)": "50.4"
+    },
+    {
+      "Name": "createPatientRecord-100-tps",
+      "Succ": "1000",
+      "Fail": "0",
+      "Send Rate (TPS)": "100.5",
+      "Max Latency (s)": "0.21",
+      "Min Latency (s)": "0.02",
+      "Avg Latency (s)": "0.05",
+      "Throughput (TPS)": "100.3"
+    },
+    {
+      "Name": "createPatientRecord-200-tps",
+      "Succ": "2000",
+      "Fail": "0",
+      "Send Rate (TPS)": "200.5",
+      "Max Latency (s)": "0.09",
+      "Min Latency (s)": "0.01",
+      "Avg Latency (s)": "0.03",
+      "Throughput (TPS)": "200.2"
+    },
+    {
+      "Name": "createPatientRecord-350-tps",
+      "Succ": "3500",
+      "Fail": "0",
+      "Send Rate (TPS)": "350.6",
+      "Max Latency (s)": "0.15",
+      "Min Latency (s)": "0.01",
+      "Avg Latency (s)": "0.03",
+      "Throughput (TPS)": "349.9"
+    },
+    {
+      "Name": "createPatientRecord-1000-tps",
+      "Succ": "10000",
+      "Fail": "0",
+      "Send Rate (TPS)": "615.7",
+      "Max Latency (s)": "11.18",
+      "Min Latency (s)": "0.12",
+      "Avg Latency (s)": "6.98",
+      "Throughput (TPS)": "515.8"
+    },
+    {
+      "Name": "updateHealthScore-200-tps",
+      "Succ": "2000",
+      "Fail": "0",
+      "Send Rate (TPS)": "200.5",
+      "Max Latency (s)": "0.06",
+      "Min Latency (s)": "0.01",
+      "Avg Latency (s)": "0.03",
+      "Throughput (TPS)": "200.1"
+    },
+    {
+      "Name": "createPrescription-200-tps",
+      "Succ": "2000",
+      "Fail": "0",
+      "Send Rate (TPS)": "200.5",
+      "Max Latency (s)": "0.10",
+      "Min Latency (s)": "0.02",
+      "Avg Latency (s)": "0.03",
+      "Throughput (TPS)": "200.2"
+    },
+    {
+      "Name": "requestScan-200-tps",
+      "Succ": "2000",
+      "Fail": "0",
+      "Send Rate (TPS)": "200.5",
+      "Max Latency (s)": "0.07",
+      "Min Latency (s)": "0.01",
+      "Avg Latency (s)": "0.03",
+      "Throughput (TPS)": "200.2"
+    },
+    {
+      "Name": "getPatientRecord-100-tps",
+      "Succ": "1000",
+      "Fail": "0",
+      "Send Rate (TPS)": "100.5",
+      "Max Latency (s)": "0.02",
+      "Min Latency (s)": "0.00",
+      "Avg Latency (s)": "0.01",
+      "Throughput (TPS)": "100.4"
+    },
+    {
+      "Name": "getPatientRecord-250-tps",
+      "Succ": "2500",
+      "Fail": "0",
+      "Send Rate (TPS)": "250.5",
+      "Max Latency (s)": "0.01",
+      "Min Latency (s)": "0.00",
+      "Avg Latency (s)": "0.00",
+      "Throughput (TPS)": "250.4"
+    },
+    {
+      "Name": "getPatientRecord-500-tps",
+      "Succ": "5000",
+      "Fail": "0",
+      "Send Rate (TPS)": "500.4",
+      "Max Latency (s)": "0.13",
+      "Min Latency (s)": "0.00",
+      "Avg Latency (s)": "0.00",
+      "Throughput (TPS)": "500.3"
+    }
+  ]
+}

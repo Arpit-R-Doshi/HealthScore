@@ -57,8 +57,9 @@ class HealthScoreWorkload extends WorkloadModuleBase {
         const baseSeed = (this.roundArguments.seed || 104729) + (workerIndex * 7919) + (roundIndex * 997);
         this.prng = createMulberry32(baseSeed);
 
-        // Run prefix ensures monotonic uniqueness across consecutive runs without key collisions
-        this.runPrefix = this.roundArguments.runPrefix || `R${roundIndex}_W${workerIndex}`;
+        // Run prefix ensures monotonic uniqueness across consecutive runs and workers without key collisions
+        const customPrefix = this.roundArguments.runPrefix ? `${this.roundArguments.runPrefix}_` : '';
+        this.runPrefix = `${customPrefix}R${roundIndex}_W${workerIndex}`;
 
         // Functions requiring pre-existing ledger records
         const needsPreSeeding = ['updateHealthScore', 'getPatientRecord', 'getAllPrescriptions', 'getAllScanOrders'];
