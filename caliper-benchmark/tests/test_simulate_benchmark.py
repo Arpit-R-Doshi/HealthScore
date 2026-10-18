@@ -81,8 +81,8 @@ def test_saturation_queueing_latency_growth():
     assert avg_lat_1000 > 5.0, f"Saturation regime latency must reflect queueing accumulation (>5s), got {avg_lat_1000}"
 
 
-def test_read_path_independence_and_submillisecond_latency():
-    """Verify that read-only queries bypass Raft write queueing and maintain sub-millisecond baseline."""
+def test_read_path_independence_and_low_latency():
+    """Verify that read-only queries bypass Raft write queueing and maintain low baseline latency."""
     res_read = simulate_round('getPatientRecord', 500.0, 5000, read_capacity=1500.0, n_seeds=30)
     assert res_read['is_read_only'] is True
     assert 495.0 <= res_read['simulated_throughput']['median_tps'] <= 505.0

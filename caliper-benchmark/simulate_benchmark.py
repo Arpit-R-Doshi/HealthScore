@@ -3,17 +3,21 @@
 Hyperledger Fabric Queueing & Performance Simulator
 HealthScore Consortium Benchmark Modeling
 
-This module implements a discrete-event and fluid-queueing performance model
-for Hyperledger Fabric transactions, modeling consensus-backed writes and
-local state queries across arbitrary offered loads.
+This module implements a stochastic fluid-queueing performance model with
+Raft consensus jitter for Hyperledger Fabric transactions, modeling
+consensus-backed writes and local state queries across arbitrary offered loads.
 
-Calibration targets:
+Calibration target:
 - Historical Caliper baseline (commit 944fb0d, 8 rounds, 24,500 txs)
+
+Held-out comparison:
 - Live isolated Caliper benchmark (run 20261018-010200, 11 rounds, 31,500 txs)
 
 IMPORTANT PROVENANCE DISCLAIMER:
 Simulation outputs are SYNTHETIC queueing model estimates, NOT empirical
 benchmark measurements. They must never be conflated with live Caliper outputs.
+Synthetic seed variations represent a model sensitivity envelope, NOT an
+empirical confidence interval.
 """
 
 import os
@@ -240,17 +244,15 @@ def main():
     with open(json_path, "w") as f:
         json.dump({
             "evidence_class": "SYNTHETIC_SIMULATION_ESTIMATES",
-            "model_type": "Fluid-Queueing & Discrete-Event Hybrid Model with Raft Consensus Jitter",
-            "calibration_targets": {
-                "historical_caliper_report": "caliper-benchmark/report.html (commit 944fb0d)",
-                "live_caliper_run": "caliper-benchmark/results/live/20261018-010200"
-            },
+            "model_type": "Stochastic Fluid-Queueing Performance Model with Raft Consensus Jitter",
+            "calibration_target": "caliper-benchmark/report.html (commit 944fb0d, 8 rounds, 24,500 txs)",
+            "held_out_comparison": "caliper-benchmark/results/live/20261018-010200 (11 rounds, 31,500 txs)",
             "parameters": {
                 "write_saturation_capacity_tps": args.write_cap,
                 "read_capacity_qps": args.read_cap,
                 "seeds_per_round": args.seeds
             },
-            "disclaimer": "SYNTHETIC ESTIMATES ONLY. Do not treat as empirical Caliper observations.",
+            "disclaimer": "SYNTHETIC ESTIMATES ONLY. Do not treat as empirical Caliper observations. Seed variations represent sensitivity envelopes, not empirical confidence intervals.",
             "results": results
         }, f, indent=2)
 

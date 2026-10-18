@@ -1,16 +1,14 @@
 {
   "evidence_class": "SYNTHETIC_SIMULATION_ESTIMATES",
-  "model_type": "Fluid-Queueing & Discrete-Event Hybrid Model with Raft Consensus Jitter",
-  "calibration_targets": {
-    "historical_caliper_report": "caliper-benchmark/report.html (commit 944fb0d)",
-    "live_caliper_run": "caliper-benchmark/results/live/20261018-010200"
-  },
+  "model_type": "Stochastic Fluid-Queueing Performance Model with Raft Consensus Jitter",
+  "calibration_target": "caliper-benchmark/report.html (commit 944fb0d, 8 rounds, 24,500 txs)",
+  "held_out_comparison": "caliper-benchmark/results/live/20261018-010200 (11 rounds, 31,500 txs)",
   "parameters": {
     "write_saturation_capacity_tps": 350.1,
     "read_capacity_qps": 1200.0,
     "seeds_per_round": 100
   },
-  "disclaimer": "SYNTHETIC ESTIMATES ONLY. Do not treat as empirical Caliper observations.",
+  "disclaimer": "SYNTHETIC ESTIMATES ONLY. Do not treat as empirical Caliper observations. Seed variations represent sensitivity envelopes, not empirical confidence intervals.",
   "results": [
     {
       "target_function": "createPatientRecord",
