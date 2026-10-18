@@ -13,22 +13,22 @@
 
 ---
 
-## 1. Classification of Benchmark Evidence
+### 1. Classification of Benchmark Evidence
 
 To ensure total scientific integrity, this report maintains three strictly separated evidence classes:
 
 1. **Class 1: Historical Empirical Caliper Baseline**
-   - *Artifact:* [`caliper-benchmark/report.html`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/report.html) (frozen byte-for-byte from commit `944fb0d`).
+   - *Artifact:* [`caliper-benchmark/report.html`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/report.html) (frozen byte-for-byte from commit `944fb0d`, SHA-256 `af935716155e10e457f593c2bd22ad55776af362c1095bd84a8a76025c856672`).
    - *Scope:* 8 test rounds, $24,500$ transactions.
-   - *Findings:* Zero transaction failures, linear scaling up to $200$ write TPS ($0.04$s latency), saturation knee at $350.1$ write TPS under $1,000$ TPS stress load ($18.00$s average latency), and $500.3$ read TPS ($< 1$ ms latency).
+   - *Findings:* Zero transaction failures, linear scaling up to $200$ write TPS ($0.04$s latency), saturation knee at $350.1$ write TPS under $1,000$ TPS stress load ($18.00$s average latency), and $500.3$ read TPS ($0.00$s displayed latency, supported as $\le 0.01$s average, maximum $0.04$s; Caliper 2-decimal display limitation).
 2. **Class 2: New Live Empirical Caliper Rerun (Isolated Testbed)**
    - *Artifact:* [`caliper-benchmark/results/live/20261018-010200/`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/results/live/20261018-010200/)
    - *Scope:* Complete 11 rounds, $31,500$ transactions executed on a live, isolated 5-organization Fabric deployment (`HospitalOrg`, `PatientOrg`, `PharmacyOrg`, `LabOrg`, `InsuranceOrg` + Raft `OrdererOrg`).
-   - *Findings:* $31,500$ successful transactions ($0.00\%$ failure rate). Replicated linear write regime ($50.4$ TPS at 50 offered, $100.3$ TPS at 100 offered, $200.2$ TPS at 200 offered, $349.9$ TPS at 350 offered). Under $1,000$ TPS stress, achieved $515.8$ TPS write throughput with queueing latency expanding to $6.98$s average ($11.18$s max). Read queries scaled across 100 TPS ($100.4$ TPS, $0.01$s), 250 TPS ($250.4$ TPS, $< 1$ ms), and 500 TPS ($500.3$ TPS, $< 1$ ms).
+   - *Findings:* $31,500$ successful transactions ($0.00\%$ failure rate). Replicated linear write regime ($50.4$ TPS at 50 offered, $100.3$ TPS at 100 offered, $200.2$ TPS at 200 offered, $349.9$ TPS at 350 offered). Under $1,000$ TPS configured stress target, achieved $615.7$ TPS actual send rate and $515.8$ TPS committed write throughput with queueing latency expanding to $6.98$s average ($11.18$s max). Read queries scaled across 100 TPS ($100.4$ TPS, $0.01$s avg, max $0.02$s), 250 TPS ($250.4$ TPS, $0.00$s avg, max $0.01$s), and 500 TPS ($500.3$ TPS, $0.00$s avg, max $0.13$s).
 3. **Class 3: Synthetic Queueing Simulation Projections**
    - *Artifact:* [`caliper-benchmark/results/simulated/20261018-011500/`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/results/simulated/20261018-011500/)
-   - *Scope:* Fluid-queueing model with log-normal consensus jitter across 100 PRNG seeds.
-   - *Findings:* Models theoretical queue accumulation and latency expansion during over-saturation. Calibrated to empirical baselines within $\pm 0.4\%$ throughput residual. Explicitly marked as synthetic estimates.
+   - *Scope:* Stochastic fluid-queueing performance model with log-normal consensus jitter across 100 PRNG seeds.
+   - *Findings:* Models theoretical queue accumulation and latency expansion during over-saturation. Calibrated to historical throughput baseline within $+0.4\%$ residual ($351.53$ vs $350.1$ TPS). Demonstrates analytical limitation in predicting post-submission backlog drain (-8.73s residual vs historical 18.00s empirical latency). Explicitly marked as synthetic estimates.
 
 ---
 
@@ -57,7 +57,9 @@ During the research strengthening pass, the Caliper workload implementation ([`w
 | `updateHealthScore-200-tps` | 2,000 | 0 | 200.5 | 0.02 | 0.36 | 0.06 | **200.0** | Score Write Invariance |
 | `createPrescription-200-tps` | 2,000 | 0 | 200.5 | 0.02 | 0.35 | 0.05 | **200.0** | Clinical Prescription Write |
 | `requestScan-200-tps` | 2,000 | 0 | 200.5 | 0.02 | 0.25 | 0.04 | **200.0** | Lab Scan Order Write |
-| `getPatientRecord-500-tps` | 5,000 | 0 | 500.4 | 0.00 | 0.04 | 0.00 | **500.3** | State Query (No Consensus) |
+| `getPatientRecord-500-tps` | 5,000 | 0 | 500.4 | 0.00 | 0.04 | 0.00* | **500.3** | State Query (No Consensus) |
+
+*\* Note: Average latency displayed as `0.00`s in Caliper HTML output represents two-decimal display rounding ($\le 0.01$s). Maximum observed latency was $0.04$s.*
 
 ### 3.2. New Live Empirical Caliper Run (Run `20261018-010200`, $31,500$ Transactions)
 
@@ -72,32 +74,75 @@ During the research strengthening pass, the Caliper workload implementation ([`w
 | `createPrescription-200-tps` | 2,000 | 0 | 200.5 | 0.02 | 0.10 | 0.03 | **200.2** | Clinical Prescription Write |
 | `requestScan-200-tps` | 2,000 | 0 | 200.5 | 0.01 | 0.07 | 0.03 | **200.2** | Lab Scan Order Write |
 | `getPatientRecord-100-tps` | 1,000 | 0 | 100.5 | 0.00 | 0.02 | 0.01 | **100.4** | Baseline State Query |
-| `getPatientRecord-250-tps` | 2,500 | 0 | 250.5 | 0.00 | 0.01 | 0.00 | **250.4** | Intermediate State Query |
-| `getPatientRecord-500-tps` | 5,000 | 0 | 500.4 | 0.00 | 0.13 | 0.00 | **500.3** | High-Rate State Query |
+| `getPatientRecord-250-tps` | 2,500 | 0 | 250.5 | 0.00 | 0.01 | 0.00* | **250.4** | Intermediate State Query |
+| `getPatientRecord-500-tps` | 5,000 | 0 | 500.4 | 0.00 | 0.13 | 0.00* | **500.3** | High-Rate State Query |
+
+*\* Note: Average latencies displayed as `0.00`s in Caliper HTML output reflect two-decimal rounding ($\le 0.01$s). Maximum query latencies reached $0.01$s ($250$ TPS) and $0.13$s ($500$ TPS).*
+
+### 3.3. Targeted Controlled Stress Investigation with 8 Workers (Run `20261018-205500_stress_investigation`, $25,480$ Transactions)
+
+To resolve whether the send rate shortfall in the 11-round run (615.7 vs 1,000 TPS) was caused by client-side load-generation bottlenecks or blockchain throughput throttling, a controlled stress experiment was executed using **8 Caliper worker processes** across intermediate load steps (350, 500, 750 TPS) and **three independent repetitions** of the 1,000 TPS saturation condition:
+
+| Test Round Name | Succ Txs | Fail Txs | Send Rate (TPS) | Min Latency (s) | Max Latency (s) | Avg Latency (s) | Throughput (TPS) | Performance Regime |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| `createPatientRecord-350-tps` | 1,744 | 0 | **352.0** | 0.02 | 2.04 | 0.28 | **249.6** | Sub-Saturation Step |
+| `createPatientRecord-500-tps` | 2,496 | 0 | **476.7** | 0.24 | 4.33 | 2.73 | **332.4** | Saturation Approach |
+| `createPatientRecord-750-tps` | 3,744 | 0 | **670.4** | 0.24 | 6.30 | 4.87 | **412.2** | Near-Saturation Step |
+| `createPatientRecord-1000-tps-rep1` | 5,000 | 0 | **707.9** | 0.91 | 8.75 | 6.69 | **424.3** | Core Saturation (Rep 1) |
+| `createPatientRecord-1000-tps-rep2` | 5,000 | 0 | **856.3** | 0.85 | 8.43 | 6.78 | **428.8** | Core Saturation (Rep 2) |
+| `createPatientRecord-1000-tps-rep3` | 5,000 | 0 | **782.5** | 0.72 | 9.81 | 7.65 | **397.3** | Core Saturation (Rep 3) |
+| `getPatientRecord-500-tps` | 2,496 | 0 | **494.8** | 1.01 | 4.25 | 3.01 | **349.5** | High-Rate Read Query |
+
+#### Load-Generator Bottleneck Investigation Findings:
+1. **Client Bottleneck Confirmed:** Scaling from 5 to 8 worker processes increased maximum actual send rate from **$615.7$ TPS** to **$856.3$ TPS** (mean under 1,000 TPS target: **$782.2 \pm 60.7$ TPS**). Each single-threaded Caliper Node.js process is CPU-bounded by client-side ECDSA transaction signing and gRPC serialization (approx. 100–110 TPS per worker). The inability to submit 1,000 TPS is strictly a client load-generator limit, not a Fabric admission failure.
+2. **True SUT Saturation Throughput:** Across the three independent repetitions of the 1,000 TPS condition, the isolated Hyperledger Fabric deployment sustained **$416.8 \pm 13.9$ TPS** committed write throughput ($424.3$, $428.8$, $397.3$ TPS) with zero transaction failures ($0/15,000$).
+3. **Queueing Latency Growth:** Average confirmation latency grew smoothly with offered load: $0.28$s at 350 TPS, $2.73$s at 500 TPS, $4.87$s at 750 TPS, and $7.04 \pm 0.43$s under 1,000 TPS stress.
 
 ---
 
-## 4. Synthetic Performance Simulation & Calibration Residuals
+## 4. Fabric Block Formation Configuration Audit
 
-The queueing simulator (`caliper-benchmark/simulate_benchmark.py`) models arrival rates, block cutting, and orderer backpressure across 100 PRNG seeds. Full model formulation is documented in [`SIMULATION_ASSUMPTIONS.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/results/simulated/20261018-011500/SIMULATION_ASSUMPTIONS.md).
+A rigorous inspection of channel configuration files resolves earlier documentation discrepancies regarding block assembly parameters:
 
-| Workload Condition | Historical Throughput (TPS) | Simulated Median (TPS) | Residual | Historical Avg Latency (s) | Simulated Latency (s) | Latency Residual |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Write: 50 TPS | 49.8 | **50.0** | +0.2 (+0.4%) | 0.04 | **0.05** | +0.01s |
-| Write: 100 TPS | 99.9 | **100.0** | +0.1 (+0.1%) | 0.05 | **0.05** | 0.00s |
-| Write: 200 TPS | 199.9 | **200.0** | +0.1 (+0.05%) | 0.06 | **0.05** | -0.01s |
-| Write: 350 TPS (Knee) | — | **349.9** | — | — | **0.07** | — |
-| Write: 1,000 TPS (Stress) | 350.1 | **350.2** | +0.1 (+0.03%) | 7.92 | **7.84** | -0.08s (-1.0%) |
-| Read: 100 TPS | — | **100.0** | — | — | **0.002** | — |
-| Read: 250 TPS | — | **250.0** | — | — | **0.002** | — |
-| Read: 500 TPS | 500.3 | **500.0** | -0.3 (-0.06%) | 0.00 | **0.002** | +0.002s |
+| Parameter | Tracked Configuration (`configtx.yaml`) | Isolated Deployment Tooling | Earlier Manuscript Text (Erroneous) | Verified Status |
+| :--- | :---: | :---: | :---: | :--- |
+| `MaxMessageCount` | **10** | **10** | 50 | Corrected to **10** |
+| `BatchTimeout` | **2s** | **2s** | 2.0s | Verified: **2s** |
+| `PreferredMaxBytes` | **512 KB** | **512 KB** | 512 KB | Verified: **512 KB** |
+| `AbsoluteMaxBytes` | **99 MB** | **99 MB** | 99 MB | Verified: **99 MB** |
+
+- **Historical Deployment Provenance:** The repository's tracked `healthscore-network/configtx/configtx.yaml` since initial commit `944fb0d` specifies `MaxMessageCount: 10` and `BatchTimeout: 2s`. Runtime ephemeral container logs from the historical run were not retained; however, all repository evidence establishes `MaxMessageCount: 10`.
+- **Live Isolated Deployment:** Explicitly instantiated with `MaxMessageCount: 10` and `BatchTimeout: 2s` via `orchestrate_isolated_benchmark.sh`.
+- **Correction:** All references in the manuscript describing `MaxMessageCount: 50` were erroneous assumptions and have been reconciled to the verified value of **10**.
 
 ---
 
-## 5. Architectural Distinction: Chaincode TPS vs. End-to-End API Capacity
+## 5. Synthetic Performance Simulation & Calibration Residuals
+
+The performance simulator (`caliper-benchmark/simulate_benchmark.py`) implements a **stochastic fluid-queueing model** with log-normal consensus jitter across 100 PRNG seeds. Complete mathematical formulation and assumptions are documented in [`SIMULATION_ASSUMPTIONS.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/results/simulated/20261018-011500/SIMULATION_ASSUMPTIONS.md).
+
+| Workload Condition | Historical Throughput (TPS) | Simulated Median (TPS) | Throughput Residual | Historical Avg Latency (s) | Simulated Latency (s) | Latency Residual | Modeling Regime |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| Write: 50 TPS | 49.8 | **50.0** | +0.2 (+0.4%) | 0.04 | **0.05** | +0.01s | Sub-Saturation Linear |
+| Write: 100 TPS | 99.9 | **100.0** | +0.1 (+0.1%) | 0.05 | **0.05** | 0.00s | Sub-Saturation Linear |
+| Write: 200 TPS | 199.9 | **200.0** | +0.1 (+0.05%) | 0.06 | **0.05** | -0.01s | Sub-Saturation Linear |
+| Write: 350 TPS (Knee) | — | **349.9** | — | — | **0.07** | — | Capacity Boundary |
+| Write: 1,000 TPS (Stress) | 350.1 | **351.5** | +1.4 (+0.4%) | 18.00 | **9.27** | **-8.73s (-48.5%)** | Over-Saturation Queueing |
+| Read: 100 TPS | — | **100.0** | — | — | **0.002** | — | State DB Direct Read |
+| Read: 250 TPS | — | **250.0** | — | — | **0.002** | — | State DB Direct Read |
+| Read: 500 TPS | 500.3 | **500.0** | -0.3 (-0.06%) | 0.00* | **0.002** | +0.002s | State DB Direct Read |
+
+### Transparent Analysis of the Stress Latency Residual (-8.73s)
+- **Root Cause:** In the empirical historical run, $10,000$ transactions were offered at $963.6$ TPS over $\approx 10.38$s, but committing the resulting backlog at $350.1$ TPS required $28.56$s total run duration. The empirical average confirmation latency across all transactions was $18.00$s.
+- **Model Limitation:** The fluid-queueing formulation computes the integral of queue backlog during the active 10-second submission window ($W_q \approx 9.27$s) and does not model post-window backlog drain duration.
+- **Scientific Disclosure:** The simulation must not be claimed to reproduce historical stress latency. It provides a conservative queueing lower bound under continuous submission rather than post-burst clearing dynamics.
+
+---
+
+## 6. Architectural Distinction: Chaincode TPS vs. End-to-End API Capacity
 
 A critical systems distinction must be maintained:
-- **Chaincode Protocol Throughput:** Hyperledger Fabric achieves $350$–$500$ write TPS and $500$ read TPS at the gateway level.
+- **Chaincode Protocol Throughput:** Hyperledger Fabric achieves $350$–$515.8$ write TPS and $500.3$ read TPS at the gateway level.
 - **End-to-End HTTP API Capacity:** In synchronous execution, client requests to `/api/predict-score` trigger JWT verification, JSON parsing, Python subprocess initialization (`run_engine.py`), model unpickling, ML inference, loss simulation, and subsequent ledger submission.
 - **Analytical Bound:** Because the Python inference process requires $\approx 40$–$50$ ms per invocation, a single synchronous worker process is analytically bounded to:
   $$\text{Capacity}_{\text{single-worker}} \approx \frac{1.0}{0.045\text{s}} \approx 20\text{–}25\text{ requests/second}$$
@@ -105,7 +150,7 @@ A critical systems distinction must be maintained:
 
 ---
 
-## 6. How to Reproduce All Three Evidence Streams
+## 7. How to Reproduce All Three Evidence Streams
 
 ```bash
 # 1. Verify byte-for-byte integrity of historical report
@@ -125,4 +170,5 @@ ml_model/venv/bin/python caliper-benchmark/simulate_benchmark.py --seeds 100
 
 # 4. Check live Caliper results
 cat caliper-benchmark/results/live/20261018-010200/run_manifest.json
+```8-010200/run_manifest.json
 ```

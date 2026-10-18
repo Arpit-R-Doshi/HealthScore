@@ -912,7 +912,7 @@ def main():
     # Panel B: Latency vs Committed Throughput
     ax2.plot(write_throughputs[:3], write_latencies[:3], 'o-', color='#1f77b4', lw=2.2, label="Write Txs (< 200 TPS): Sub-100ms Latency")
     ax2.plot([write_throughputs[2], write_throughputs[3]], [write_latencies[2], write_latencies[3]], 's--', color='#d62728', lw=2.2, label="Write Txs at Saturation: 18.0s Queueing Latency")
-    ax2.plot(query_throughputs, query_latencies, '^-.', color='#2ca02c', lw=2.2, label="Read Queries: Sub-Millisecond (< 0.001s)")
+    ax2.plot(query_throughputs, query_latencies, '^-.', color='#2ca02c', lw=2.2, label="Read Queries: Low Latency (<= 0.01s displayed avg)")
     ax2.set_xlabel("Committed Throughput (TPS)", fontsize=11)
     ax2.set_ylabel("Average Confirmation Latency (seconds)", fontsize=11)
     ax2.set_title("B. Latency vs Committed Throughput Characteristic", fontsize=12, fontweight='bold')
