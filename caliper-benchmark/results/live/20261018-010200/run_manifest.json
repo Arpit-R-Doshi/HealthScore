@@ -13,12 +13,22 @@
   "overall_success_rate_percent": 100.0,
   "git_commit_sha": "70247833ecbb13442817545ec2321ea9dbeb3852",
   "artifact_hashes": {
+    "configtx_yaml_sha256": "5de91968bb6761de3eb9a5753db9e112805c8c5172c3a64b944e34ba606fc7c3",
+    "chaincode_index_js_sha256": "4b22f38f9f7fa7686acc3375017282599d8dc7ae1e57c9c48400d2bc28f3dc36",
+    "orchestrate_script_sha256": "92c92e0c54e45d7ab17be755a10a684b6af9d34729cbd34156956a4ab854a37b",
     "workload_js_sha256": "a34ab13b7a5d27e0f301f017ca83b3d20e121994b434035fd7cd2b2a9a4cb736",
     "benchmark_yaml_sha256": "69aa52f4caafd2ce2985e33b1f95577be10b1c5eda25ffd951ee6eec1d19e6b1",
     "networkconfig_yaml_sha256": "2462e8b854db66e555b53b611d48cf8cec8b50149e00793d9439bc2d12aa9931",
     "connection_json_sha256": "685b79e712eb2d32d4e5a5b54e36e745168ed2866c83b2dbe2e9ab79441dee3e",
     "generated_report_html_sha256": "540ebecf57a2727f26b255794bd38ab3357596e2d0b809c7ee606875ecf8ad05",
     "historical_report_html_sha256": "af935716155e10e457f593c2bd22ad55776af362c1095bd84a8a76025c856672"
+  },
+  "fabric_block_parameters": {
+    "BatchTimeout": "2s",
+    "MaxMessageCount": 10,
+    "AbsoluteMaxBytes": "99 MB",
+    "PreferredMaxBytes": "512 KB",
+    "provenance_notes": "Verified directly from healthscore-network/configtx/configtx.yaml and orchestrate_isolated_benchmark.sh Step 2. Ephemeral crypto credentials from historical run were destroyed upon testbed teardown, but tracked configtx.yaml specifies MaxMessageCount: 10."
   },
   "environment": {
     "host_os": "macOS 15.5 Darwin Kernel (arm64, Apple Silicon)",

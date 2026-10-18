@@ -4,6 +4,7 @@ dist/
 build/
 coverage/
 *.log
+!caliper-benchmark/results/**/*.log
 database.json
 uploads/
 /healthscore-network/organizations/

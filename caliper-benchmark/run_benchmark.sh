@@ -117,7 +117,9 @@ cmd_live() {
   cp "$SCRIPT_DIR/networkconfig.yaml" "$ws/networkconfig.yaml"
 
   echo "--> Launching Caliper in $ws..."
+  local exit_code=0
   (
+    set -eo pipefail
     cd "$ws"
     npx caliper launch manager \
       --caliper-workspace "$ws" \
@@ -125,8 +127,7 @@ cmd_live() {
       --caliper-benchconfig benchmark.yaml \
       --caliper-flow-only-test \
       --caliper-fabric-gateway-enabled 2>&1 | tee "$outdir/console.log"
-  )
-  local exit_code=${PIPESTATUS[0]}
+  ) || exit_code=$?
 
   if [ -f "$ws/report.html" ]; then
     mv "$ws/report.html" "$outdir/report.html"
@@ -144,7 +145,7 @@ cmd_isolated() {
   echo "========================================================="
   echo " Provisioning Isolated Testbed & Running Caliper"
   echo "========================================================="
-  bash "$SCRIPT_DIR/orchestrate_isolated_benchmark.sh"
+  bash "$SCRIPT_DIR/orchestrate_isolated_benchmark.sh" "$@"
 }
 
 cmd_simulate() {

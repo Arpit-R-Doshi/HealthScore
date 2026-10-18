@@ -1,0 +1,89 @@
+test:
+  name: healthscore-stress-investigation
+  description: Targeted Controlled Stress & Saturation Investigation with 8 Workers
+  workers:
+    number: 8
+  rounds:
+    - label: createPatientRecord-350-tps
+      description: Write saturation knee benchmark (350 TPS target)
+      txNumber: 1750
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 350
+      workload:
+        module: workload.js
+        arguments:
+          action: createPatientRecord
+
+    - label: createPatientRecord-500-tps
+      description: Intermediate saturation load step (500 TPS target)
+      txNumber: 2500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 500
+      workload:
+        module: workload.js
+        arguments:
+          action: createPatientRecord
+
+    - label: createPatientRecord-750-tps
+      description: High-stress load step (750 TPS target)
+      txNumber: 3750
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 750
+      workload:
+        module: workload.js
+        arguments:
+          action: createPatientRecord
+
+    - label: createPatientRecord-1000-tps-rep1
+      description: Over-saturation stress load - Repetition 1 (1000 TPS target)
+      txNumber: 5000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1000
+      workload:
+        module: workload.js
+        arguments:
+          action: createPatientRecord
+
+    - label: createPatientRecord-1000-tps-rep2
+      description: Over-saturation stress load - Repetition 2 (1000 TPS target)
+      txNumber: 5000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1000
+      workload:
+        module: workload.js
+        arguments:
+          action: createPatientRecord
+
+    - label: createPatientRecord-1000-tps-rep3
+      description: Over-saturation stress load - Repetition 3 (1000 TPS target)
+      txNumber: 5000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1000
+      workload:
+        module: workload.js
+        arguments:
+          action: createPatientRecord
+
+    - label: getPatientRecord-500-tps
+      description: Read query verification round (500 TPS target)
+      txNumber: 2500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 500
+      workload:
+        module: workload.js
+        arguments:
+          action: getPatientRecord

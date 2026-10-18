@@ -1,0 +1,105 @@
+{
+  "name": "healthscore-isolated-network",
+  "version": "1.0.0",
+  "client": {
+    "organization": "HospitalOrgMSP",
+    "connection": {
+      "timeout": {
+        "peer": { "endorser": "300" },
+        "orderer": "300"
+      }
+    }
+  },
+  "channels": {
+    "healthscorechannel": {
+      "orderers": ["orderer.healthscore.com"],
+      "peers": {
+        "peer0.hospital.healthscore.com": { "endorsingPeer": true, "chaincodeQuery": true, "ledgerQuery": true, "eventSource": true },
+        "peer0.patient.healthscore.com": { "endorsingPeer": true, "chaincodeQuery": true, "ledgerQuery": true, "eventSource": true },
+        "peer0.pharmacy.healthscore.com": { "endorsingPeer": true, "chaincodeQuery": true, "ledgerQuery": true, "eventSource": true },
+        "peer0.lab.healthscore.com": { "endorsingPeer": true, "chaincodeQuery": true, "ledgerQuery": true, "eventSource": true },
+        "peer0.insurance.healthscore.com": { "endorsingPeer": true, "chaincodeQuery": true, "ledgerQuery": true, "eventSource": true }
+      }
+    }
+  },
+  "organizations": {
+    "HospitalOrgMSP": {
+      "mspid": "HospitalOrgMSP",
+      "peers": ["peer0.hospital.healthscore.com"]
+    },
+    "PatientOrgMSP": {
+      "mspid": "PatientOrgMSP",
+      "peers": ["peer0.patient.healthscore.com"]
+    },
+    "PharmacyOrgMSP": {
+      "mspid": "PharmacyOrgMSP",
+      "peers": ["peer0.pharmacy.healthscore.com"]
+    },
+    "LabOrgMSP": {
+      "mspid": "LabOrgMSP",
+      "peers": ["peer0.lab.healthscore.com"]
+    },
+    "InsuranceOrgMSP": {
+      "mspid": "InsuranceOrgMSP",
+      "peers": ["peer0.insurance.healthscore.com"]
+    }
+  },
+  "orderers": {
+    "orderer.healthscore.com": {
+      "url": "grpcs://orderer.healthscore.com:7050",
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer.healthscore.com"
+      },
+      "tlsCACerts": {
+        "path": "/workspace/organizations/ordererOrganizations/healthscore.com/orderers/orderer.healthscore.com/msp/tlscacerts/tlsca.healthscore.com-cert.pem"
+      }
+    }
+  },
+  "peers": {
+    "peer0.hospital.healthscore.com": {
+      "url": "grpcs://peer0.hospital.healthscore.com:7051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.hospital.healthscore.com"
+      },
+      "tlsCACerts": {
+        "path": "/workspace/organizations/peerOrganizations/hospital.healthscore.com/peers/peer0.hospital.healthscore.com/tls/ca.crt"
+      }
+    },
+    "peer0.patient.healthscore.com": {
+      "url": "grpcs://peer0.patient.healthscore.com:8051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.patient.healthscore.com"
+      },
+      "tlsCACerts": {
+        "path": "/workspace/organizations/peerOrganizations/patient.healthscore.com/peers/peer0.patient.healthscore.com/tls/ca.crt"
+      }
+    },
+    "peer0.pharmacy.healthscore.com": {
+      "url": "grpcs://peer0.pharmacy.healthscore.com:9051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.pharmacy.healthscore.com"
+      },
+      "tlsCACerts": {
+        "path": "/workspace/organizations/peerOrganizations/pharmacy.healthscore.com/peers/peer0.pharmacy.healthscore.com/tls/ca.crt"
+      }
+    },
+    "peer0.lab.healthscore.com": {
+      "url": "grpcs://peer0.lab.healthscore.com:10051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.lab.healthscore.com"
+      },
+      "tlsCACerts": {
+        "path": "/workspace/organizations/peerOrganizations/lab.healthscore.com/peers/peer0.lab.healthscore.com/tls/ca.crt"
+      }
+    },
+    "peer0.insurance.healthscore.com": {
+      "url": "grpcs://peer0.insurance.healthscore.com:11051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.insurance.healthscore.com"
+      },
+      "tlsCACerts": {
+        "path": "/workspace/organizations/peerOrganizations/insurance.healthscore.com/peers/peer0.insurance.healthscore.com/tls/ca.crt"
+      }
+    }
+  }
+}

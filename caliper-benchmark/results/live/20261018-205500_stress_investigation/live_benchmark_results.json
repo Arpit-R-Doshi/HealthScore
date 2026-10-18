@@ -1,0 +1,72 @@
+[
+  {
+    "Name": "createPatientRecord-350-tps",
+    "Succ": "1744",
+    "Fail": "0",
+    "Send Rate (TPS)": "352.0",
+    "Max Latency (s)": "2.04",
+    "Min Latency (s)": "0.02",
+    "Avg Latency (s)": "0.28",
+    "Throughput (TPS)": "249.6"
+  },
+  {
+    "Name": "createPatientRecord-500-tps",
+    "Succ": "2496",
+    "Fail": "0",
+    "Send Rate (TPS)": "476.7",
+    "Max Latency (s)": "4.33",
+    "Min Latency (s)": "0.24",
+    "Avg Latency (s)": "2.73",
+    "Throughput (TPS)": "332.4"
+  },
+  {
+    "Name": "createPatientRecord-750-tps",
+    "Succ": "3744",
+    "Fail": "0",
+    "Send Rate (TPS)": "670.4",
+    "Max Latency (s)": "6.30",
+    "Min Latency (s)": "0.24",
+    "Avg Latency (s)": "4.87",
+    "Throughput (TPS)": "412.2"
+  },
+  {
+    "Name": "createPatientRecord-1000-tps-rep1",
+    "Succ": "5000",
+    "Fail": "0",
+    "Send Rate (TPS)": "707.9",
+    "Max Latency (s)": "8.75",
+    "Min Latency (s)": "0.91",
+    "Avg Latency (s)": "6.69",
+    "Throughput (TPS)": "424.3"
+  },
+  {
+    "Name": "createPatientRecord-1000-tps-rep2",
+    "Succ": "5000",
+    "Fail": "0",
+    "Send Rate (TPS)": "856.3",
+    "Max Latency (s)": "8.43",
+    "Min Latency (s)": "0.85",
+    "Avg Latency (s)": "6.78",
+    "Throughput (TPS)": "428.8"
+  },
+  {
+    "Name": "createPatientRecord-1000-tps-rep3",
+    "Succ": "5000",
+    "Fail": "0",
+    "Send Rate (TPS)": "782.5",
+    "Max Latency (s)": "9.81",
+    "Min Latency (s)": "0.72",
+    "Avg Latency (s)": "7.65",
+    "Throughput (TPS)": "397.3"
+  },
+  {
+    "Name": "getPatientRecord-500-tps",
+    "Succ": "2496",
+    "Fail": "0",
+    "Send Rate (TPS)": "494.8",
+    "Max Latency (s)": "4.25",
+    "Min Latency (s)": "1.01",
+    "Avg Latency (s)": "3.01",
+    "Throughput (TPS)": "349.5"
+  }
+]
