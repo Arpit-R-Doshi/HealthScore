@@ -888,24 +888,25 @@ def main():
     # 7.5 Figure 5: Blockchain Benchmark Curves (Write Consensus vs Read Queries)
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.5), dpi=300)
 
-    # Write transactions (createPatientRecord)
+    # Historical Write transactions (createPatientRecord at target 50, 100, 200, 1000 TPS)
     write_send_rates = [50.5, 100.5, 200.5, 963.6]
     write_throughputs = [50.3, 100.2, 199.9, 350.1]
     write_latencies = [0.10, 0.06, 0.04, 18.00]
 
-    # Read queries (getPatientRecord)
-    query_send_rates = [100.0, 250.0, 500.4]
-    query_throughputs = [100.0, 250.0, 500.3]
-    query_latencies = [0.001, 0.001, 0.001]
+    # Empirical Read queries (getPatientRecord across verified runs: 100, 250, 500 TPS)
+    # Caliper-measured displayed average latencies are 0.00s and 0.01s (sub-10ms; max 0.04-0.13s)
+    query_send_rates = [100.4, 250.4, 500.4]
+    query_throughputs = [100.4, 250.4, 500.3]
+    query_latencies = [0.01, 0.00, 0.00]
 
-    # Panel A: Offered vs Committed Throughput
+    # Panel A: Committed Throughput vs Actual Caliper Send Rate
     ax1.plot(write_send_rates[:3], write_throughputs[:3], 'o-', color='#1f77b4', lw=2.2, label="Write Txs: Linear Operating Regime (< 200 TPS)")
     ax1.plot(write_send_rates[2:], write_throughputs[2:], 's--', color='#d62728', lw=2.2, label="Write Txs: Saturation Ceiling (350.1 TPS)")
     ax1.plot(query_send_rates, query_throughputs, '^-.', color='#2ca02c', lw=2.2, label="Read Queries: Linear Scaling (500.3 TPS, No Consensus)")
-    ax1.plot([0, 1000], [0, 1000], 'k:', alpha=0.4, label="Ideal 1:1 Offered vs Committed Rate")
-    ax1.set_xlabel("Offered Transaction Rate (TPS)", fontsize=11)
+    ax1.plot([0, 1000], [0, 1000], 'k:', alpha=0.4, label="Ideal 1:1 Scaling Reference")
+    ax1.set_xlabel("Actual Caliper Send Rate (TPS)", fontsize=11)
     ax1.set_ylabel("Committed Throughput (TPS)", fontsize=11)
-    ax1.set_title("A. Committed Throughput vs Offered Load", fontsize=12, fontweight='bold')
+    ax1.set_title("A. Committed Throughput vs Actual Send Rate", fontsize=12, fontweight='bold')
     ax1.legend(loc='upper left', fontsize=9)
     ax1.grid(True, alpha=0.3)
 
@@ -919,7 +920,7 @@ def main():
     ax2.legend(loc='upper left', fontsize=9)
     ax2.grid(True, alpha=0.3)
 
-    fig.suptitle("Hyperledger Fabric Performance Profiles: Write Consensus vs Local State Queries\n(5-Org Topology, CFT Raft Consensus, CouchDB State Database)", fontsize=12, fontweight='bold')
+    fig.suptitle("Hyperledger Fabric Performance Profiles: Write Consensus vs Local State Queries\n(5-Org Topology, CFT Raft Consensus, CouchDB State Database; Displayed Latency Precision Noted)", fontsize=12, fontweight='bold')
     plt.tight_layout()
     fig5_path = os.path.join(FIG_DIR, "fig5_blockchain_benchmarks.png")
     plt.savefig(fig5_path)

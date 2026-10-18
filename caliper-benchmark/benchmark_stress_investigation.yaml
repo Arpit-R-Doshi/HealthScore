@@ -14,7 +14,9 @@ test:
       workload:
         module: workload.js
         arguments:
-          action: createPatientRecord
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
 
     - label: createPatientRecord-500-tps
       description: Intermediate saturation load step (500 TPS target)
@@ -26,7 +28,9 @@ test:
       workload:
         module: workload.js
         arguments:
-          action: createPatientRecord
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
 
     - label: createPatientRecord-750-tps
       description: High-stress load step (750 TPS target)
@@ -38,7 +42,9 @@ test:
       workload:
         module: workload.js
         arguments:
-          action: createPatientRecord
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
 
     - label: createPatientRecord-1000-tps-rep1
       description: Over-saturation stress load - Repetition 1 (1000 TPS target)
@@ -50,7 +56,9 @@ test:
       workload:
         module: workload.js
         arguments:
-          action: createPatientRecord
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
 
     - label: createPatientRecord-1000-tps-rep2
       description: Over-saturation stress load - Repetition 2 (1000 TPS target)
@@ -62,7 +70,9 @@ test:
       workload:
         module: workload.js
         arguments:
-          action: createPatientRecord
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
 
     - label: createPatientRecord-1000-tps-rep3
       description: Over-saturation stress load - Repetition 3 (1000 TPS target)
@@ -74,7 +84,9 @@ test:
       workload:
         module: workload.js
         arguments:
-          action: createPatientRecord
+          chaincodeId: healthscore
+          targetFunction: createPatientRecord
+          invokerIdentity: HospitalOrgAdmin
 
     - label: getPatientRecord-500-tps
       description: Read query verification round (500 TPS target)
@@ -86,4 +98,7 @@ test:
       workload:
         module: workload.js
         arguments:
-          action: getPatientRecord
+          chaincodeId: healthscore
+          targetFunction: getPatientRecord
+          invokerIdentity: HospitalOrgAdmin
+          preSeedCount: 50

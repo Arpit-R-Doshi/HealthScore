@@ -1,0 +1,1118 @@
+npm warn deprecated rimraf@2.7.1: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated yaeti@0.0.6: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated ethereumjs-common@1.5.2: New package name format for new versions: @ethereumjs/common. Please update.
+npm warn deprecated mkdirp-promise@5.0.1: This package is broken and no longer maintained. 'mkdirp' itself supports promises now, please switch to that.
+npm warn deprecated tar@4.4.19: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated ethereumjs-tx@1.3.7: New package name format for new versions: @ethereumjs/tx. Please update.
+npm warn deprecated @web3-js/websocket@1.0.30: The branch for this fork was merged upstream, please update your package to websocket@1.0.31
+npm warn deprecated @web3-js/scrypt-shim@0.1.0: This package is deprecated, for a pure JS implementation please use scrypt-js
+npm warn deprecated har-validator@5.1.5: this library is no longer supported
+npm warn deprecated gc-stats@1.4.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated path-dirname@1.0.2: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated request-promise@4.2.6: request-promise has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142
+npm warn deprecated uuid@3.4.0: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+npm warn deprecated crypto-js@3.3.0: Active development of CryptoJS has been discontinued. This library is no longer maintained.
+npm warn deprecated prom-client@12.0.0: prom-client has been replaced by @prometheus-io/client
+npm warn deprecated @hapi/topo@3.1.6: This version has been deprecated and is no longer supported or maintained
+npm warn deprecated @hapi/address@2.1.4: Moved to 'npm install @sideway/address'
+npm warn deprecated @hapi/hoek@8.5.1: This version has been deprecated and is no longer supported or maintained
+npm warn deprecated core-js@2.6.12: core-js@<3.23.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Some versions have web compatibility issues. Please, upgrade your dependencies to the actual version of core-js.
+npm warn deprecated ethereumjs-wallet@0.6.5: New package name format for new versions: @ethereumjs/wallet. Please update.
+npm warn deprecated uuid@2.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated @hapi/bourne@1.3.2: This version has been deprecated and is no longer supported or maintained
+npm warn deprecated ethereumjs-tx@2.1.2: New package name format for new versions: @ethereumjs/tx. Please update.
+npm warn deprecated @hapi/joi@15.1.1: Switch to 'npm install joi'
+npm warn deprecated uuid@3.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated @hyperledger/caliper-fisco-bcos@0.5.0: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated @hyperledger/caliper-ethereum@0.5.0: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+added 691 packages, and audited 692 packages in 2m
+
+38 packages are looking for funding
+  run `npm fund` for details
+
+76 vulnerabilities (10 low, 23 moderate, 17 high, 26 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+2026.10.18-17:31:55.782 warn  [caliper] [bind] 	Working directory not specified. Using "/caliper_ws"
+2026.10.18-17:31:55.782 info  [caliper] [bind] 	Binding for fabric@2.4. This might take some time...
+2026.10.18-17:31:55.782 info  [caliper] [bind] 	Using working directory: /caliper_ws
+2026.10.18-17:31:55.782 info  [caliper] [bind] 	Calling npm with: install @hyperledger/fabric-gateway@1.0.1 @grpc/grpc-js@1.6.7
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@hyperledger/fabric-gateway@1.0.1',
+npm warn EBADENGINE   required: { node: '^14.15.0 || ^16.13.0' },
+npm warn EBADENGINE   current: { node: 'v20.20.2', npm: '10.8.2' }
+npm warn EBADENGINE }
+npm warn deprecated gc-stats@1.4.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+added 31 packages, and audited 723 packages in 7s
+
+38 packages are looking for funding
+  run `npm fund` for details
+
+80 vulnerabilities (11 low, 23 moderate, 19 high, 27 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+2026.10.18-17:32:03.346 info  [caliper] [cli-launch-manager] 	Set workspace path: /caliper_ws
+2026.10.18-17:32:03.347 info  [caliper] [cli-launch-manager] 	Set benchmark configuration path: /caliper_ws/benchmark.yaml
+2026.10.18-17:32:03.347 info  [caliper] [cli-launch-manager] 	Set network configuration path: /caliper_ws/networkconfig.yaml
+2026.10.18-17:32:03.347 info  [caliper] [cli-launch-manager] 	Set SUT type: fabric
+2026.10.18-17:32:03.353 info  [caliper] [benchmark-validator] 	No observer specified, will default to `none`
+2026.10.18-17:32:03.353 info  [caliper] [caliper-engine] 	Starting benchmark flow
+2026.10.18-17:32:03.353 info  [caliper] [caliper-engine] 	Skipping start commands due to benchmark flow conditioning
+2026.10.18-17:32:03.353 info  [caliper] [caliper-engine] 	Skipping initialization phase due to benchmark flow conditioning
+2026.10.18-17:32:03.353 info  [caliper] [caliper-engine] 	Skipping install smart contract phase due to benchmark flow conditioning
+2026.10.18-17:32:03.578 info  [caliper] [FabricConnectorFactory] 	Initializing peer gateway connector compatible with installed fabric-gateway SDK: 1.0.1
+2026.10.18-17:32:03.592 info  [caliper] [IdentityManager] 	Adding HospitalOrgAdmin (admin=false) as HospitalOrgAdmin for organization HospitalOrgMSP
+2026.10.18-17:32:03.594 info  [caliper] [monitor.js] 	No resource monitors specified
+2026.10.18-17:32:03.595 info  [caliper] [default-observer] 	Observer interval set to 5000 milliseconds
+2026.10.18-17:32:03.597 info  [caliper] [round-orchestrator] 	Preparing worker connections
+2026.10.18-17:32:03.597 info  [caliper] [worker-orchestrator] 	Launching worker 1 of 8
+2026.10.18-17:32:03.598 info  [caliper] [worker-orchestrator] 	Launching worker 2 of 8
+2026.10.18-17:32:03.599 info  [caliper] [worker-orchestrator] 	Launching worker 3 of 8
+2026.10.18-17:32:03.600 info  [caliper] [worker-orchestrator] 	Launching worker 4 of 8
+2026.10.18-17:32:03.600 info  [caliper] [worker-orchestrator] 	Launching worker 5 of 8
+2026.10.18-17:32:03.602 info  [caliper] [worker-orchestrator] 	Launching worker 6 of 8
+2026.10.18-17:32:03.603 info  [caliper] [worker-orchestrator] 	Launching worker 7 of 8
+2026.10.18-17:32:03.605 info  [caliper] [worker-orchestrator] 	Launching worker 8 of 8
+2026.10.18-17:32:03.606 info  [caliper] [worker-orchestrator] 	Messenger not configured, entering configure phase...
+2026.10.18-17:32:03.607 info  [caliper] [worker-orchestrator] 	No existing workers detected, entering worker launch phase...
+2026.10.18-17:32:03.608 info  [caliper] [worker-orchestrator] 	Waiting for 8 workers to be connected...
+2026.10.18-17:32:04.213 info  [caliper] [cli-launch-worker] 	Set workspace path: /caliper_ws
+2026.10.18-17:32:04.214 info  [caliper] [cli-launch-worker] 	Set benchmark configuration path: /caliper_ws/benchmark.yaml
+2026.10.18-17:32:04.214 info  [caliper] [cli-launch-worker] 	Set network configuration path: /caliper_ws/networkconfig.yaml
+2026.10.18-17:32:04.214 info  [caliper] [cli-launch-worker] 	Set SUT type: fabric
+2026.10.18-17:32:04.245 info  [caliper] [cli-launch-worker] 	Set workspace path: /caliper_ws
+2026.10.18-17:32:04.246 info  [caliper] [cli-launch-worker] 	Set benchmark configuration path: /caliper_ws/benchmark.yaml
+2026.10.18-17:32:04.246 info  [caliper] [cli-launch-worker] 	Set network configuration path: /caliper_ws/networkconfig.yaml
+2026.10.18-17:32:04.246 info  [caliper] [cli-launch-worker] 	Set SUT type: fabric
+2026.10.18-17:32:04.262 info  [caliper] [cli-launch-worker] 	Set workspace path: /caliper_ws
+2026.10.18-17:32:04.263 info  [caliper] [cli-launch-worker] 	Set benchmark configuration path: /caliper_ws/benchmark.yaml
+2026.10.18-17:32:04.263 info  [caliper] [cli-launch-worker] 	Set network configuration path: /caliper_ws/networkconfig.yaml
+2026.10.18-17:32:04.263 info  [caliper] [cli-launch-worker] 	Set SUT type: fabric
+2026.10.18-17:32:04.262 info  [caliper] [cli-launch-worker] 	Set workspace path: /caliper_ws
+2026.10.18-17:32:04.266 info  [caliper] [cli-launch-worker] 	Set benchmark configuration path: /caliper_ws/benchmark.yaml
+2026.10.18-17:32:04.266 info  [caliper] [cli-launch-worker] 	Set network configuration path: /caliper_ws/networkconfig.yaml
+2026.10.18-17:32:04.266 info  [caliper] [cli-launch-worker] 	Set SUT type: fabric
+2026.10.18-17:32:04.267 info  [caliper] [cli-launch-worker] 	Set workspace path: /caliper_ws
+2026.10.18-17:32:04.268 info  [caliper] [cli-launch-worker] 	Set benchmark configuration path: /caliper_ws/benchmark.yaml
+2026.10.18-17:32:04.268 info  [caliper] [cli-launch-worker] 	Set network configuration path: /caliper_ws/networkconfig.yaml
+2026.10.18-17:32:04.268 info  [caliper] [cli-launch-worker] 	Set SUT type: fabric
+2026.10.18-17:32:04.276 info  [caliper] [cli-launch-worker] 	Set workspace path: /caliper_ws
+2026.10.18-17:32:04.277 info  [caliper] [cli-launch-worker] 	Set benchmark configuration path: /caliper_ws/benchmark.yaml
+2026.10.18-17:32:04.277 info  [caliper] [cli-launch-worker] 	Set network configuration path: /caliper_ws/networkconfig.yaml
+2026.10.18-17:32:04.277 info  [caliper] [cli-launch-worker] 	Set SUT type: fabric
+2026.10.18-17:32:04.279 info  [caliper] [cli-launch-worker] 	Set workspace path: /caliper_ws
+2026.10.18-17:32:04.280 info  [caliper] [cli-launch-worker] 	Set benchmark configuration path: /caliper_ws/benchmark.yaml
+2026.10.18-17:32:04.280 info  [caliper] [cli-launch-worker] 	Set network configuration path: /caliper_ws/networkconfig.yaml
+2026.10.18-17:32:04.280 info  [caliper] [cli-launch-worker] 	Set SUT type: fabric
+2026.10.18-17:32:04.282 info  [caliper] [cli-launch-worker] 	Set workspace path: /caliper_ws
+2026.10.18-17:32:04.286 info  [caliper] [cli-launch-worker] 	Set benchmark configuration path: /caliper_ws/benchmark.yaml
+2026.10.18-17:32:04.287 info  [caliper] [cli-launch-worker] 	Set network configuration path: /caliper_ws/networkconfig.yaml
+2026.10.18-17:32:04.288 info  [caliper] [cli-launch-worker] 	Set SUT type: fabric
+2026.10.18-17:32:04.356 info  [caliper] [worker-orchestrator] 	8 workers connected, progressing to worker assignment phase.
+2026.10.18-17:32:04.356 info  [caliper] [worker-orchestrator] 	Workers currently unassigned, awaiting index assignment...
+2026.10.18-17:32:04.358 info  [caliper] [worker-orchestrator] 	Waiting for 8 workers to be assigned...
+2026.10.18-17:32:04.408 info  [caliper] [worker-orchestrator] 	8 workers assigned, progressing to worker initialization phase.
+2026.10.18-17:32:04.408 info  [caliper] [worker-orchestrator] 	Waiting for 8 workers to be ready...
+2026.10.18-17:32:04.408 info  [caliper] [worker-message-handler] 	Initializing Worker#3...
+2026.10.18-17:32:04.408 info  [caliper] [worker-message-handler] 	Initializing Worker#0...
+2026.10.18-17:32:04.409 info  [caliper] [worker-message-handler] 	Initializing Worker#2...
+2026.10.18-17:32:04.409 info  [caliper] [worker-message-handler] 	Initializing Worker#1...
+2026.10.18-17:32:04.409 info  [caliper] [worker-message-handler] 	Initializing Worker#6...
+2026.10.18-17:32:04.409 info  [caliper] [worker-message-handler] 	Initializing Worker#4...
+2026.10.18-17:32:04.409 info  [caliper] [worker-message-handler] 	Initializing Worker#5...
+2026.10.18-17:32:04.409 info  [caliper] [worker-message-handler] 	Initializing Worker#7...
+2026.10.18-17:32:04.877 info  [caliper] [FabricConnectorFactory] 	Initializing peer gateway connector compatible with installed fabric-gateway SDK: 1.0.1
+2026.10.18-17:32:04.883 info  [caliper] [FabricConnectorFactory] 	Initializing peer gateway connector compatible with installed fabric-gateway SDK: 1.0.1
+2026.10.18-17:32:04.891 info  [caliper] [IdentityManager] 	Adding HospitalOrgAdmin (admin=false) as HospitalOrgAdmin for organization HospitalOrgMSP
+2026.10.18-17:32:04.896 info  [caliper] [worker-message-handler] 	Worker#3 initialized
+2026.10.18-17:32:04.898 info  [caliper] [IdentityManager] 	Adding HospitalOrgAdmin (admin=false) as HospitalOrgAdmin for organization HospitalOrgMSP
+2026.10.18-17:32:04.903 info  [caliper] [FabricConnectorFactory] 	Initializing peer gateway connector compatible with installed fabric-gateway SDK: 1.0.1
+2026.10.18-17:32:04.905 info  [caliper] [FabricConnectorFactory] 	Initializing peer gateway connector compatible with installed fabric-gateway SDK: 1.0.1
+2026.10.18-17:32:04.905 info  [caliper] [worker-message-handler] 	Worker#1 initialized
+2026.10.18-17:32:04.912 info  [caliper] [IdentityManager] 	Adding HospitalOrgAdmin (admin=false) as HospitalOrgAdmin for organization HospitalOrgMSP
+2026.10.18-17:32:04.918 info  [caliper] [worker-message-handler] 	Worker#6 initialized
+2026.10.18-17:32:04.918 info  [caliper] [IdentityManager] 	Adding HospitalOrgAdmin (admin=false) as HospitalOrgAdmin for organization HospitalOrgMSP
+2026.10.18-17:32:04.923 info  [caliper] [FabricConnectorFactory] 	Initializing peer gateway connector compatible with installed fabric-gateway SDK: 1.0.1
+2026.10.18-17:32:04.925 info  [caliper] [worker-message-handler] 	Worker#5 initialized
+2026.10.18-17:32:04.931 info  [caliper] [IdentityManager] 	Adding HospitalOrgAdmin (admin=false) as HospitalOrgAdmin for organization HospitalOrgMSP
+2026.10.18-17:32:04.934 info  [caliper] [FabricConnectorFactory] 	Initializing peer gateway connector compatible with installed fabric-gateway SDK: 1.0.1
+2026.10.18-17:32:04.936 info  [caliper] [worker-message-handler] 	Worker#4 initialized
+2026.10.18-17:32:04.940 info  [caliper] [FabricConnectorFactory] 	Initializing peer gateway connector compatible with installed fabric-gateway SDK: 1.0.1
+2026.10.18-17:32:04.943 info  [caliper] [FabricConnectorFactory] 	Initializing peer gateway connector compatible with installed fabric-gateway SDK: 1.0.1
+2026.10.18-17:32:04.944 info  [caliper] [IdentityManager] 	Adding HospitalOrgAdmin (admin=false) as HospitalOrgAdmin for organization HospitalOrgMSP
+2026.10.18-17:32:04.948 info  [caliper] [IdentityManager] 	Adding HospitalOrgAdmin (admin=false) as HospitalOrgAdmin for organization HospitalOrgMSP
+2026.10.18-17:32:04.948 info  [caliper] [worker-message-handler] 	Worker#7 initialized
+2026.10.18-17:32:04.951 info  [caliper] [IdentityManager] 	Adding HospitalOrgAdmin (admin=false) as HospitalOrgAdmin for organization HospitalOrgMSP
+2026.10.18-17:32:04.952 info  [caliper] [worker-message-handler] 	Worker#0 initialized
+2026.10.18-17:32:04.954 info  [caliper] [worker-message-handler] 	Worker#2 initialized
+2026.10.18-17:32:04.955 info  [caliper] [worker-orchestrator] 	8 workers ready, progressing to test preparation phase.
+2026.10.18-17:32:04.955 info  [caliper] [round-orchestrator] 	Started round 1 (createPatientRecord-350-tps)
+2026.10.18-17:32:04.957 info  [caliper] [worker-message-handler] 	Preparing Worker#3 for Round#0
+2026.10.18-17:32:04.957 info  [caliper] [worker-message-handler] 	Preparing Worker#1 for Round#0
+2026.10.18-17:32:04.957 info  [caliper] [worker-message-handler] 	Preparing Worker#4 for Round#0
+2026.10.18-17:32:04.957 info  [caliper] [worker-message-handler] 	Preparing Worker#0 for Round#0
+2026.10.18-17:32:04.957 info  [caliper] [worker-message-handler] 	Preparing Worker#2 for Round#0
+2026.10.18-17:32:04.958 info  [caliper] [worker-message-handler] 	Preparing Worker#6 for Round#0
+2026.10.18-17:32:04.958 info  [caliper] [worker-message-handler] 	Preparing Worker#5 for Round#0
+2026.10.18-17:32:04.958 info  [caliper] [worker-message-handler] 	Preparing Worker#7 for Round#0
+2026.10.18-17:32:04.986 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:04.986 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 0 is starting...
+  [Worker 1] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:04.988 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:04.988 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:04.989 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 0 is completed
+2026.10.18-17:32:04.989 info  [caliper] [worker-message-handler] 	Worker#1 prepared for Round#0
+2026.10.18-17:32:04.996 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:04.996 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 0 is starting...
+  [Worker 6] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:04.997 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:04.997 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 0 is starting...
+  [Worker 2] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:04.999 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:04.999 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:05.000 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 0 is completed
+2026.10.18-17:32:05.000 info  [caliper] [worker-message-handler] 	Worker#6 prepared for Round#0
+2026.10.18-17:32:05.000 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:05.000 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:05.000 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 0 is completed
+2026.10.18-17:32:05.000 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.000 info  [caliper] [worker-message-handler] 	Worker#2 prepared for Round#0
+2026.10.18-17:32:05.001 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 0 is starting...
+  [Worker 0] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:05.002 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:05.003 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:05.003 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 0 is completed
+2026.10.18-17:32:05.003 info  [caliper] [worker-message-handler] 	Worker#0 prepared for Round#0
+2026.10.18-17:32:05.003 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.003 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 0 is starting...
+  [Worker 7] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:05.004 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.004 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.004 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 0 is starting...
+2026.10.18-17:32:05.004 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 0 is starting...
+  [Worker 3] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:05.005 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.005 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:05.005 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 0 is starting...
+  [Worker 5] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:05.005 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+  [Worker 4] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:05.006 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:05.006 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 0 is completed
+2026.10.18-17:32:05.006 info  [caliper] [worker-message-handler] 	Worker#7 prepared for Round#0
+2026.10.18-17:32:05.006 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:05.006 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 0 is completed
+2026.10.18-17:32:05.006 info  [caliper] [worker-message-handler] 	Worker#3 prepared for Round#0
+2026.10.18-17:32:05.007 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:05.007 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:05.008 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 0 is completed
+2026.10.18-17:32:05.008 info  [caliper] [worker-message-handler] 	Worker#5 prepared for Round#0
+2026.10.18-17:32:05.008 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:05.008 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:05.008 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 0 is completed
+2026.10.18-17:32:05.008 info  [caliper] [worker-message-handler] 	Worker#4 prepared for Round#0
+2026.10.18-17:32:05.009 info  [caliper] [worker-orchestrator] 	8 workers prepared, progressing to test phase.
+2026.10.18-17:32:05.009 info  [caliper] [round-orchestrator] 	Monitors successfully started
+2026.10.18-17:32:05.010 info  [caliper] [worker-message-handler] 	Worker#4 is starting Round#0
+2026.10.18-17:32:05.010 info  [caliper] [worker-message-handler] 	Worker#0 is starting Round#0
+2026.10.18-17:32:05.010 info  [caliper] [worker-message-handler] 	Worker#2 is starting Round#0
+2026.10.18-17:32:05.010 info  [caliper] [worker-message-handler] 	Worker#1 is starting Round#0
+2026.10.18-17:32:05.010 info  [caliper] [worker-message-handler] 	Worker#5 is starting Round#0
+2026.10.18-17:32:05.011 info  [caliper] [worker-message-handler] 	Worker#6 is starting Round#0
+2026.10.18-17:32:05.011 info  [caliper] [worker-message-handler] 	Worker#7 is starting Round#0
+2026.10.18-17:32:05.012 info  [caliper] [worker-message-handler] 	Worker#3 is starting Round#0
+2026.10.18-17:32:05.016 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.017 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.018 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.018 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.018 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.019 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.020 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.020 info  [caliper] [caliper-worker] 	Worker #0 starting workload loop
+2026.10.18-17:32:05.020 info  [caliper] [caliper-worker] 	Worker #4 starting workload loop
+2026.10.18-17:32:05.020 info  [caliper] [caliper-worker] 	Worker #7 starting workload loop
+2026.10.18-17:32:05.020 info  [caliper] [caliper-worker] 	Worker #1 starting workload loop
+2026.10.18-17:32:05.021 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:05.021 info  [caliper] [caliper-worker] 	Worker #5 starting workload loop
+2026.10.18-17:32:05.021 info  [caliper] [caliper-worker] 	Worker #6 starting workload loop
+2026.10.18-17:32:05.021 info  [caliper] [caliper-worker] 	Worker #2 starting workload loop
+2026.10.18-17:32:05.022 info  [caliper] [caliper-worker] 	Worker #3 starting workload loop
+2026.10.18-17:32:10.015 info  [caliper] [default-observer] 	[createPatientRecord-350-tps Round 0 Transaction Info] - Submitted: 1413 Succ: 1398 Fail:0 Unfinished:15
+2026.10.18-17:32:11.081 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:11.081 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:11.082 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:11.082 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:11.082 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:11.082 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:11.083 info  [caliper] [worker-message-handler] 	Worker#7 finished Round#0
+2026.10.18-17:32:11.083 info  [caliper] [worker-message-handler] 	Worker#4 finished Round#0
+2026.10.18-17:32:11.084 info  [caliper] [worker-message-handler] 	Worker#0 finished Round#0
+2026.10.18-17:32:11.085 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:11.086 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:11.089 info  [caliper] [worker-message-handler] 	Worker#3 finished Round#0
+2026.10.18-17:32:13.104 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:13.104 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:13.105 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:13.105 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:13.105 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:13.105 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:13.105 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:13.106 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:13.106 info  [caliper] [worker-message-handler] 	Worker#5 finished Round#0
+2026.10.18-17:32:13.106 info  [caliper] [worker-message-handler] 	Worker#2 finished Round#0
+2026.10.18-17:32:13.106 info  [caliper] [worker-message-handler] 	Worker#6 finished Round#0
+2026.10.18-17:32:13.107 info  [caliper] [worker-message-handler] 	Worker#1 finished Round#0
+2026.10.18-17:32:18.116 info  [caliper] [default-observer] 	Resetting txCount indicator count
+2026.10.18-17:32:18.123 info  [caliper] [report-builder] 	### Test result ###
+2026.10.18-17:32:18.132 info  [caliper] [report-builder] 	
++-----------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+| Name                        | Succ | Fail | Send Rate (TPS) | Max Latency (s) | Min Latency (s) | Avg Latency (s) | Throughput (TPS) |
+|-----------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-350-tps | 1744 | 0    | 351.8           | 2.04            | 0.02            | 0.56            | 249.4            |
++-----------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+
+2026.10.18-17:32:18.133 info  [caliper] [round-orchestrator] 	Finished round 1 (createPatientRecord-350-tps) in 7.087 seconds
+2026.10.18-17:32:18.133 info  [caliper] [monitor.js] 	Stopping all monitors
+2026.10.18-17:32:18.133 info  [caliper] [round-orchestrator] 	Waiting 5 seconds for the next round...
+2026.10.18-17:32:23.136 info  [caliper] [round-orchestrator] 	Started round 2 (createPatientRecord-500-tps)
+2026.10.18-17:32:23.146 info  [caliper] [worker-message-handler] 	Preparing Worker#1 for Round#1
+2026.10.18-17:32:23.147 info  [caliper] [worker-message-handler] 	Preparing Worker#3 for Round#1
+2026.10.18-17:32:23.147 info  [caliper] [worker-message-handler] 	Preparing Worker#2 for Round#1
+2026.10.18-17:32:23.145 info  [caliper] [worker-message-handler] 	Preparing Worker#4 for Round#1
+2026.10.18-17:32:23.149 info  [caliper] [worker-message-handler] 	Preparing Worker#5 for Round#1
+2026.10.18-17:32:23.152 info  [caliper] [worker-message-handler] 	Preparing Worker#0 for Round#1
+2026.10.18-17:32:23.155 info  [caliper] [worker-message-handler] 	Preparing Worker#7 for Round#1
+2026.10.18-17:32:23.157 info  [caliper] [worker-message-handler] 	Preparing Worker#6 for Round#1
+2026.10.18-17:32:23.172 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.172 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.172 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.172 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 1 is starting...
+2026.10.18-17:32:23.172 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 1 is starting...
+2026.10.18-17:32:23.173 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 1 is starting...
+2026.10.18-17:32:23.173 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.173 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+  [Worker 7] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 3] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:23.173 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.173 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:23.173 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 1 is starting...
+2026.10.18-17:32:23.173 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:23.173 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+  [Worker 4] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:23.173 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:23.173 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 1 is starting...
+2026.10.18-17:32:23.173 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 1 is completed
+2026.10.18-17:32:23.173 info  [caliper] [worker-message-handler] 	Worker#3 prepared for Round#1
+2026.10.18-17:32:23.173 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 1 is completed
+  [Worker 5] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:23.173 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 1 is starting...
+2026.10.18-17:32:23.173 info  [caliper] [worker-message-handler] 	Worker#7 prepared for Round#1
+  [Worker 2] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 1] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:23.174 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.174 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 1 is starting...
+2026.10.18-17:32:23.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:23.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:23.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+  [Worker 0] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:23.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:23.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:23.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.175 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 1 is completed
+2026.10.18-17:32:23.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:23.175 info  [caliper] [worker-message-handler] 	Worker#5 prepared for Round#1
+2026.10.18-17:32:23.175 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 1 is completed
+2026.10.18-17:32:23.175 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 1 is starting...
+2026.10.18-17:32:23.175 info  [caliper] [worker-message-handler] 	Worker#4 prepared for Round#1
+2026.10.18-17:32:23.175 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 1 is completed
+  [Worker 6] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:23.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:23.176 info  [caliper] [worker-message-handler] 	Worker#2 prepared for Round#1
+2026.10.18-17:32:23.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:23.176 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:23.176 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:23.176 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 1 is completed
+2026.10.18-17:32:23.176 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 1 is completed
+2026.10.18-17:32:23.176 info  [caliper] [worker-message-handler] 	Worker#1 prepared for Round#1
+2026.10.18-17:32:23.176 info  [caliper] [worker-message-handler] 	Worker#0 prepared for Round#1
+2026.10.18-17:32:23.177 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:23.177 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:23.177 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 1 is completed
+2026.10.18-17:32:23.177 info  [caliper] [worker-message-handler] 	Worker#6 prepared for Round#1
+2026.10.18-17:32:23.178 info  [caliper] [worker-orchestrator] 	8 workers prepared, progressing to test phase.
+2026.10.18-17:32:23.178 info  [caliper] [round-orchestrator] 	Monitors successfully started
+2026.10.18-17:32:23.178 info  [caliper] [worker-message-handler] 	Worker#0 is starting Round#1
+2026.10.18-17:32:23.179 info  [caliper] [worker-message-handler] 	Worker#1 is starting Round#1
+2026.10.18-17:32:23.180 info  [caliper] [worker-message-handler] 	Worker#2 is starting Round#1
+2026.10.18-17:32:23.180 info  [caliper] [worker-message-handler] 	Worker#3 is starting Round#1
+2026.10.18-17:32:23.180 info  [caliper] [worker-message-handler] 	Worker#4 is starting Round#1
+2026.10.18-17:32:23.181 info  [caliper] [worker-message-handler] 	Worker#5 is starting Round#1
+2026.10.18-17:32:23.182 info  [caliper] [worker-message-handler] 	Worker#6 is starting Round#1
+2026.10.18-17:32:23.184 info  [caliper] [worker-message-handler] 	Worker#7 is starting Round#1
+2026.10.18-17:32:23.184 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.184 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.184 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.184 info  [caliper] [caliper-worker] 	Worker #0 starting workload loop
+2026.10.18-17:32:23.185 info  [caliper] [caliper-worker] 	Worker #1 starting workload loop
+2026.10.18-17:32:23.185 info  [caliper] [caliper-worker] 	Worker #3 starting workload loop
+2026.10.18-17:32:23.185 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.185 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.186 info  [caliper] [caliper-worker] 	Worker #2 starting workload loop
+2026.10.18-17:32:23.186 info  [caliper] [caliper-worker] 	Worker #5 starting workload loop
+2026.10.18-17:32:23.186 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.187 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.187 info  [caliper] [caliper-worker] 	Worker #4 starting workload loop
+2026.10.18-17:32:23.187 info  [caliper] [caliper-worker] 	Worker #6 starting workload loop
+2026.10.18-17:32:23.188 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:23.189 info  [caliper] [caliper-worker] 	Worker #7 starting workload loop
+2026.10.18-17:32:28.184 info  [caliper] [default-observer] 	[createPatientRecord-500-tps Round 1 Transaction Info] - Submitted: 2013 Succ: 913 Fail:0 Unfinished:1100
+2026.10.18-17:32:29.968 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:29.968 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:29.968 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:29.968 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:29.968 info  [caliper] [worker-message-handler] 	Worker#4 finished Round#1
+2026.10.18-17:32:29.968 info  [caliper] [worker-message-handler] 	Worker#0 finished Round#1
+2026.10.18-17:32:29.970 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:29.970 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:29.971 info  [caliper] [worker-message-handler] 	Worker#6 finished Round#1
+2026.10.18-17:32:31.282 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:31.283 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:31.283 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:31.283 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:31.284 info  [caliper] [worker-message-handler] 	Worker#3 finished Round#1
+2026.10.18-17:32:31.284 info  [caliper] [worker-message-handler] 	Worker#2 finished Round#1
+2026.10.18-17:32:31.296 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:31.297 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:31.297 info  [caliper] [worker-message-handler] 	Worker#7 finished Round#1
+2026.10.18-17:32:31.378 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:31.379 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:31.379 info  [caliper] [worker-message-handler] 	Worker#1 finished Round#1
+2026.10.18-17:32:31.379 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:31.379 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:31.380 info  [caliper] [worker-message-handler] 	Worker#5 finished Round#1
+2026.10.18-17:32:36.389 info  [caliper] [default-observer] 	Resetting txCount indicator count
+2026.10.18-17:32:36.389 info  [caliper] [report-builder] 	### Test result ###
+2026.10.18-17:32:36.391 info  [caliper] [report-builder] 	
++-----------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+| Name                        | Succ | Fail | Send Rate (TPS) | Max Latency (s) | Min Latency (s) | Avg Latency (s) | Throughput (TPS) |
+|-----------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-500-tps | 2496 | 0    | 500.7           | 2.89            | 0.09            | 1.55            | 351.9            |
++-----------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+
+2026.10.18-17:32:36.392 info  [caliper] [round-orchestrator] 	Finished round 2 (createPatientRecord-500-tps) in 7.193 seconds
+2026.10.18-17:32:36.392 info  [caliper] [monitor.js] 	Stopping all monitors
+2026.10.18-17:32:36.393 info  [caliper] [round-orchestrator] 	Waiting 5 seconds for the next round...
+2026.10.18-17:32:41.399 info  [caliper] [round-orchestrator] 	Started round 3 (createPatientRecord-750-tps)
+2026.10.18-17:32:41.403 info  [caliper] [worker-message-handler] 	Preparing Worker#1 for Round#2
+2026.10.18-17:32:41.404 info  [caliper] [worker-message-handler] 	Preparing Worker#0 for Round#2
+2026.10.18-17:32:41.409 info  [caliper] [worker-message-handler] 	Preparing Worker#2 for Round#2
+2026.10.18-17:32:41.412 info  [caliper] [worker-message-handler] 	Preparing Worker#3 for Round#2
+2026.10.18-17:32:41.414 info  [caliper] [worker-message-handler] 	Preparing Worker#4 for Round#2
+2026.10.18-17:32:41.417 info  [caliper] [worker-message-handler] 	Preparing Worker#7 for Round#2
+2026.10.18-17:32:41.417 info  [caliper] [worker-message-handler] 	Preparing Worker#5 for Round#2
+2026.10.18-17:32:41.418 info  [caliper] [worker-message-handler] 	Preparing Worker#6 for Round#2
+2026.10.18-17:32:41.429 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.429 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.429 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.429 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 2 is starting...
+2026.10.18-17:32:41.429 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 2 is starting...
+2026.10.18-17:32:41.429 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 2 is starting...
+  [Worker 1] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:41.429 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+  [Worker 7] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 3] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:41.429 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:41.429 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:41.430 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 2 is completed
+2026.10.18-17:32:41.430 info  [caliper] [worker-message-handler] 	Worker#1 prepared for Round#2
+2026.10.18-17:32:41.430 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 2 is starting...
+  [Worker 5] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:41.431 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.431 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.431 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 2 is starting...
+2026.10.18-17:32:41.431 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 2 is starting...
+  [Worker 0] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 2] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:41.432 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:41.432 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:41.432 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:41.433 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.433 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:41.433 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 2 is completed
+2026.10.18-17:32:41.433 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 2 is starting...
+2026.10.18-17:32:41.433 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 2 is completed
+2026.10.18-17:32:41.433 info  [caliper] [worker-message-handler] 	Worker#5 prepared for Round#2
+2026.10.18-17:32:41.433 info  [caliper] [worker-message-handler] 	Worker#7 prepared for Round#2
+  [Worker 6] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:41.433 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:41.434 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:41.434 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.434 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 2 is completed
+2026.10.18-17:32:41.434 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 2 is starting...
+2026.10.18-17:32:41.434 info  [caliper] [worker-message-handler] 	Worker#3 prepared for Round#2
+2026.10.18-17:32:41.435 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+  [Worker 4] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:32:41.435 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:41.435 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 2 is completed
+2026.10.18-17:32:41.435 info  [caliper] [worker-message-handler] 	Worker#6 prepared for Round#2
+2026.10.18-17:32:41.435 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:41.436 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:41.436 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 2 is completed
+2026.10.18-17:32:41.436 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:41.436 info  [caliper] [worker-message-handler] 	Worker#0 prepared for Round#2
+2026.10.18-17:32:41.436 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:41.437 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 2 is completed
+2026.10.18-17:32:41.437 info  [caliper] [worker-message-handler] 	Worker#4 prepared for Round#2
+2026.10.18-17:32:41.437 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:41.437 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:41.437 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 2 is completed
+2026.10.18-17:32:41.437 info  [caliper] [worker-message-handler] 	Worker#2 prepared for Round#2
+2026.10.18-17:32:41.438 info  [caliper] [worker-orchestrator] 	8 workers prepared, progressing to test phase.
+2026.10.18-17:32:41.438 info  [caliper] [round-orchestrator] 	Monitors successfully started
+2026.10.18-17:32:41.438 info  [caliper] [worker-message-handler] 	Worker#0 is starting Round#2
+2026.10.18-17:32:41.439 info  [caliper] [worker-message-handler] 	Worker#1 is starting Round#2
+2026.10.18-17:32:41.440 info  [caliper] [worker-message-handler] 	Worker#2 is starting Round#2
+2026.10.18-17:32:41.441 info  [caliper] [worker-message-handler] 	Worker#3 is starting Round#2
+2026.10.18-17:32:41.441 info  [caliper] [worker-message-handler] 	Worker#6 is starting Round#2
+2026.10.18-17:32:41.441 info  [caliper] [worker-message-handler] 	Worker#7 is starting Round#2
+2026.10.18-17:32:41.442 info  [caliper] [worker-message-handler] 	Worker#4 is starting Round#2
+2026.10.18-17:32:41.442 info  [caliper] [worker-message-handler] 	Worker#5 is starting Round#2
+2026.10.18-17:32:41.445 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.445 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.445 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.445 info  [caliper] [caliper-worker] 	Worker #1 starting workload loop
+2026.10.18-17:32:41.445 info  [caliper] [caliper-worker] 	Worker #0 starting workload loop
+2026.10.18-17:32:41.445 info  [caliper] [caliper-worker] 	Worker #2 starting workload loop
+2026.10.18-17:32:41.446 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.446 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.446 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.446 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.446 info  [caliper] [caliper-worker] 	Worker #6 starting workload loop
+2026.10.18-17:32:41.446 info  [caliper] [caliper-worker] 	Worker #4 starting workload loop
+2026.10.18-17:32:41.446 info  [caliper] [caliper-worker] 	Worker #7 starting workload loop
+2026.10.18-17:32:41.446 info  [caliper] [caliper-worker] 	Worker #3 starting workload loop
+2026.10.18-17:32:41.448 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:32:41.448 info  [caliper] [caliper-worker] 	Worker #5 starting workload loop
+2026.10.18-17:32:46.444 info  [caliper] [default-observer] 	[createPatientRecord-750-tps Round 2 Transaction Info] - Submitted: 2654 Succ: 348 Fail:0 Unfinished:2306
+2026.10.18-17:32:50.146 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:50.146 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:50.147 info  [caliper] [worker-message-handler] 	Worker#3 finished Round#2
+2026.10.18-17:32:50.147 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:50.147 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:50.148 info  [caliper] [worker-message-handler] 	Worker#2 finished Round#2
+2026.10.18-17:32:50.178 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:50.178 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:50.178 info  [caliper] [worker-message-handler] 	Worker#4 finished Round#2
+2026.10.18-17:32:50.183 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:50.183 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:50.184 info  [caliper] [worker-message-handler] 	Worker#5 finished Round#2
+2026.10.18-17:32:50.197 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:50.197 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:50.197 info  [caliper] [worker-message-handler] 	Worker#0 finished Round#2
+2026.10.18-17:32:50.212 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:50.212 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:50.212 info  [caliper] [worker-message-handler] 	Worker#6 finished Round#2
+2026.10.18-17:32:50.245 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:50.245 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:50.246 info  [caliper] [worker-message-handler] 	Worker#1 finished Round#2
+2026.10.18-17:32:50.486 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:32:50.486 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:32:50.487 info  [caliper] [worker-message-handler] 	Worker#7 finished Round#2
+2026.10.18-17:32:55.494 info  [caliper] [default-observer] 	Resetting txCount indicator count
+2026.10.18-17:32:55.495 info  [caliper] [report-builder] 	### Test result ###
+2026.10.18-17:32:55.497 info  [caliper] [report-builder] 	
++-----------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+| Name                        | Succ | Fail | Send Rate (TPS) | Max Latency (s) | Min Latency (s) | Avg Latency (s) | Throughput (TPS) |
+|-----------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-750-tps | 3744 | 0    | 631.0           | 5.13            | 0.12            | 3.57            | 467.0            |
++-----------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+
+2026.10.18-17:32:55.498 info  [caliper] [round-orchestrator] 	Finished round 3 (createPatientRecord-750-tps) in 8.04 seconds
+2026.10.18-17:32:55.498 info  [caliper] [monitor.js] 	Stopping all monitors
+2026.10.18-17:32:55.498 info  [caliper] [round-orchestrator] 	Waiting 5 seconds for the next round...
+2026.10.18-17:33:00.505 info  [caliper] [round-orchestrator] 	Started round 4 (createPatientRecord-1000-tps-rep1)
+2026.10.18-17:33:00.507 info  [caliper] [worker-message-handler] 	Preparing Worker#0 for Round#3
+2026.10.18-17:33:00.507 info  [caliper] [worker-message-handler] 	Preparing Worker#1 for Round#3
+2026.10.18-17:33:00.507 info  [caliper] [worker-message-handler] 	Preparing Worker#2 for Round#3
+2026.10.18-17:33:00.510 info  [caliper] [worker-message-handler] 	Preparing Worker#3 for Round#3
+2026.10.18-17:33:00.511 info  [caliper] [worker-message-handler] 	Preparing Worker#4 for Round#3
+2026.10.18-17:33:00.512 info  [caliper] [worker-message-handler] 	Preparing Worker#5 for Round#3
+2026.10.18-17:33:00.522 info  [caliper] [worker-message-handler] 	Preparing Worker#6 for Round#3
+2026.10.18-17:33:00.522 info  [caliper] [worker-message-handler] 	Preparing Worker#7 for Round#3
+2026.10.18-17:33:00.529 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.530 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.530 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 3 is starting...
+  [Worker 6] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:00.530 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 3 is starting...
+2026.10.18-17:33:00.530 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+  [Worker 0] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:00.530 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 3 is starting...
+  [Worker 3] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:00.530 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.530 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.530 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.530 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.530 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.530 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:00.530 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:00.530 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 3 is completed
+2026.10.18-17:33:00.530 info  [caliper] [worker-message-handler] 	Worker#3 prepared for Round#3
+2026.10.18-17:33:00.530 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 3 is starting...
+2026.10.18-17:33:00.530 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 3 is starting...
+2026.10.18-17:33:00.531 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 3 is starting...
+  [Worker 1] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 5] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 7] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:00.531 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 3 is starting...
+  [Worker 2] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:00.531 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 3 is starting...
+2026.10.18-17:33:00.531 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+  [Worker 4] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:00.531 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:00.531 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:00.531 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:00.531 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:00.531 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:00.532 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 3 is completed
+2026.10.18-17:33:00.531 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 3 is completed
+2026.10.18-17:33:00.532 info  [caliper] [worker-message-handler] 	Worker#4 prepared for Round#3
+2026.10.18-17:33:00.532 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 3 is completed
+2026.10.18-17:33:00.532 info  [caliper] [worker-message-handler] 	Worker#6 prepared for Round#3
+2026.10.18-17:33:00.532 info  [caliper] [worker-message-handler] 	Worker#0 prepared for Round#3
+2026.10.18-17:33:00.532 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:00.532 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:00.532 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:00.532 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:00.532 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:00.532 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:00.532 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:00.532 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:00.532 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 3 is completed
+2026.10.18-17:33:00.532 info  [caliper] [worker-message-handler] 	Worker#2 prepared for Round#3
+2026.10.18-17:33:00.532 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 3 is completed
+2026.10.18-17:33:00.532 info  [caliper] [worker-message-handler] 	Worker#7 prepared for Round#3
+2026.10.18-17:33:00.533 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 3 is completed
+2026.10.18-17:33:00.533 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 3 is completed
+2026.10.18-17:33:00.533 info  [caliper] [worker-message-handler] 	Worker#5 prepared for Round#3
+2026.10.18-17:33:00.533 info  [caliper] [worker-message-handler] 	Worker#1 prepared for Round#3
+2026.10.18-17:33:00.533 info  [caliper] [worker-orchestrator] 	8 workers prepared, progressing to test phase.
+2026.10.18-17:33:00.533 info  [caliper] [round-orchestrator] 	Monitors successfully started
+2026.10.18-17:33:00.534 info  [caliper] [worker-message-handler] 	Worker#0 is starting Round#3
+2026.10.18-17:33:00.534 info  [caliper] [worker-message-handler] 	Worker#1 is starting Round#3
+2026.10.18-17:33:00.535 info  [caliper] [worker-message-handler] 	Worker#3 is starting Round#3
+2026.10.18-17:33:00.535 info  [caliper] [worker-message-handler] 	Worker#4 is starting Round#3
+2026.10.18-17:33:00.535 info  [caliper] [worker-message-handler] 	Worker#5 is starting Round#3
+2026.10.18-17:33:00.536 info  [caliper] [worker-message-handler] 	Worker#7 is starting Round#3
+2026.10.18-17:33:00.536 info  [caliper] [worker-message-handler] 	Worker#2 is starting Round#3
+2026.10.18-17:33:00.537 info  [caliper] [worker-message-handler] 	Worker#6 is starting Round#3
+2026.10.18-17:33:00.540 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.540 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.540 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.540 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.540 info  [caliper] [caliper-worker] 	Worker #0 starting workload loop
+2026.10.18-17:33:00.540 info  [caliper] [caliper-worker] 	Worker #4 starting workload loop
+2026.10.18-17:33:00.541 info  [caliper] [caliper-worker] 	Worker #3 starting workload loop
+2026.10.18-17:33:00.541 info  [caliper] [caliper-worker] 	Worker #5 starting workload loop
+2026.10.18-17:33:00.542 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.542 info  [caliper] [caliper-worker] 	Worker #1 starting workload loop
+2026.10.18-17:33:00.543 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.543 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.543 info  [caliper] [caliper-worker] 	Worker #2 starting workload loop
+2026.10.18-17:33:00.544 info  [caliper] [caliper-worker] 	Worker #7 starting workload loop
+2026.10.18-17:33:00.545 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:00.545 info  [caliper] [caliper-worker] 	Worker #6 starting workload loop
+2026.10.18-17:33:05.540 info  [caliper] [default-observer] 	[createPatientRecord-1000-tps-rep1 Round 3 Transaction Info] - Submitted: 2860 Succ: 380 Fail:0 Unfinished:2480
+2026.10.18-17:33:10.536 info  [caliper] [default-observer] 	[createPatientRecord-1000-tps-rep1 Round 3 Transaction Info] - Submitted: 5000 Succ: 2248 Fail:0 Unfinished:2752
+2026.10.18-17:33:12.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:12.176 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:12.175 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:12.176 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:12.177 info  [caliper] [worker-message-handler] 	Worker#1 finished Round#3
+2026.10.18-17:33:12.177 info  [caliper] [worker-message-handler] 	Worker#6 finished Round#3
+2026.10.18-17:33:12.179 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:12.179 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:12.180 info  [caliper] [worker-message-handler] 	Worker#2 finished Round#3
+2026.10.18-17:33:12.186 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:12.187 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:12.188 info  [caliper] [worker-message-handler] 	Worker#3 finished Round#3
+2026.10.18-17:33:12.197 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:12.197 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:12.198 info  [caliper] [worker-message-handler] 	Worker#4 finished Round#3
+2026.10.18-17:33:12.207 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:12.207 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:12.208 info  [caliper] [worker-message-handler] 	Worker#5 finished Round#3
+2026.10.18-17:33:12.212 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:12.212 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:12.212 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:12.212 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:12.212 info  [caliper] [worker-message-handler] 	Worker#0 finished Round#3
+2026.10.18-17:33:12.213 info  [caliper] [worker-message-handler] 	Worker#7 finished Round#3
+2026.10.18-17:33:17.218 info  [caliper] [default-observer] 	Resetting txCount indicator count
+2026.10.18-17:33:17.220 info  [caliper] [report-builder] 	### Test result ###
+2026.10.18-17:33:17.223 info  [caliper] [report-builder] 	
++-----------------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+| Name                              | Succ | Fail | Send Rate (TPS) | Max Latency (s) | Min Latency (s) | Avg Latency (s) | Throughput (TPS) |
+|-----------------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-1000-tps-rep1 | 5000 | 0    | 729.1           | 6.91            | 0.13            | 5.29            | 470.6            |
++-----------------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+
+2026.10.18-17:33:17.225 info  [caliper] [round-orchestrator] 	Finished round 4 (createPatientRecord-1000-tps-rep1) in 10.67 seconds
+2026.10.18-17:33:17.225 info  [caliper] [monitor.js] 	Stopping all monitors
+2026.10.18-17:33:17.225 info  [caliper] [round-orchestrator] 	Waiting 5 seconds for the next round...
+2026.10.18-17:33:22.232 info  [caliper] [round-orchestrator] 	Started round 5 (createPatientRecord-1000-tps-rep2)
+2026.10.18-17:33:22.235 info  [caliper] [worker-message-handler] 	Preparing Worker#0 for Round#4
+2026.10.18-17:33:22.236 info  [caliper] [worker-message-handler] 	Preparing Worker#2 for Round#4
+2026.10.18-17:33:22.236 info  [caliper] [worker-message-handler] 	Preparing Worker#1 for Round#4
+2026.10.18-17:33:22.240 info  [caliper] [worker-message-handler] 	Preparing Worker#3 for Round#4
+2026.10.18-17:33:22.242 info  [caliper] [worker-message-handler] 	Preparing Worker#4 for Round#4
+2026.10.18-17:33:22.244 info  [caliper] [worker-message-handler] 	Preparing Worker#5 for Round#4
+2026.10.18-17:33:22.245 info  [caliper] [worker-message-handler] 	Preparing Worker#6 for Round#4
+2026.10.18-17:33:22.247 info  [caliper] [worker-message-handler] 	Preparing Worker#7 for Round#4
+2026.10.18-17:33:22.262 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.262 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.262 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.262 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.262 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 4 is starting...
+2026.10.18-17:33:22.262 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 4 is starting...
+2026.10.18-17:33:22.263 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+  [Worker 7] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 6] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:22.263 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.263 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 4 is starting...
+2026.10.18-17:33:22.263 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 4 is starting...
+2026.10.18-17:33:22.263 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 4 is starting...
+  [Worker 0] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 2] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 4] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:22.264 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 4 is starting...
+  [Worker 5] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:22.264 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:22.264 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:22.264 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.264 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:22.264 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 4 is completed
+2026.10.18-17:33:22.264 info  [caliper] [worker-message-handler] 	Worker#6 prepared for Round#4
+2026.10.18-17:33:22.264 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 4 is starting...
+2026.10.18-17:33:22.264 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:22.265 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.265 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 4 is completed
+2026.10.18-17:33:22.265 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:22.265 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:22.265 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 4 is completed
+2026.10.18-17:33:22.265 info  [caliper] [worker-message-handler] 	Worker#0 prepared for Round#4
+2026.10.18-17:33:22.265 info  [caliper] [worker-message-handler] 	Worker#7 prepared for Round#4
+2026.10.18-17:33:22.265 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:22.265 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:22.265 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 4 is completed
+2026.10.18-17:33:22.266 info  [caliper] [worker-message-handler] 	Worker#4 prepared for Round#4
+  [Worker 3] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:22.266 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:22.266 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 4 is starting...
+2026.10.18-17:33:22.266 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:22.266 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 4 is completed
+  [Worker 1] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:22.266 info  [caliper] [worker-message-handler] 	Worker#5 prepared for Round#4
+2026.10.18-17:33:22.267 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:22.267 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:22.265 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:22.268 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:22.268 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 4 is completed
+2026.10.18-17:33:22.268 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 4 is completed
+2026.10.18-17:33:22.268 info  [caliper] [worker-message-handler] 	Worker#2 prepared for Round#4
+2026.10.18-17:33:22.268 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:22.268 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:22.268 info  [caliper] [worker-message-handler] 	Worker#3 prepared for Round#4
+2026.10.18-17:33:22.268 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 4 is completed
+2026.10.18-17:33:22.268 info  [caliper] [worker-message-handler] 	Worker#1 prepared for Round#4
+2026.10.18-17:33:22.268 info  [caliper] [worker-orchestrator] 	8 workers prepared, progressing to test phase.
+2026.10.18-17:33:22.268 info  [caliper] [round-orchestrator] 	Monitors successfully started
+2026.10.18-17:33:22.269 info  [caliper] [worker-message-handler] 	Worker#0 is starting Round#4
+2026.10.18-17:33:22.269 info  [caliper] [worker-message-handler] 	Worker#2 is starting Round#4
+2026.10.18-17:33:22.269 info  [caliper] [worker-message-handler] 	Worker#1 is starting Round#4
+2026.10.18-17:33:22.271 info  [caliper] [worker-message-handler] 	Worker#3 is starting Round#4
+2026.10.18-17:33:22.272 info  [caliper] [worker-message-handler] 	Worker#4 is starting Round#4
+2026.10.18-17:33:22.273 info  [caliper] [worker-message-handler] 	Worker#6 is starting Round#4
+2026.10.18-17:33:22.273 info  [caliper] [worker-message-handler] 	Worker#5 is starting Round#4
+2026.10.18-17:33:22.275 info  [caliper] [worker-message-handler] 	Worker#7 is starting Round#4
+2026.10.18-17:33:22.276 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.277 info  [caliper] [caliper-worker] 	Worker #2 starting workload loop
+2026.10.18-17:33:22.278 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.278 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.278 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.278 info  [caliper] [caliper-worker] 	Worker #4 starting workload loop
+2026.10.18-17:33:22.278 info  [caliper] [caliper-worker] 	Worker #0 starting workload loop
+2026.10.18-17:33:22.279 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.279 info  [caliper] [caliper-worker] 	Worker #1 starting workload loop
+2026.10.18-17:33:22.279 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.279 info  [caliper] [caliper-worker] 	Worker #5 starting workload loop
+2026.10.18-17:33:22.280 info  [caliper] [caliper-worker] 	Worker #3 starting workload loop
+2026.10.18-17:33:22.280 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.281 info  [caliper] [caliper-worker] 	Worker #6 starting workload loop
+2026.10.18-17:33:22.282 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:22.283 info  [caliper] [caliper-worker] 	Worker #7 starting workload loop
+2026.10.18-17:33:27.270 info  [caliper] [default-observer] 	[createPatientRecord-1000-tps-rep2 Round 4 Transaction Info] - Submitted: 3127 Succ: 259 Fail:0 Unfinished:2868
+2026.10.18-17:33:32.271 info  [caliper] [default-observer] 	[createPatientRecord-1000-tps-rep2 Round 4 Transaction Info] - Submitted: 5000 Succ: 3497 Fail:0 Unfinished:1503
+2026.10.18-17:33:33.214 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:33.215 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:33.216 info  [caliper] [worker-message-handler] 	Worker#1 finished Round#4
+2026.10.18-17:33:33.224 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:33.224 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:33.226 info  [caliper] [worker-message-handler] 	Worker#5 finished Round#4
+2026.10.18-17:33:33.248 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:33.248 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:33.249 info  [caliper] [worker-message-handler] 	Worker#0 finished Round#4
+2026.10.18-17:33:33.272 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:33.272 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:33.272 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:33.272 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:33.273 info  [caliper] [worker-message-handler] 	Worker#7 finished Round#4
+2026.10.18-17:33:33.273 info  [caliper] [worker-message-handler] 	Worker#4 finished Round#4
+2026.10.18-17:33:33.331 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:33.331 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:33.332 info  [caliper] [worker-message-handler] 	Worker#3 finished Round#4
+2026.10.18-17:33:33.373 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:33.373 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:33.374 info  [caliper] [worker-message-handler] 	Worker#2 finished Round#4
+2026.10.18-17:33:33.376 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:33.376 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:33.376 info  [caliper] [worker-message-handler] 	Worker#6 finished Round#4
+2026.10.18-17:33:38.377 info  [caliper] [default-observer] 	Resetting txCount indicator count
+2026.10.18-17:33:38.378 info  [caliper] [report-builder] 	### Test result ###
+2026.10.18-17:33:38.380 info  [caliper] [report-builder] 	
++-----------------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+| Name                              | Succ | Fail | Send Rate (TPS) | Max Latency (s) | Min Latency (s) | Avg Latency (s) | Throughput (TPS) |
+|-----------------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-1000-tps-rep2 | 5000 | 0    | 688.0           | 6.70            | 0.33            | 5.18            | 499.8            |
++-----------------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+
+2026.10.18-17:33:38.381 info  [caliper] [round-orchestrator] 	Finished round 5 (createPatientRecord-1000-tps-rep2) in 10.099 seconds
+2026.10.18-17:33:38.381 info  [caliper] [monitor.js] 	Stopping all monitors
+2026.10.18-17:33:38.381 info  [caliper] [round-orchestrator] 	Waiting 5 seconds for the next round...
+2026.10.18-17:33:43.389 info  [caliper] [round-orchestrator] 	Started round 6 (createPatientRecord-1000-tps-rep3)
+2026.10.18-17:33:43.399 info  [caliper] [worker-message-handler] 	Preparing Worker#3 for Round#5
+2026.10.18-17:33:43.399 info  [caliper] [worker-message-handler] 	Preparing Worker#0 for Round#5
+2026.10.18-17:33:43.408 info  [caliper] [worker-message-handler] 	Preparing Worker#6 for Round#5
+2026.10.18-17:33:43.408 info  [caliper] [worker-message-handler] 	Preparing Worker#2 for Round#5
+2026.10.18-17:33:43.402 info  [caliper] [worker-message-handler] 	Preparing Worker#4 for Round#5
+2026.10.18-17:33:43.408 info  [caliper] [worker-message-handler] 	Preparing Worker#7 for Round#5
+2026.10.18-17:33:43.414 info  [caliper] [worker-message-handler] 	Preparing Worker#1 for Round#5
+2026.10.18-17:33:43.415 info  [caliper] [worker-message-handler] 	Preparing Worker#5 for Round#5
+2026.10.18-17:33:43.438 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.438 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.438 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.438 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 5 is starting...
+2026.10.18-17:33:43.438 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 5 is starting...
+  [Worker 2] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 3] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:43.439 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.439 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 5 is starting...
+2026.10.18-17:33:43.439 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.439 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 5 is starting...
+  [Worker 0] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:43.439 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+  [Worker 4] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:43.439 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 5 is starting...
+2026.10.18-17:33:43.440 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 5 is starting...
+  [Worker 6] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:43.440 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:43.440 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:43.440 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:43.440 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:43.440 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+  [Worker 7] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:43.440 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:43.440 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 5 is completed
+2026.10.18-17:33:43.440 info  [caliper] [worker-message-handler] 	Worker#2 prepared for Round#5
+2026.10.18-17:33:43.440 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 5 is completed
+2026.10.18-17:33:43.440 info  [caliper] [worker-message-handler] 	Worker#4 prepared for Round#5
+2026.10.18-17:33:43.440 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 5 is completed
+2026.10.18-17:33:43.441 info  [caliper] [worker-message-handler] 	Worker#3 prepared for Round#5
+2026.10.18-17:33:43.441 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:43.441 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:43.441 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:43.441 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:43.442 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 5 is completed
+2026.10.18-17:33:43.442 info  [caliper] [worker-message-handler] 	Worker#0 prepared for Round#5
+2026.10.18-17:33:43.442 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 5 is completed
+2026.10.18-17:33:43.442 info  [caliper] [worker-message-handler] 	Worker#6 prepared for Round#5
+2026.10.18-17:33:43.442 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:43.442 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.442 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:43.442 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 5 is starting...
+2026.10.18-17:33:43.442 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 5 is completed
+2026.10.18-17:33:43.442 info  [caliper] [worker-message-handler] 	Worker#7 prepared for Round#5
+  [Worker 1] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:43.443 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.443 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 5 is starting...
+  [Worker 5] Initialized round with targetFunction='createPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:33:43.444 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:43.444 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:43.444 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 5 is completed
+2026.10.18-17:33:43.444 info  [caliper] [worker-message-handler] 	Worker#1 prepared for Round#5
+2026.10.18-17:33:43.444 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:43.444 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:43.445 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 5 is completed
+2026.10.18-17:33:43.445 info  [caliper] [worker-message-handler] 	Worker#5 prepared for Round#5
+2026.10.18-17:33:43.445 info  [caliper] [worker-orchestrator] 	8 workers prepared, progressing to test phase.
+2026.10.18-17:33:43.445 info  [caliper] [round-orchestrator] 	Monitors successfully started
+2026.10.18-17:33:43.446 info  [caliper] [worker-message-handler] 	Worker#0 is starting Round#5
+2026.10.18-17:33:43.446 info  [caliper] [worker-message-handler] 	Worker#1 is starting Round#5
+2026.10.18-17:33:43.447 info  [caliper] [worker-message-handler] 	Worker#2 is starting Round#5
+2026.10.18-17:33:43.447 info  [caliper] [worker-message-handler] 	Worker#4 is starting Round#5
+2026.10.18-17:33:43.448 info  [caliper] [worker-message-handler] 	Worker#6 is starting Round#5
+2026.10.18-17:33:43.448 info  [caliper] [worker-message-handler] 	Worker#3 is starting Round#5
+2026.10.18-17:33:43.448 info  [caliper] [worker-message-handler] 	Worker#7 is starting Round#5
+2026.10.18-17:33:43.448 info  [caliper] [worker-message-handler] 	Worker#5 is starting Round#5
+2026.10.18-17:33:43.454 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.455 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.455 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.455 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.456 info  [caliper] [caliper-worker] 	Worker #3 starting workload loop
+2026.10.18-17:33:43.456 info  [caliper] [caliper-worker] 	Worker #1 starting workload loop
+2026.10.18-17:33:43.456 info  [caliper] [caliper-worker] 	Worker #4 starting workload loop
+2026.10.18-17:33:43.456 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.456 info  [caliper] [caliper-worker] 	Worker #6 starting workload loop
+2026.10.18-17:33:43.456 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.457 info  [caliper] [caliper-worker] 	Worker #0 starting workload loop
+2026.10.18-17:33:43.458 info  [caliper] [caliper-worker] 	Worker #2 starting workload loop
+2026.10.18-17:33:43.459 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.459 info  [caliper] [caliper-worker] 	Worker #5 starting workload loop
+2026.10.18-17:33:43.463 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:33:43.464 info  [caliper] [caliper-worker] 	Worker #7 starting workload loop
+2026.10.18-17:33:48.460 info  [caliper] [default-observer] 	[createPatientRecord-1000-tps-rep3 Round 5 Transaction Info] - Submitted: 3168 Succ: 160 Fail:0 Unfinished:3008
+2026.10.18-17:33:53.459 info  [caliper] [default-observer] 	[createPatientRecord-1000-tps-rep3 Round 5 Transaction Info] - Submitted: 5000 Succ: 2343 Fail:0 Unfinished:2657
+2026.10.18-17:33:54.615 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:54.615 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:54.617 info  [caliper] [worker-message-handler] 	Worker#5 finished Round#5
+2026.10.18-17:33:54.726 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:54.726 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:54.728 info  [caliper] [worker-message-handler] 	Worker#1 finished Round#5
+2026.10.18-17:33:54.758 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:54.759 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:54.760 info  [caliper] [worker-message-handler] 	Worker#3 finished Round#5
+2026.10.18-17:33:54.767 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:54.769 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:54.771 info  [caliper] [worker-message-handler] 	Worker#4 finished Round#5
+2026.10.18-17:33:54.785 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:54.785 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:54.787 info  [caliper] [worker-message-handler] 	Worker#2 finished Round#5
+2026.10.18-17:33:54.793 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:54.794 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:54.799 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:54.800 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:54.800 info  [caliper] [worker-message-handler] 	Worker#6 finished Round#5
+2026.10.18-17:33:54.802 info  [caliper] [worker-message-handler] 	Worker#0 finished Round#5
+2026.10.18-17:33:54.830 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:33:54.830 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:33:54.832 info  [caliper] [worker-message-handler] 	Worker#7 finished Round#5
+2026.10.18-17:33:59.839 info  [caliper] [default-observer] 	Resetting txCount indicator count
+2026.10.18-17:33:59.840 info  [caliper] [report-builder] 	### Test result ###
+2026.10.18-17:33:59.843 info  [caliper] [report-builder] 	
++-----------------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+| Name                              | Succ | Fail | Send Rate (TPS) | Max Latency (s) | Min Latency (s) | Avg Latency (s) | Throughput (TPS) |
+|-----------------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-1000-tps-rep3 | 5000 | 0    | 811.0           | 7.41            | 0.88            | 5.60            | 485.4            |
++-----------------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+
+2026.10.18-17:33:59.845 info  [caliper] [round-orchestrator] 	Finished round 6 (createPatientRecord-1000-tps-rep3) in 10.374 seconds
+2026.10.18-17:33:59.845 info  [caliper] [monitor.js] 	Stopping all monitors
+2026.10.18-17:33:59.846 info  [caliper] [round-orchestrator] 	Waiting 5 seconds for the next round...
+2026.10.18-17:34:04.849 info  [caliper] [round-orchestrator] 	Started round 7 (getPatientRecord-500-tps)
+2026.10.18-17:34:04.853 info  [caliper] [worker-message-handler] 	Preparing Worker#0 for Round#6
+2026.10.18-17:34:04.853 info  [caliper] [worker-message-handler] 	Preparing Worker#1 for Round#6
+2026.10.18-17:34:04.857 info  [caliper] [worker-message-handler] 	Preparing Worker#3 for Round#6
+2026.10.18-17:34:04.860 info  [caliper] [worker-message-handler] 	Preparing Worker#2 for Round#6
+2026.10.18-17:34:04.861 info  [caliper] [worker-message-handler] 	Preparing Worker#5 for Round#6
+2026.10.18-17:34:04.863 info  [caliper] [worker-message-handler] 	Preparing Worker#4 for Round#6
+2026.10.18-17:34:04.863 info  [caliper] [worker-message-handler] 	Preparing Worker#7 for Round#6
+2026.10.18-17:34:04.863 info  [caliper] [worker-message-handler] 	Preparing Worker#6 for Round#6
+2026.10.18-17:34:04.905 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:34:04.906 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 6 is starting...
+2026.10.18-17:34:04.906 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:34:04.906 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:34:04.906 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 6 is starting...
+2026.10.18-17:34:04.906 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:34:04.906 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:34:04.906 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 6 is starting...
+2026.10.18-17:34:04.906 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:34:04.906 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 6 is starting...
+  [Worker 2] Initialized round with targetFunction='getPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:34:04.906 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 6 is starting...
+2026.10.18-17:34:04.906 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+  [Worker 2] Pre-seeding 50 patient records for 'getPatientRecord' (Invoker: HospitalOrgAdmin)...
+  [Worker 3] Initialized round with targetFunction='getPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+2026.10.18-17:34:04.906 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 6 is starting...
+  [Worker 6] Initialized round with targetFunction='getPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 3] Pre-seeding 50 patient records for 'getPatientRecord' (Invoker: HospitalOrgAdmin)...
+2026.10.18-17:34:04.907 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 6 is starting...
+  [Worker 6] Pre-seeding 50 patient records for 'getPatientRecord' (Invoker: HospitalOrgAdmin)...
+2026.10.18-17:34:04.907 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+  [Worker 5] Initialized round with targetFunction='getPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 5] Pre-seeding 50 patient records for 'getPatientRecord' (Invoker: HospitalOrgAdmin)...
+  [Worker 0] Initialized round with targetFunction='getPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 4] Initialized round with targetFunction='getPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 7] Initialized round with targetFunction='getPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 0] Pre-seeding 50 patient records for 'getPatientRecord' (Invoker: HospitalOrgAdmin)...
+2026.10.18-17:34:04.907 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 6 is starting...
+  [Worker 7] Pre-seeding 50 patient records for 'getPatientRecord' (Invoker: HospitalOrgAdmin)...
+  [Worker 4] Pre-seeding 50 patient records for 'getPatientRecord' (Invoker: HospitalOrgAdmin)...
+  [Worker 1] Initialized round with targetFunction='getPatientRecord', chaincode='healthscore', invoker='HospitalOrgAdmin'
+  [Worker 1] Pre-seeding 50 patient records for 'getPatientRecord' (Invoker: HospitalOrgAdmin)...
+  [Worker 0] Successfully prepared 50 seeded records (0 setup failures).
+  [Worker 1] Successfully prepared 50 seeded records (0 setup failures).
+  [Worker 6] Successfully prepared 50 seeded records (0 setup failures).
+  [Worker 2] Successfully prepared 50 seeded records (0 setup failures).
+  [Worker 7] Successfully prepared 50 seeded records (0 setup failures).
+  [Worker 3] Successfully prepared 50 seeded records (0 setup failures).
+  [Worker 4] Successfully prepared 50 seeded records (0 setup failures).
+  [Worker 5] Successfully prepared 50 seeded records (0 setup failures).
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:45:55.802 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:45:55.802 info  [caliper] [caliper-worker] 	Info: worker 4 prepare test phase for round 6 is completed
+2026.10.18-17:45:55.802 info  [caliper] [caliper-worker] 	Info: worker 6 prepare test phase for round 6 is completed
+2026.10.18-17:45:55.801 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:45:55.802 info  [caliper] [caliper-worker] 	Info: worker 1 prepare test phase for round 6 is completed
+2026.10.18-17:45:55.802 info  [caliper] [caliper-worker] 	Info: worker 2 prepare test phase for round 6 is completed
+2026.10.18-17:45:55.802 info  [caliper] [caliper-worker] 	Info: worker 0 prepare test phase for round 6 is completed
+2026.10.18-17:45:55.802 info  [caliper] [worker-message-handler] 	Worker#6 prepared for Round#6
+2026.10.18-17:45:55.802 info  [caliper] [worker-message-handler] 	Worker#4 prepared for Round#6
+2026.10.18-17:45:55.802 info  [caliper] [worker-message-handler] 	Worker#0 prepared for Round#6
+2026.10.18-17:45:55.802 info  [caliper] [worker-message-handler] 	Worker#1 prepared for Round#6
+2026.10.18-17:45:55.802 info  [caliper] [worker-message-handler] 	Worker#2 prepared for Round#6
+2026.10.18-17:45:55.802 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:45:55.802 info  [caliper] [caliper-worker] 	Info: worker 7 prepare test phase for round 6 is completed
+2026.10.18-17:45:55.802 info  [caliper] [caliper-worker] 	Info: worker 3 prepare test phase for round 6 is completed
+2026.10.18-17:45:55.802 info  [caliper] [worker-message-handler] 	Worker#3 prepared for Round#6
+2026.10.18-17:45:55.802 info  [caliper] [worker-message-handler] 	Worker#7 prepared for Round#6
+2026.10.18-17:45:55.802 info  [caliper] [caliper-worker] 	Info: worker 5 prepare test phase for round 6 is completed
+2026.10.18-17:45:55.802 info  [caliper] [worker-message-handler] 	Worker#5 prepared for Round#6
+2026.10.18-17:45:55.809 info  [caliper] [worker-orchestrator] 	8 workers prepared, progressing to test phase.
+2026.10.18-17:45:55.809 info  [caliper] [round-orchestrator] 	Monitors successfully started
+2026.10.18-17:45:55.810 info  [caliper] [worker-message-handler] 	Worker#0 is starting Round#6
+2026.10.18-17:45:55.810 info  [caliper] [worker-message-handler] 	Worker#1 is starting Round#6
+2026.10.18-17:45:55.810 info  [caliper] [worker-message-handler] 	Worker#2 is starting Round#6
+2026.10.18-17:45:55.811 info  [caliper] [worker-message-handler] 	Worker#3 is starting Round#6
+2026.10.18-17:45:55.811 info  [caliper] [worker-message-handler] 	Worker#4 is starting Round#6
+2026.10.18-17:45:55.811 info  [caliper] [worker-message-handler] 	Worker#6 is starting Round#6
+2026.10.18-17:45:55.811 info  [caliper] [worker-message-handler] 	Worker#5 is starting Round#6
+2026.10.18-17:45:55.812 info  [caliper] [worker-message-handler] 	Worker#7 is starting Round#6
+2026.10.18-17:45:55.817 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:45:55.817 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:45:55.817 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:45:55.817 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:45:55.817 info  [caliper] [caliper-worker] 	Worker #5 starting workload loop
+2026.10.18-17:45:55.817 info  [caliper] [caliper-worker] 	Worker #7 starting workload loop
+2026.10.18-17:45:55.817 info  [caliper] [caliper-worker] 	Worker #6 starting workload loop
+2026.10.18-17:45:55.817 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:45:55.817 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:45:55.817 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:45:55.817 info  [caliper] [connectors/peer-gateway/PeerGateway] 	Generating contract map for user HospitalOrgAdmin
+2026.10.18-17:45:55.817 info  [caliper] [caliper-worker] 	Worker #4 starting workload loop
+2026.10.18-17:45:55.818 info  [caliper] [caliper-worker] 	Worker #3 starting workload loop
+2026.10.18-17:45:55.818 info  [caliper] [caliper-worker] 	Worker #1 starting workload loop
+2026.10.18-17:45:55.818 info  [caliper] [caliper-worker] 	Worker #2 starting workload loop
+2026.10.18-17:45:55.818 info  [caliper] [caliper-worker] 	Worker #0 starting workload loop
+2026.10.18-17:46:00.813 info  [caliper] [default-observer] 	[getPatientRecord-500-tps Round 6 Transaction Info] - Submitted: 2003 Succ: 2000 Fail:0 Unfinished:3
+2026.10.18-17:46:01.898 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:46:01.898 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:46:01.898 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:46:01.898 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:46:01.898 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:46:01.898 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:46:01.898 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:46:01.898 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:46:01.899 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:46:01.899 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:46:01.899 info  [caliper] [worker-message-handler] 	Worker#1 finished Round#6
+2026.10.18-17:46:01.899 info  [caliper] [worker-message-handler] 	Worker#4 finished Round#6
+2026.10.18-17:46:01.899 info  [caliper] [worker-message-handler] 	Worker#2 finished Round#6
+2026.10.18-17:46:01.899 info  [caliper] [worker-message-handler] 	Worker#6 finished Round#6
+2026.10.18-17:46:01.899 info  [caliper] [worker-message-handler] 	Worker#3 finished Round#6
+2026.10.18-17:46:01.900 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:46:01.901 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:46:01.901 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:46:01.901 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:46:01.901 info  [caliper] [worker-message-handler] 	Worker#5 finished Round#6
+2026.10.18-17:46:01.901 info  [caliper] [worker-message-handler] 	Worker#7 finished Round#6
+2026.10.18-17:46:01.901 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gateway for user HospitalOrgAdmin
+2026.10.18-17:46:01.901 info  [caliper] [connectors/peer-gateway/PeerGateway] 	disconnecting gRpc client at peer peer0.hospital.healthscore.com
+2026.10.18-17:46:01.902 info  [caliper] [worker-message-handler] 	Worker#0 finished Round#6
+2026.10.18-17:46:06.906 info  [caliper] [default-observer] 	Resetting txCount indicator count
+2026.10.18-17:46:06.907 info  [caliper] [report-builder] 	### Test result ###
+2026.10.18-17:46:06.909 info  [caliper] [report-builder] 	
++--------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+| Name                     | Succ | Fail | Send Rate (TPS) | Max Latency (s) | Min Latency (s) | Avg Latency (s) | Throughput (TPS) |
+|--------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| getPatientRecord-500-tps | 2496 | 0    | 501.4           | 0.09            | 0.00            | 0.01            | 500.6            |
++--------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+
+2026.10.18-17:46:06.910 info  [caliper] [round-orchestrator] 	Finished round 7 (getPatientRecord-500-tps) in 5.081 seconds
+2026.10.18-17:46:06.910 info  [caliper] [monitor.js] 	Stopping all monitors
+2026.10.18-17:46:06.910 info  [caliper] [report-builder] 	### All test results ###
+2026.10.18-17:46:06.913 info  [caliper] [report-builder] 	
++-----------------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+| Name                              | Succ | Fail | Send Rate (TPS) | Max Latency (s) | Min Latency (s) | Avg Latency (s) | Throughput (TPS) |
+|-----------------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-350-tps       | 1744 | 0    | 351.8           | 2.04            | 0.02            | 0.56            | 249.4            |
+|-----------------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-500-tps       | 2496 | 0    | 500.7           | 2.89            | 0.09            | 1.55            | 351.9            |
+|-----------------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-750-tps       | 3744 | 0    | 631.0           | 5.13            | 0.12            | 3.57            | 467.0            |
+|-----------------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-1000-tps-rep1 | 5000 | 0    | 729.1           | 6.91            | 0.13            | 5.29            | 470.6            |
+|-----------------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-1000-tps-rep2 | 5000 | 0    | 688.0           | 6.70            | 0.33            | 5.18            | 499.8            |
+|-----------------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| createPatientRecord-1000-tps-rep3 | 5000 | 0    | 811.0           | 7.41            | 0.88            | 5.60            | 485.4            |
+|-----------------------------------|------|------|-----------------|-----------------|-----------------|-----------------|------------------|
+| getPatientRecord-500-tps          | 2496 | 0    | 501.4           | 0.09            | 0.00            | 0.01            | 500.6            |
++-----------------------------------+------+------+-----------------+-----------------+-----------------+-----------------+------------------+
+
+2026.10.18-17:46:06.932 info  [caliper] [report-builder] 	Generated report with path /caliper_ws/report.html
+2026.10.18-17:46:06.932 info  [caliper] [monitor.js] 	Stopping all monitors
+2026.10.18-17:46:06.932 info  [caliper] [worker-orchestrator] 	Sending exit message to connected workers
+2026.10.18-17:46:06.933 info  [caliper] [round-orchestrator] 	Benchmark finished in 841.978 seconds. Total rounds: 7. Successful rounds: 7. Failed rounds: 0.
+2026.10.18-17:46:06.933 info  [caliper] [caliper-engine] 	Skipping end command due to benchmark flow conditioning
+2026.10.18-17:46:06.933 info  [caliper] [cli-launch-manager] 	Benchmark successfully finished
+2026.10.18-17:46:06.934 info  [caliper] [worker-message-handler] 	Worker#0 is exiting
+2026.10.18-17:46:06.934 info  [caliper] [worker-message-handler] 	Worker#1 is exiting
+2026.10.18-17:46:06.934 info  [caliper] [worker-message-handler] 	Worker#4 is exiting
+2026.10.18-17:46:06.934 info  [caliper] [worker-message-handler] 	Worker#5 is exiting
+2026.10.18-17:46:06.934 info  [caliper] [worker-message-handler] 	Worker#6 is exiting
+2026.10.18-17:46:06.934 info  [caliper] [worker-message-handler] 	Worker#2 is exiting
+2026.10.18-17:46:06.934 info  [caliper] [worker-message-handler] 	Worker#3 is exiting
+2026.10.18-17:46:06.935 info  [caliper] [worker-message-handler] 	Worker#7 is exiting

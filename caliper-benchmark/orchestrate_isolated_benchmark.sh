@@ -21,6 +21,9 @@ echo "==========================================================================
 
 cleanup() {
   echo "--> Cleaning up isolated containers and testbed directory..."
+  if [ -n "$MONITOR_PID" ]; then
+    kill "$MONITOR_PID" >/dev/null 2>&1 || true
+  fi
   if [ -f "$TESTBED_DIR/compose/compose.yaml" ]; then
     docker compose -p hs_isolated -f "$TESTBED_DIR/compose/compose.yaml" down -v --remove-orphans >/dev/null 2>&1 || true
   fi
@@ -415,6 +418,21 @@ echo "--> Step 9: Executing Hyperledger Caliper v0.5.0 in isolated container..."
 mkdir -p "$OUTPUT_DIR"
 START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
+# Save exact orchestration script snapshot
+cp "$SCRIPT_DIR/orchestrate_isolated_benchmark.sh" "$OUTPUT_DIR/orchestration_script_snapshot.sh"
+
+echo "--> Starting background container resource utilization logging..."
+MONITOR_PID=""
+(
+  echo "timestamp,container,cpu_perc,mem_usage,mem_perc,net_io,block_io" > "$OUTPUT_DIR/resource_utilization.csv"
+  while true; do
+    TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    docker stats --no-stream --format "$TS,{{.Name}},{{.CPUPerc}},{{.MemUsage}},{{.MemPerc}},{{.NetIO}},{{.BlockIO}}" 2>/dev/null >> "$OUTPUT_DIR/resource_utilization.csv" || true
+    sleep 2
+  done
+) &
+MONITOR_PID=$!
+
 CALIPER_EXIT=0
 (
   set -eo pipefail
@@ -426,6 +444,12 @@ CALIPER_EXIT=0
     node:20-alpine \
     sh -c "npm install && npx caliper bind --caliper-bind-sut fabric:2.4 && npx caliper launch manager --caliper-workspace /caliper_ws --caliper-networkconfig /caliper_ws/networkconfig.yaml --caliper-benchconfig /caliper_ws/benchmark.yaml --caliper-flow-only-test --caliper-fabric-gateway-enabled" 2>&1 | tee "$OUTPUT_DIR/console.log"
 ) || CALIPER_EXIT=$?
+
+if [ -n "$MONITOR_PID" ]; then
+  kill "$MONITOR_PID" 2>/dev/null || true
+  wait "$MONITOR_PID" 2>/dev/null || true
+  MONITOR_PID=""
+fi
 
 END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
@@ -451,6 +475,7 @@ import re
 import json
 import csv
 import hashlib
+import yaml
 
 out_dir = '$OUTPUT_DIR'
 html_path = os.path.join(out_dir, 'report.html')
@@ -467,13 +492,29 @@ for r in rows[1:]:
     if cols and len(cols) == len(headers):
         results.append(dict(zip(headers, cols)))
 
+# Read benchmark YAML to annotate round metrics with explicit targetFunction
+yaml_path = os.path.join(out_dir, 'benchmark_expanded.yaml')
+with open(yaml_path) as yf:
+    bench_yaml = yaml.safe_load(yf)
+rounds_cfg_map = {r['label']: r for r in bench_yaml.get('test', {}).get('rounds', [])}
+
+for r in results:
+    cfg = rounds_cfg_map.get(r['Name'], {})
+    args = cfg.get('workload', {}).get('arguments', {})
+    r['targetFunction'] = args.get('targetFunction', 'UNKNOWN')
+    r['invokerIdentity'] = args.get('invokerIdentity', 'HospitalOrgAdmin')
+    if 'preSeedCount' in args:
+        r['preSeedCount'] = args.get('preSeedCount')
+
 with open(os.path.join(out_dir, 'live_benchmark_results.json'), 'w') as f:
     json.dump(results, f, indent=2)
 
 with open(os.path.join(out_dir, 'live_benchmark_results.csv'), 'w', newline='') as f:
     writer = csv.DictWriter(f, fieldnames=headers)
     writer.writeheader()
-    writer.writerows(results)
+    # Strip added metadata keys for clean CSV summary matching Caliper table format
+    csv_rows = [{h: row.get(h, '') for h in headers} for row in results]
+    writer.writerows(csv_rows)
 
 def get_hash(path):
     if os.path.isfile(path):
@@ -521,6 +562,7 @@ manifest = {
         'benchmark_yaml_sha256': get_hash(os.path.join(out_dir, 'benchmark_expanded.yaml')),
         'networkconfig_yaml_sha256': get_hash(os.path.join(out_dir, 'networkconfig_isolated.yaml')),
         'connection_json_sha256': get_hash(os.path.join(out_dir, 'connection_isolated.json')),
+        'orchestration_script_snapshot_sha256': get_hash(os.path.join(out_dir, 'orchestration_script_snapshot.sh')),
         'report_html_sha256': get_hash(html_path)
     },
     'round_metrics': results

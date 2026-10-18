@@ -85,8 +85,8 @@ Six publication-quality figures generated at 300 DPI are stored in `research_com
 | **HC-256 Weighted Classifier AUC** | Reference: $0.7828$ | **0.7828** (BSS: **+0.1266**) | Re-executed on independent 2024 population ($N=18,979$). |
 | **HC-257 Prospective Classifier AUC**| Reference: $0.7807$ | **0.7807** (BSS: **+0.1263**) | Re-executed on prospective Panel 28 ($N=8,708$). |
 | **Lagged Spend Baseline $R^2$** | Unreported in initial paper | **0.1204** (MAE: **$8,625.76**) | Established econometric benchmark for multi-year spending. |
-| **Fabric Blockchain Write Saturation**| "Over 1,000 TPS" (Unqualified) | **350.1 TPS** (Knee ceiling) | Caliper empirical saturation limit under $1,000$ TPS stress load. |
-| **Fabric Blockchain Read Query TPS**| Unreported | **500.3 TPS** ($<1$ms latency) | Evaluated local peer CouchDB state evaluation. |
+| **Fabric Blockchain Write Saturation**| "Over 1,000 TPS" (Unqualified) | **350.1 TPS** (Historical baseline) / **515.8 TPS** (Live 5-worker) / **485.3 ± 14.6 TPS** (Corrected 8-worker) | Caliper empirical saturation limits under stress load. |
+| **Fabric Blockchain Read Query TPS**| Unreported | **500.3 – 500.6 TPS** (Sub-10ms latency) | Evaluated local peer CouchDB state evaluation across runs. |
 
 ---
 

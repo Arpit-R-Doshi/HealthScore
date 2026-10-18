@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Machine-Checkable Verification Script for HealthScore Caliper Benchmark Artifacts
-Audits and reconciles:
+Audits, reconciles, and validates:
+- Semantic workload configuration (explicit targetFunction, label parity, pre-seeding)
 - report.html (HTML performance summary table)
 - live_benchmark_results.json
 - live_benchmark_results.csv
@@ -15,6 +16,92 @@ import re
 import json
 import csv
 import yaml
+
+KNOWN_OPERATIONS = [
+    'createPatientRecord',
+    'updateHealthScore',
+    'createPrescription',
+    'requestScan',
+    'getPatientRecord',
+    'getAllPrescriptions',
+    'getAllScanOrders'
+]
+
+NEEDS_PRE_SEEDING = [
+    'updateHealthScore',
+    'getPatientRecord',
+    'getAllPrescriptions',
+    'getAllScanOrders'
+]
+
+
+def validate_round_semantics(round_cfg):
+    """
+    Validates semantic correctness of an individual benchmark round configuration.
+    Returns a list of error strings (empty if valid).
+    """
+    errors = []
+    label = round_cfg.get('label', '')
+    workload = round_cfg.get('workload', {})
+    args = workload.get('arguments', {})
+
+    if not isinstance(args, dict):
+        errors.append(f"Round '{label}': workload.arguments must be a mapping/dict, got {type(args).__name__}")
+        return errors
+
+    # Rule 1: Reject deprecated/invalid 'action' argument
+    if 'action' in args:
+        errors.append(
+            f"Round '{label}': Contains deprecated/invalid argument 'action'. "
+            f"Benchmark rounds must configure 'targetFunction' explicitly."
+        )
+
+    # Rule 2: Require explicit, non-empty 'targetFunction'
+    target_fn = args.get('targetFunction')
+    if not target_fn:
+        errors.append(
+            f"Round '{label}': Missing mandatory argument 'targetFunction'. "
+            f"A target function must be explicitly specified to prevent silent fallback to write transactions."
+        )
+    else:
+        # Rule 3: Enforce consistency between round label and configured targetFunction
+        matched_ops = [op for op in KNOWN_OPERATIONS if op in label]
+        if matched_ops:
+            expected_op = matched_ops[0]
+            if target_fn != expected_op:
+                errors.append(
+                    f"Round '{label}': Semantic mismatch! Label indicates operation '{expected_op}', "
+                    f"but configured targetFunction is '{target_fn}'."
+                )
+
+        # Rule 4: Require valid preSeedCount for operations needing pre-existing state
+        if target_fn in NEEDS_PRE_SEEDING:
+            pre_seed = args.get('preSeedCount')
+            if pre_seed is None or not isinstance(pre_seed, int) or pre_seed <= 0:
+                errors.append(
+                    f"Round '{label}': Target function '{target_fn}' requires pre-seeded ledger state, "
+                    f"but 'preSeedCount' is {pre_seed} (must be integer > 0)."
+                )
+
+        # Rule 5: Require invokerIdentity
+        if not args.get('invokerIdentity'):
+            errors.append(f"Round '{label}': Missing mandatory argument 'invokerIdentity'.")
+
+    return errors
+
+
+def verify_benchmark_semantics(bench_yaml):
+    """
+    Validates semantic correctness for all rounds in a benchmark YAML dict.
+    Returns (is_valid, list_of_errors).
+    """
+    rounds = bench_yaml.get('test', {}).get('rounds', [])
+    all_errors = []
+    for r in rounds:
+        errs = validate_round_semantics(r)
+        all_errors.extend(errs)
+    return len(all_errors) == 0, all_errors
+
 
 def verify_live_run(directory):
     print(f"=== Auditing Benchmark Artifacts in {directory} ===")
@@ -42,6 +129,15 @@ def verify_live_run(directory):
         yaml_total_tx += txs
 
     print(f"✓ benchmark_expanded.yaml: {len(yaml_rounds)} rounds, {yaml_total_tx} total transactions configured.")
+
+    # 1b. Semantic Validation of Round Configurations
+    is_valid_semantics, semantic_errors = verify_benchmark_semantics(bench_yaml)
+    if not is_valid_semantics:
+        print("\n❌ SEMANTIC VALIDATION FAILED:")
+        for err in semantic_errors:
+            print(f"  - {err}")
+        return False
+    print(f"✓ Semantic verification passed: all {len(yaml_rounds)} rounds have valid explicit targetFunction and parameters.")
 
     # 2. Parse HTML Summary Table
     with open(html_file, 'r', encoding='utf-8') as f:
@@ -155,6 +251,13 @@ def verify_live_run(directory):
                 print(f"❌ {lbl}: Min latency mismatch in {source_name}")
                 mismatches += 1
 
+        if m and 'targetFunction' in m:
+            yaml_round = next((r for r in yaml_rounds if r['label'] == lbl), {})
+            expected_fn = yaml_round.get('workload', {}).get('arguments', {}).get('targetFunction')
+            if expected_fn and m['targetFunction'] != expected_fn:
+                print(f"❌ {lbl}: Manifest targetFunction '{m['targetFunction']}' != YAML targetFunction '{expected_fn}'")
+                mismatches += 1
+
     print(f"\nTotal Configured Txs: {yaml_total_tx}")
     print(f"Total HTML Successful: {total_html_succ}")
     print(f"Total HTML Failed:     {total_html_fail}")
@@ -165,6 +268,7 @@ def verify_live_run(directory):
     else:
         print(f"❌ Found {mismatches} mismatches!")
         return False
+
 
 if __name__ == '__main__':
     target_dir = sys.argv[1] if len(sys.argv) > 1 else "caliper-benchmark/results/live/20261018-010200"

@@ -1,14 +1,25 @@
-# HealthScore: Final Independent Verification and Research Integrity Report
+# HealthScore: Independent Verification and Research Integrity Report
 
-**Author / Independent Auditor:** Antigravity Research Integrity Gate & Systems Audit Agent
-**Date of Verification:** October 17, 2026
-**Primary Repository Branch:** `feature/ml-pipeline-rebuild`
-**Target Repository:** `/Users/arpitdoshi/Desktop/ipd/HealthScore`
-**Test Suite Verification:** 97 Passed, 0 Failed, 0 Skipped (`ml_model/venv/bin/pytest ml_model/tests/`) + 50 Passed (`npm test backend/`)
+**Author / Independent Auditor:** Antigravity Research Integrity Gate & Systems Audit Agent<br>
+**Original Audit Snapshot Date:** October 17, 2026<br>
+**Latest Audit Addendum Date:** October 18–19, 2026<br>
+**Primary Repository Branch:** `feature/ml-pipeline-rebuild`<br>
+**Target Repository:** `/Users/arpitdoshi/Desktop/ipd/HealthScore`<br>
+**Test Suite Verification:** 97 Passed, 0 Failed (`ml_model/tests/`) + 16 Passed (`caliper-benchmark/tests/`) + 50 Passed (`backend/tests/security.test.js`)
+
+> [!IMPORTANT]
+> **AUDIT SNAPSHOT STATUS & SUBSEQUENT AUDIT ADDENDUM (OCTOBER 18–19, 2026):**<br>
+> Sections 1–12 below represent the initial integrity audit snapshot captured on October 17, 2026. Following that initial assessment, three subsequent verification and correction milestones were executed:
+> 1. **Live Caliper 11-Round Benchmark Rerun (`20261018-010200`):** Successfully executed an expanded 31,500-transaction workload on an isolated 5-organization testbed with 0 failures ($0.00\%$), establishing $515.8$ peak write TPS and $500.3$ read TPS.
+> 2. **Semantic Workload Audit & Erratum (`20261018-205500_stress_investigation`):** Detected that round 7 (`getPatientRecord-500-tps`) specified `action: getPatientRecord` instead of `targetFunction: getPatientRecord`, defaulting silently to `createPatientRecord` writes. Formally documented via [`ERRATUM.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/results/live/20261018-205500_stress_investigation/ERRATUM.md) and invalidated round 7 as read evidence. Its three 1,000 TPS write repetitions remain valid write measurements ($416.80 \pm 17.04$ TPS at $782.23 \pm 74.20$ send rate, $\text{ddof}=1$).
+> 3. **Corrected Stress Benchmark & Container Profiling (`20261018-230500_stress_investigation`):** Rerun with explicit `targetFunction`, pre-seeded ledger state (`preSeedCount: 50`), and continuous container telemetry. Achieved genuine read query throughput of **$500.6$ TPS** ($0.01$s avg latency, $0.09$s max). The three 1,000 TPS write repetitions sustained **$485.27 \pm 14.60$ TPS** ($\text{ddof}=1$) at $742.70 \pm 62.62$ TPS send rate ($5.36 \pm 0.22$s avg latency). Container profiling revealed Caliper runner CPU peaking at $375.5\%$ (4 cores saturated) versus orderer peak $57.6\%$, empirically confirming a client-side workload-generation bottleneck.
+> 4. **Figure 5 Axis and Latency Correction:** Removed unsupported hardcoded $0.001$s latency constants, aligned the horizontal axis to actual Caliper send rates consistently, and annotated Caliper's two-decimal display precision limit ($\le 0.01$s displayed avg).
+>
+> For full technical details and complete benchmark reconciliation, see [`BLOCKCHAIN_BENCHMARK_REPORT.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/BLOCKCHAIN_BENCHMARK_REPORT.md) and [`REVISED_PAPER.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/paper/REVISED_PAPER.md).
 
 ---
 
-## Executive Summary & Integrity Verdict
+## Executive Summary & Integrity Verdict (Historical Snapshot: October 17, 2026)
 
 This independent audit evaluates the claims, commits, and artifacts delivered during the `feature/ml-pipeline-rebuild` execution sequence. Every quantitative and architectural assertion has been checked directly against machine-readable results, frozen model artifacts, dependency audits, static security analyzers, and historical Git commits.
 

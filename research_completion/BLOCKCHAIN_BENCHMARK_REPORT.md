@@ -79,24 +79,66 @@ During the research strengthening pass, the Caliper workload implementation ([`w
 
 *\* Note: Average latencies displayed as `0.00`s in Caliper HTML output reflect two-decimal rounding ($\le 0.01$s). Maximum query latencies reached $0.01$s ($250$ TPS) and $0.13$s ($500$ TPS).*
 
-### 3.3. Targeted Controlled Stress Investigation with 8 Workers (Run `20261018-205500_stress_investigation`, $25,480$ Transactions)
+### 3.3. Initial Controlled Stress Investigation (Run `20261018-205500_stress_investigation`, $25,480$ Transactions) — Preserved Historical Record & Erratum
 
-To resolve whether the send rate shortfall in the 11-round run (615.7 vs 1,000 TPS) was caused by client-side load-generation bottlenecks or blockchain throughput throttling, a controlled stress experiment was executed using **8 Caliper worker processes** across intermediate load steps (350, 500, 750 TPS) and **three independent repetitions** of the 1,000 TPS saturation condition:
+To investigate client send-rate scaling, a controlled stress experiment was executed using **8 Caliper worker processes** across intermediate load steps (350, 500, 750 TPS) and **three independent repetitions** of the 1,000 TPS saturation condition.
 
-| Test Round Name | Succ Txs | Fail Txs | Send Rate (TPS) | Min Latency (s) | Max Latency (s) | Avg Latency (s) | Throughput (TPS) | Performance Regime |
+> [!WARNING]
+> **ERRATUM ON ROUND 7 (`getPatientRecord-500-tps`):**
+> Audit of `benchmark_expanded.yaml` and `workload.js` revealed that Round 7 specified `action: getPatientRecord` instead of `targetFunction: getPatientRecord`. Because `workload.js` inspected `roundArguments.targetFunction`, it defaulted to `createPatientRecord` writes. Consequently, Round 7 executed 2,496 write transactions with consensus overhead, rather than evaluating local state queries. The reported metrics (**349.5 TPS**, **3.01s** average latency) represent write performance, **NOT** read query throughput, and are **INVALID as read evidence**. See [`ERRATUM.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/results/live/20261018-205500_stress_investigation/ERRATUM.md). All raw artifacts in this directory are preserved unmodified as historical execution output.
+
+| Test Round Name | Succ Txs | Fail Txs | Send Rate (TPS) | Min Latency (s) | Max Latency (s) | Avg Latency (s) | Throughput (TPS) | Validated Operation |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| `createPatientRecord-350-tps` | 1,744 | 0 | **352.0** | 0.02 | 2.04 | 0.28 | **249.6** | Sub-Saturation Step |
-| `createPatientRecord-500-tps` | 2,496 | 0 | **476.7** | 0.24 | 4.33 | 2.73 | **332.4** | Saturation Approach |
-| `createPatientRecord-750-tps` | 3,744 | 0 | **670.4** | 0.24 | 6.30 | 4.87 | **412.2** | Near-Saturation Step |
-| `createPatientRecord-1000-tps-rep1` | 5,000 | 0 | **707.9** | 0.91 | 8.75 | 6.69 | **424.3** | Core Saturation (Rep 1) |
-| `createPatientRecord-1000-tps-rep2` | 5,000 | 0 | **856.3** | 0.85 | 8.43 | 6.78 | **428.8** | Core Saturation (Rep 2) |
-| `createPatientRecord-1000-tps-rep3` | 5,000 | 0 | **782.5** | 0.72 | 9.81 | 7.65 | **397.3** | Core Saturation (Rep 3) |
-| `getPatientRecord-500-tps` | 2,496 | 0 | **494.8** | 1.01 | 4.25 | 3.01 | **349.5** | High-Rate Read Query |
+| `createPatientRecord-350-tps` | 1,744 | 0 | **352.0** | 0.02 | 2.04 | 0.28 | **249.6** | Write Consensus |
+| `createPatientRecord-500-tps` | 2,496 | 0 | **476.7** | 0.24 | 4.33 | 2.73 | **332.4** | Write Consensus |
+| `createPatientRecord-750-tps` | 3,744 | 0 | **670.4** | 0.24 | 6.30 | 4.87 | **412.2** | Write Consensus |
+| `createPatientRecord-1000-tps-rep1` | 5,000 | 0 | **707.9** | 0.91 | 8.75 | 6.69 | **424.3** | Write Consensus (Rep 1) |
+| `createPatientRecord-1000-tps-rep2` | 5,000 | 0 | **856.3** | 0.85 | 8.43 | 6.78 | **428.8** | Write Consensus (Rep 2) |
+| `createPatientRecord-1000-tps-rep3` | 5,000 | 0 | **782.5** | 0.72 | 9.81 | 7.65 | **397.3** | Write Consensus (Rep 3) |
+| `getPatientRecord-500-tps` *(Misconfigured)* | 2,496 | 0 | **494.8** | 1.01 | 4.25 | 3.01 | **349.5** | *Invalid Read (Executed as Write)* |
 
-#### Load-Generator Bottleneck Investigation Findings:
-1. **Client Bottleneck Confirmed:** Scaling from 5 to 8 worker processes increased maximum actual send rate from **$615.7$ TPS** to **$856.3$ TPS** (mean under 1,000 TPS target: **$782.2 \pm 60.7$ TPS**). Each single-threaded Caliper Node.js process is CPU-bounded by client-side ECDSA transaction signing and gRPC serialization (approx. 100–110 TPS per worker). The inability to submit 1,000 TPS is strictly a client load-generator limit, not a Fabric admission failure.
-2. **True SUT Saturation Throughput:** Across the three independent repetitions of the 1,000 TPS condition, the isolated Hyperledger Fabric deployment sustained **$416.8 \pm 13.9$ TPS** committed write throughput ($424.3$, $428.8$, $397.3$ TPS) with zero transaction failures ($0/15,000$).
-3. **Queueing Latency Growth:** Average confirmation latency grew smoothly with offered load: $0.28$s at 350 TPS, $2.73$s at 500 TPS, $4.87$s at 750 TPS, and $7.04 \pm 0.43$s under 1,000 TPS stress.
+#### Valid Write Repetition Statistics ($N=3$ Repetitions, Sample SD with $\text{ddof}=1$):
+- **Actual Send Rate:** $707.9$, $856.3$, $782.5$ TPS $\implies \mathbf{782.23 \pm 74.20}$ **TPS**
+- **Committed Throughput:** $424.3$, $428.8$, $397.3$ TPS $\implies \mathbf{416.80 \pm 17.04}$ **TPS**
+- **Average Latency:** $6.69$, $6.78$, $7.65$ s $\implies \mathbf{7.04 \pm 0.53}$ **seconds**
+- **Maximum Latency:** $8.75$, $8.43$, $9.81$ s $\implies \mathbf{9.00 \pm 0.72}$ **seconds**
+
+---
+
+### 3.4. Corrected Controlled Stress & Read Benchmark (Run `20261018-230500_stress_investigation`, $25,480$ Transactions)
+
+Following the identification of the configuration defect, `workload.js` and `benchmark_stress_investigation.yaml` were updated to enforce explicit `targetFunction` arguments across all rounds and configure ledger pre-seeding (`preSeedCount: 50`) for read queries. The full stress matrix was rerun in an isolated testbed with background container resource logging:
+
+| Test Round Name | Succ Txs | Fail Txs | Send Rate (TPS) | Min Latency (s) | Max Latency (s) | Avg Latency (s) | Throughput (TPS) | Validated Operation |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| `createPatientRecord-350-tps` | 1,744 | 0 | **351.8** | 0.02 | 2.04 | 0.56 | **249.4** | Write Consensus |
+| `createPatientRecord-500-tps` | 2,496 | 0 | **500.7** | 0.09 | 2.89 | 1.55 | **351.9** | Write Consensus |
+| `createPatientRecord-750-tps` | 3,744 | 0 | **631.0** | 0.12 | 5.13 | 3.57 | **467.0** | Write Consensus |
+| `createPatientRecord-1000-tps-rep1` | 5,000 | 0 | **729.1** | 0.13 | 6.91 | 5.29 | **470.6** | Write Consensus (Rep 1) |
+| `createPatientRecord-1000-tps-rep2` | 5,000 | 0 | **688.0** | 0.33 | 6.70 | 5.18 | **499.8** | Write Consensus (Rep 2) |
+| `createPatientRecord-1000-tps-rep3` | 5,000 | 0 | **811.0** | 0.88 | 7.41 | 5.60 | **485.4** | Write Consensus (Rep 3) |
+| `getPatientRecord-500-tps` *(Corrected)* | 2,496 | 0 | **501.4** | 0.00 | 0.09 | 0.01 | **500.6** | **Genuine Read Query** |
+
+#### Key Empirical Findings from the Corrected Benchmark:
+
+1. **Verified Read Query Performance:**
+   With explicit `targetFunction: getPatientRecord` and verified pre-seeding ($50$ pre-seeded records per worker, $400$ total), the read test executed genuine local CouchDB state reads. Committed throughput reached **$500.6$ TPS** under an offered send rate of **$501.4$ TPS** ($99.8\%$ scaling), with an average confirmation latency of **$0.01$ seconds** (max $0.09$s, min $0.00$s) and zero failures ($0/2,496$). This definitively confirms that read queries bypass Raft ordering and gossip consensus, maintaining sub-10ms response times.
+
+2. **Corrected 1,000 TPS Write Repetitions ($N=3$, Sample SD with $\text{ddof}=1$):**
+   - **Send Rate:** $729.1$, $688.0$, $811.0$ TPS $\implies \mathbf{742.70 \pm 62.62}$ **TPS**
+   - **Committed Throughput:** $470.6$, $499.8$, $485.4$ TPS $\implies \mathbf{485.27 \pm 14.60}$ **TPS**
+   - **Average Confirmation Latency:** $5.29$, $5.18$, $5.60$ s $\implies \mathbf{5.36 \pm 0.22}$ **seconds**
+   - **Maximum Latency:** $6.91$, $6.70$, $7.41$ s $\implies \mathbf{7.01 \pm 0.36}$ **seconds**
+
+3. **Investigation of the Actual Send-Rate Bottleneck (Container Resource Telemetry):**
+   Continuous container CPU and memory telemetry was captured throughout the run in [`resource_utilization.csv`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/results/live/20261018-230500_stress_investigation/resource_utilization.csv):
+   - The Caliper runner container (`node:20-alpine`) exhibited a mean CPU utilization of **$48.87\%$** and peaked at **$375.53\%$** (saturating nearly 4 full CPU cores) while coordinating workload dispatch across its 8 worker processes.
+   - The endorsing peer (`peer0.hospital.healthscore.com`) exhibited a mean CPU of **$20.97\%$** and peaked at **$155.73\%$**.
+   - The Raft orderer (`orderer.healthscore.com`) exhibited a mean CPU of **$6.09\%$** and peaked at **$57.64\%$**.
+   - **Scientific Assessment:** The observed data demonstrates that client-side load generation in Caliper was a primary limiting factor preventing the client from reaching the nominal 1,000 TPS target rate (reaching $688$–$811$ TPS with 8 workers vs. $615.7$ TPS with 5 workers). However, while a client-side generation limitation is empirically established by the container CPU saturation, the precise internal micro-mechanism (e.g., ECDSA elliptic curve signing vs. V8 event loop scheduling vs. gRPC connection multiplexing) remains unverified without kernel-level or V8 profiler traces.
+
+4. **Single-Identity Benchmark Disclosure:**
+   In accordance with benchmark transparency standards: all transactions across both live Caliper runs were submitted using a single administrative identity (`HospitalOrgAdmin` from `HospitalOrgMSP`) through the Fabric Gateway. This configuration reflects consortium administrative ingestion but does not simulate concurrent transaction proposals originated from multiple independent MSP client organizations. In a multi-client deployment, client-side workload generation would be distributed across distinct physical client machines.
 
 ---
 

@@ -49,9 +49,24 @@ class HealthScoreWorkload extends WorkloadModuleBase {
     async initializeWorkloadModule(workerIndex, totalWorkers, roundIndex, roundArguments, sutAdapter, sutContext) {
         await super.initializeWorkloadModule(workerIndex, totalWorkers, roundIndex, roundArguments, sutAdapter, sutContext);
 
-        this.targetFunction = this.roundArguments.targetFunction || 'createPatientRecord';
+        if (!this.roundArguments || !this.roundArguments.targetFunction) {
+            throw new Error(
+                `[Worker ${workerIndex}] Missing required argument 'targetFunction'. ` +
+                `Benchmark round configurations must specify 'targetFunction' explicitly to prevent silent fallback to write transactions.`
+            );
+        }
+        if (this.roundArguments.action) {
+            throw new Error(
+                `[Worker ${workerIndex}] Invalid argument 'action' provided in roundArguments. ` +
+                `Use 'targetFunction' explicitly instead of 'action'.`
+            );
+        }
+
+        this.targetFunction = this.roundArguments.targetFunction;
         this.chaincodeId = this.roundArguments.chaincodeId || 'healthscore';
         this.invokerIdentity = this.roundArguments.invokerIdentity || 'HospitalOrgAdmin';
+
+        console.log(`  [Worker ${workerIndex}] Initialized round with targetFunction='${this.targetFunction}', chaincode='${this.chaincodeId}', invoker='${this.invokerIdentity}'`);
 
         // Deterministic PRNG seeded per worker and round
         const baseSeed = (this.roundArguments.seed || 104729) + (workerIndex * 7919) + (roundIndex * 997);
@@ -65,7 +80,13 @@ class HealthScoreWorkload extends WorkloadModuleBase {
         const needsPreSeeding = ['updateHealthScore', 'getPatientRecord', 'getAllPrescriptions', 'getAllScanOrders'];
 
         if (needsPreSeeding.includes(this.targetFunction)) {
-            const seedCount = this.roundArguments.preSeedCount || 200;
+            const seedCount = this.roundArguments.preSeedCount !== undefined ? this.roundArguments.preSeedCount : 200;
+            if (seedCount <= 0) {
+                throw new Error(
+                    `[Worker ${workerIndex}] Invalid preSeedCount: ${seedCount} for targetFunction '${this.targetFunction}'. ` +
+                    `Read and update rounds require preSeedCount > 0 to populate ledger records.`
+                );
+            }
             console.log(`  [Worker ${workerIndex}] Pre-seeding ${seedCount} patient records for '${this.targetFunction}' (Invoker: ${this.invokerIdentity})...`);
 
             for (let i = 0; i < seedCount; i++) {

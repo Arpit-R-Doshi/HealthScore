@@ -1,0 +1,128 @@
+{
+  "benchmark_type": "LIVE_EMPIRICAL_CALIPER_BENCHMARK",
+  "run_id": "20261018-230500_stress_investigation",
+  "status": "COMPLETED_SUCCESSFULLY",
+  "start_timestamp_utc": "2026-10-18T17:29:50Z",
+  "end_timestamp_utc": "2026-10-18T17:58:44Z",
+  "exit_code": 0,
+  "total_rounds_configured": 7,
+  "total_rounds_completed": 7,
+  "total_rounds_failed": 0,
+  "total_transactions_submitted": 25480,
+  "total_transactions_successful": 25480,
+  "total_transactions_failed": 0,
+  "overall_success_rate_percent": 100.0,
+  "evidence_class": "Class 2: New Live Empirical Caliper Rerun (Isolated Testbed)",
+  "fabric_block_parameters": {
+    "BatchTimeout": "2s",
+    "MaxMessageCount": 10,
+    "AbsoluteMaxBytes": "99 MB",
+    "PreferredMaxBytes": "512 KB"
+  },
+  "environment": {
+    "host_os": "macOS (arm64, Apple Silicon)",
+    "docker_version": "29.8.2",
+    "caliper_version": "0.5.0",
+    "fabric_gateway_sdk": "1.0.1",
+    "fabric_version": "2.4/2.5",
+    "network_topology": "5 Organizations (Hospital, Patient, Pharmacy, Lab, Insurance) + Raft Orderer",
+    "invoker_client_identity": "HospitalOrgAdmin (HospitalOrgMSP)"
+  },
+  "artifact_hashes": {
+    "configtx_yaml_sha256": "5de91968bb6761de3eb9a5753db9e112805c8c5172c3a64b944e34ba606fc7c3",
+    "chaincode_index_js_sha256": "4b22f38f9f7fa7686acc3375017282599d8dc7ae1e57c9c48400d2bc28f3dc36",
+    "workload_js_sha256": "7569dc43aff181fcfc2be3400482d79776f592a1ba44e69ee105119189afe471",
+    "benchmark_yaml_sha256": "d29fe944c3972ee8bd70513d339c6ee78a1d7f3a547b369747a173e02006f583",
+    "networkconfig_yaml_sha256": "76f27401f0c01ce8491c1a4df5365313bb5e01ef2f7b87a4094f09a688f540fa",
+    "connection_json_sha256": "6af6343a50fdf178b5ee780a72c0c771c2286a653fa8e551896ccbfd5fb01cc3",
+    "orchestration_script_snapshot_sha256": "7d301e7dabe7cb0c9a497c8fd378652ed4ac89675dfa044330cb30a936ed83df",
+    "report_html_sha256": "c0574fe0b2cc15b9ed439ad0937b97b8b0e9d886739e6b0e47a979dc55833ee7"
+  },
+  "round_metrics": [
+    {
+      "Name": "createPatientRecord-350-tps",
+      "Succ": "1744",
+      "Fail": "0",
+      "Send Rate (TPS)": "351.8",
+      "Max Latency (s)": "2.04",
+      "Min Latency (s)": "0.02",
+      "Avg Latency (s)": "0.56",
+      "Throughput (TPS)": "249.4",
+      "targetFunction": "createPatientRecord",
+      "invokerIdentity": "HospitalOrgAdmin"
+    },
+    {
+      "Name": "createPatientRecord-500-tps",
+      "Succ": "2496",
+      "Fail": "0",
+      "Send Rate (TPS)": "500.7",
+      "Max Latency (s)": "2.89",
+      "Min Latency (s)": "0.09",
+      "Avg Latency (s)": "1.55",
+      "Throughput (TPS)": "351.9",
+      "targetFunction": "createPatientRecord",
+      "invokerIdentity": "HospitalOrgAdmin"
+    },
+    {
+      "Name": "createPatientRecord-750-tps",
+      "Succ": "3744",
+      "Fail": "0",
+      "Send Rate (TPS)": "631.0",
+      "Max Latency (s)": "5.13",
+      "Min Latency (s)": "0.12",
+      "Avg Latency (s)": "3.57",
+      "Throughput (TPS)": "467.0",
+      "targetFunction": "createPatientRecord",
+      "invokerIdentity": "HospitalOrgAdmin"
+    },
+    {
+      "Name": "createPatientRecord-1000-tps-rep1",
+      "Succ": "5000",
+      "Fail": "0",
+      "Send Rate (TPS)": "729.1",
+      "Max Latency (s)": "6.91",
+      "Min Latency (s)": "0.13",
+      "Avg Latency (s)": "5.29",
+      "Throughput (TPS)": "470.6",
+      "targetFunction": "createPatientRecord",
+      "invokerIdentity": "HospitalOrgAdmin"
+    },
+    {
+      "Name": "createPatientRecord-1000-tps-rep2",
+      "Succ": "5000",
+      "Fail": "0",
+      "Send Rate (TPS)": "688.0",
+      "Max Latency (s)": "6.70",
+      "Min Latency (s)": "0.33",
+      "Avg Latency (s)": "5.18",
+      "Throughput (TPS)": "499.8",
+      "targetFunction": "createPatientRecord",
+      "invokerIdentity": "HospitalOrgAdmin"
+    },
+    {
+      "Name": "createPatientRecord-1000-tps-rep3",
+      "Succ": "5000",
+      "Fail": "0",
+      "Send Rate (TPS)": "811.0",
+      "Max Latency (s)": "7.41",
+      "Min Latency (s)": "0.88",
+      "Avg Latency (s)": "5.60",
+      "Throughput (TPS)": "485.4",
+      "targetFunction": "createPatientRecord",
+      "invokerIdentity": "HospitalOrgAdmin"
+    },
+    {
+      "Name": "getPatientRecord-500-tps",
+      "Succ": "2496",
+      "Fail": "0",
+      "Send Rate (TPS)": "501.4",
+      "Max Latency (s)": "0.09",
+      "Min Latency (s)": "0.00",
+      "Avg Latency (s)": "0.01",
+      "Throughput (TPS)": "500.6",
+      "targetFunction": "getPatientRecord",
+      "invokerIdentity": "HospitalOrgAdmin",
+      "preSeedCount": 50
+    }
+  ]
+}
