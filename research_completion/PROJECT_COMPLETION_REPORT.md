@@ -85,15 +85,15 @@ Six publication-quality figures generated at 300 DPI are stored in `research_com
 | **HC-256 Weighted Classifier AUC** | Reference: $0.7828$ | **0.7828** (BSS: **+0.1266**) | Re-executed on independent 2024 population ($N=18,979$). |
 | **HC-257 Prospective Classifier AUC**| Reference: $0.7807$ | **0.7807** (BSS: **+0.1263**) | Re-executed on prospective Panel 28 ($N=8,708$). |
 | **Lagged Spend Baseline $R^2$** | Unreported in initial paper | **0.1204** (MAE: **$8,625.76**) | Established econometric benchmark for multi-year spending. |
-| **Fabric Blockchain Write Saturation**| "Over 1,000 TPS" (Unqualified) | **350.1 TPS** (Historical baseline) / **515.8 TPS** (Live 5-worker) / **485.3 ± 14.6 TPS** (Corrected 8-worker) | Caliper empirical saturation limits under stress load. |
-| **Fabric Blockchain Read Query TPS**| Unreported | **500.3 – 500.6 TPS** (Sub-10ms latency) | Evaluated local peer CouchDB state evaluation across runs. |
+| **Fabric Blockchain Write Saturation**| "Over 1,000 TPS" (Unqualified) | **350.1 TPS** (Historical baseline) / **515.8 TPS** (Live 5-worker) / **485.3 ± 14.6 TPS** (Corrected 8-worker) | Caliper empirical saturation limits under stress load (distinguishing 25,480 measured round transactions from 400 pre-seeding setup writes). |
+| **Fabric Blockchain Read Query TPS**| Unreported | **500.3 – 500.6 TPS** (Displayed avg latency 0.01s, max 0.09s) | Evaluated local peer CouchDB state evaluation across runs (Caliper reports 2 decimal places). |
 
 ---
 
 ## 5. Four Formal Readiness Judgments
 
 ### 1. Software and Pipeline Readiness: **READY (HIGH ASSURANCE)**
-- **Evidence:** 92 automated unit and integration tests passing in `ml_model/tests/` and 50 automated security tests passing in `backend/tests/security.test.js`. Zero target leakage, zero feature order mismatch, and clean child-process API routing verified.
+- **Evidence:** 164 automated unit, integration, benchmark, and security tests passing across the repository (97 passed in `ml_model/tests/`, 17 passed in `caliper-benchmark/tests/`, and 50 passed in `backend/tests/security.test.js`). Zero target leakage, zero feature order mismatch, and clean child-process API routing verified.
 - **Scope:** Software compilation, input parsing, error handling, role-based authorization, care relationship enforcement, and deterministic reproducibility are fully validated.
 
 ### 2. Predictive Modeling and External-Validation Readiness: **READY (HIGH ASSURANCE)**

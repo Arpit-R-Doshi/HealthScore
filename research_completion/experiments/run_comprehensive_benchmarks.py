@@ -894,7 +894,7 @@ def main():
     write_latencies = [0.10, 0.06, 0.04, 18.00]
 
     # Empirical Read queries (getPatientRecord across verified runs: 100, 250, 500 TPS)
-    # Caliper-measured displayed average latencies are 0.00s and 0.01s (sub-10ms; max 0.04-0.13s)
+    # Caliper-measured displayed average latencies are 0.00s and 0.01s (Caliper reports 2 decimal places; max 0.04-0.13s)
     query_send_rates = [100.4, 250.4, 500.4]
     query_throughputs = [100.4, 250.4, 500.3]
     query_latencies = [0.01, 0.00, 0.00]

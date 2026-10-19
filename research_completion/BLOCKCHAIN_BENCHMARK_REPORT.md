@@ -105,9 +105,9 @@ To investigate client send-rate scaling, a controlled stress experiment was exec
 
 ---
 
-### 3.4. Corrected Controlled Stress & Read Benchmark (Run `20261018-230500_stress_investigation`, $25,480$ Transactions)
+### 3.4. Corrected Controlled Stress & Read Benchmark (Run `20261018-230500_stress_investigation`, $25,480$ Measured Round Transactions)
 
-Following the identification of the configuration defect, `workload.js` and `benchmark_stress_investigation.yaml` were updated to enforce explicit `targetFunction` arguments across all rounds and configure ledger pre-seeding (`preSeedCount: 50`) for read queries. The full stress matrix was rerun in an isolated testbed with background container resource logging:
+Following the identification of the configuration defect, `workload.js` and `benchmark_stress_investigation.yaml` were updated to enforce explicit `targetFunction` arguments across all rounds and configure ledger pre-seeding (`preSeedCount: 50`) for read queries. Prior to the read round (`getPatientRecord-500-tps`), eight worker processes each successfully seeded 50 patient records ($8 \times 50 = 400$ setup write requests) to ensure state existed on the ledger. These 400 pre-seeding write requests are separate from and precede the 25,480 measured Caliper round transactions ($1,744 + 2,496 + 3,744 + 5,000 + 5,000 + 5,000 + 2,496 = 25,480$), bringing the total write and read requests processed by the Fabric network during the benchmark execution to $25,880$. The full stress matrix was rerun in an isolated testbed with background container resource logging:
 
 | Test Round Name | Succ Txs | Fail Txs | Send Rate (TPS) | Min Latency (s) | Max Latency (s) | Avg Latency (s) | Throughput (TPS) | Validated Operation |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
@@ -122,7 +122,7 @@ Following the identification of the configuration defect, `workload.js` and `ben
 #### Key Empirical Findings from the Corrected Benchmark:
 
 1. **Verified Read Query Performance:**
-   With explicit `targetFunction: getPatientRecord` and verified pre-seeding ($50$ pre-seeded records per worker, $400$ total), the read test executed genuine local CouchDB state reads. Committed throughput reached **$500.6$ TPS** under an offered send rate of **$501.4$ TPS** ($99.8\%$ scaling), with an average confirmation latency of **$0.01$ seconds** (max $0.09$s, min $0.00$s) and zero failures ($0/2,496$). This definitively confirms that read queries bypass Raft ordering and gossip consensus, maintaining sub-10ms response times.
+   With explicit `targetFunction: getPatientRecord` and verified pre-seeding ($50$ pre-seeded records per worker, $400$ setup write requests total), the read test executed genuine local CouchDB state reads against populated ledger keys. Committed throughput reached **$500.6$ TPS** under an offered send rate of **$501.4$ TPS** ($99.8\%$ scaling), with zero failures ($0/2,496$). The displayed average confirmation latency reported by Caliper is **$0.01$ seconds** (Caliper reports latency to two decimal places; min $0.00$s), with a maximum observed latency of **$0.09$ seconds**. These measurements confirm that read queries evaluate local CouchDB state directly and bypass Raft ordering and gossip consensus; however, because Caliper displays latency to two decimal places and maximum latency reached $0.09$ seconds, these results should not be characterized as proving "sub-10ms response times" or strictly "sub-hundredth-second" average latency.
 
 2. **Corrected 1,000 TPS Write Repetitions ($N=3$, Sample SD with $\text{ddof}=1$):**
    - **Send Rate:** $729.1$, $688.0$, $811.0$ TPS $\implies \mathbf{742.70 \pm 62.62}$ **TPS**
@@ -135,7 +135,7 @@ Following the identification of the configuration defect, `workload.js` and `ben
    - The Caliper runner container (`node:20-alpine`) exhibited a mean CPU utilization of **$48.87\%$** and peaked at **$375.53\%$** (saturating nearly 4 full CPU cores) while coordinating workload dispatch across its 8 worker processes.
    - The endorsing peer (`peer0.hospital.healthscore.com`) exhibited a mean CPU of **$20.97\%$** and peaked at **$155.73\%$**.
    - The Raft orderer (`orderer.healthscore.com`) exhibited a mean CPU of **$6.09\%$** and peaked at **$57.64\%$**.
-   - **Scientific Assessment:** The observed data demonstrates that client-side load generation in Caliper was a primary limiting factor preventing the client from reaching the nominal 1,000 TPS target rate (reaching $688$–$811$ TPS with 8 workers vs. $615.7$ TPS with 5 workers). However, while a client-side generation limitation is empirically established by the container CPU saturation, the precise internal micro-mechanism (e.g., ECDSA elliptic curve signing vs. V8 event loop scheduling vs. gRPC connection multiplexing) remains unverified without kernel-level or V8 profiler traces.
+   - **Scientific Assessment:** The container CPU telemetry provides evidence consistent with client-side load-generation pressure, as the Caliper runner container peaked at $375.53\%$ CPU across its 8 worker processes while coordinating dispatch, whereas peer and orderer utilizations were substantially lower. However, container telemetry does not confirm or establish the precise cause of the send-rate bottleneck; the specific causal mechanism (e.g., ECDSA cryptographic signing overhead vs. Node.js V8 single-threaded event loop scheduling vs. gRPC client connection multiplexing) remains unisolated without dedicated profiling or controlled experiments.
 
 4. **Single-Identity Benchmark Disclosure:**
    In accordance with benchmark transparency standards: all transactions across both live Caliper runs were submitted using a single administrative identity (`HospitalOrgAdmin` from `HospitalOrgMSP`) through the Fabric Gateway. This configuration reflects consortium administrative ingestion but does not simulate concurrent transaction proposals originated from multiple independent MSP client organizations. In a multi-client deployment, client-side workload generation would be distributed across distinct physical client machines.
@@ -204,13 +204,13 @@ assert h == 'af935716155e10e457f593c2bd22ad55776af362c1095bd84a8a76025c856672'
 print('Historical report verified:', h)
 "
 
-# 2. Run simulator tests
-ml_model/venv/bin/pytest caliper-benchmark/tests/test_simulate_benchmark.py -v
+# 2. Run benchmark test suite (17 passed)
+ml_model/venv/bin/pytest caliper-benchmark/tests/ -v
 
 # 3. Run performance simulator (100 seeds)
 ml_model/venv/bin/python caliper-benchmark/simulate_benchmark.py --seeds 100
 
 # 4. Check live Caliper results
 cat caliper-benchmark/results/live/20261018-010200/run_manifest.json
-```8-010200/run_manifest.json
+cat caliper-benchmark/results/live/20261018-230500_stress_investigation/run_manifest.json
 ```

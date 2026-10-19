@@ -12,6 +12,14 @@
   "total_transactions_successful": 25480,
   "total_transactions_failed": 0,
   "overall_success_rate_percent": 100.0,
+  "pre_seeding_accounting": {
+    "description": "Eight workers each successfully seeded 50 patient records before the getPatientRecord round to initialize ledger state",
+    "workers": 8,
+    "records_seeded_per_worker": 50,
+    "pre_seeding_write_requests": 400,
+    "measured_round_transactions": 25480,
+    "total_fabric_requests_including_setup": 25880
+  },
   "evidence_class": "Class 2: New Live Empirical Caliper Rerun (Isolated Testbed)",
   "fabric_block_parameters": {
     "BatchTimeout": "2s",

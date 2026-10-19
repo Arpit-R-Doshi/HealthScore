@@ -122,5 +122,5 @@ Calibration curves and diagnostic slopes are evaluated via unpenalized logistic 
 ## 6. Audit Verdict
 
 - **Pipeline Soundness:** Pass (Zero data leakage, deterministic seeds, verified checksums).
-- **Inference Parity:** Pass (92 automated tests passing in `ml_model/tests/`).
+- **Inference Parity:** Pass (97 automated tests passing in `ml_model/tests/`).
 - **Reproducibility Status:** Complete and verified on branch `feature/ml-pipeline-rebuild`.

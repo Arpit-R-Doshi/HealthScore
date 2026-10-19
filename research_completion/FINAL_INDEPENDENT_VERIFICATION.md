@@ -5,14 +5,14 @@
 **Latest Audit Addendum Date:** October 18–19, 2026<br>
 **Primary Repository Branch:** `feature/ml-pipeline-rebuild`<br>
 **Target Repository:** `/Users/arpitdoshi/Desktop/ipd/HealthScore`<br>
-**Test Suite Verification:** 97 Passed, 0 Failed (`ml_model/tests/`) + 16 Passed (`caliper-benchmark/tests/`) + 50 Passed (`backend/tests/security.test.js`)
+**Test Suite Verification:** 97 Passed, 0 Failed (`ml_model/tests/`) + 17 Passed (`caliper-benchmark/tests/`) + 50 Passed (`backend/tests/security.test.js`) (164 Total Passing Tests)
 
 > [!IMPORTANT]
 > **AUDIT SNAPSHOT STATUS & SUBSEQUENT AUDIT ADDENDUM (OCTOBER 18–19, 2026):**<br>
 > Sections 1–12 below represent the initial integrity audit snapshot captured on October 17, 2026. Following that initial assessment, three subsequent verification and correction milestones were executed:
 > 1. **Live Caliper 11-Round Benchmark Rerun (`20261018-010200`):** Successfully executed an expanded 31,500-transaction workload on an isolated 5-organization testbed with 0 failures ($0.00\%$), establishing $515.8$ peak write TPS and $500.3$ read TPS.
 > 2. **Semantic Workload Audit & Erratum (`20261018-205500_stress_investigation`):** Detected that round 7 (`getPatientRecord-500-tps`) specified `action: getPatientRecord` instead of `targetFunction: getPatientRecord`, defaulting silently to `createPatientRecord` writes. Formally documented via [`ERRATUM.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/caliper-benchmark/results/live/20261018-205500_stress_investigation/ERRATUM.md) and invalidated round 7 as read evidence. Its three 1,000 TPS write repetitions remain valid write measurements ($416.80 \pm 17.04$ TPS at $782.23 \pm 74.20$ send rate, $\text{ddof}=1$).
-> 3. **Corrected Stress Benchmark & Container Profiling (`20261018-230500_stress_investigation`):** Rerun with explicit `targetFunction`, pre-seeded ledger state (`preSeedCount: 50`), and continuous container telemetry. Achieved genuine read query throughput of **$500.6$ TPS** ($0.01$s avg latency, $0.09$s max). The three 1,000 TPS write repetitions sustained **$485.27 \pm 14.60$ TPS** ($\text{ddof}=1$) at $742.70 \pm 62.62$ TPS send rate ($5.36 \pm 0.22$s avg latency). Container profiling revealed Caliper runner CPU peaking at $375.5\%$ (4 cores saturated) versus orderer peak $57.6\%$, empirically confirming a client-side workload-generation bottleneck.
+> 3. **Corrected Stress Benchmark & Container Profiling (`20261018-230500_stress_investigation`):** Rerun with explicit `targetFunction`, pre-seeded ledger state (8 workers each seeded 50 patient records = 400 setup write requests, distinguishing the 25,480 measured Caliper round transactions from the 400 pre-seeding write requests for 25,880 total requests processed by Fabric), and continuous container telemetry. Achieved genuine read query throughput of **$500.6$ TPS** (displayed average confirmation latency of $0.01$s within Caliper's two-decimal display format; max $0.09$s). The three 1,000 TPS write repetitions sustained **$485.27 \pm 14.60$ TPS** ($\text{ddof}=1$) at $742.70 \pm 62.62$ TPS send rate ($5.36 \pm 0.22$s avg latency). Container profiling showed Caliper runner CPU peaking at $375.5\%$ (4 cores saturated) versus orderer peak $57.6\%$, providing evidence consistent with client-side load-generation pressure; however, the specific causal mechanism remains unisolated without dedicated profiling or controlled experiments.
 > 4. **Figure 5 Axis and Latency Correction:** Removed unsupported hardcoded $0.001$s latency constants, aligned the horizontal axis to actual Caliper send rates consistently, and annotated Caliper's two-decimal display precision limit ($\le 0.01$s displayed avg).
 >
 > For full technical details and complete benchmark reconciliation, see [`BLOCKCHAIN_BENCHMARK_REPORT.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/BLOCKCHAIN_BENCHMARK_REPORT.md) and [`REVISED_PAPER.md`](file:///Users/arpitdoshi/Desktop/ipd/HealthScore/research_completion/paper/REVISED_PAPER.md).
@@ -61,7 +61,7 @@ Prior to this verification pass, working tree modifications consisted of:
 
 | # | Prior Completion Claim | Verification Status | Evidentiary Basis & Corrective Action |
 | :-: | :--- | :---: | :--- |
-| **1** | **76 Passing Tests** | **SUPERSEDED / VERIFIED** | Test suite expanded to **97 passed Python tests** (0 failed, 0 skipped) in `ml_model/tests/` and **50 passed Node.js security tests** in `backend/tests/security.test.js`. |
+| **1** | **76 Passing Tests** | **SUPERSEDED / VERIFIED** | Test suite expanded to **97 passed Python tests** in `ml_model/tests/`, **17 passed benchmark tests** in `caliper-benchmark/tests/`, and **50 passed Node.js security tests** in `backend/tests/security.test.js` (**164 passed automated tests total**). |
 | **2** | **Controlled Model Comparisons (8 Reg, 9 Cls)** | **VERIFIED** | All 17 candidate models executed and verified against held-out split ($N=3,755$). Reconciled Tweedie GLM from exact frozen artifact. |
 | **3** | **Controlled Feature Ablations** | **SUPERSEDED / VERIFIED** | Matrix expanded to 17 ablations, isolating demographics, condition clusters, count, quadratic penalty, age interaction, and individual conditions. |
 | **4** | **Hardened Premium Simulation & $500 Base Floor** | **SUPERSEDED / VERIFIED** | Parametric loss simulation formalized with explicit risk-loading alpha ($X_\alpha = B + (1+\alpha)G$). 14 automated tests pass; 60-scenario sensitivity calibrated to analytical Gamma quantiles within $0.7\%$. |
@@ -291,11 +291,12 @@ Prior to this verification pass, working tree modifications consisted of:
 6. **`research_completion/figures/`**: Regenerated figures `fig1`–`fig5` (with explicit historical baseline label on `fig5`).
 7. **`research_completion/ORIGINAL_VS_REVISED_PAPER.md`**: Clarified comparison scope and added original manuscript discovery blocker note.
 8. **`research_completion/paper/REVISED_PAPER.md`**: Reconciled Tweedie GLM metrics ($R^2 = 0.0798$), clarified historical Caliper baseline status, and aligned exact subgroup fairness metrics.
-9. **`research_completion/PROJECT_COMPLETION_REPORT.md`, `MODEL_COMPARISON_REPORT.md`, `PREMIUM_SIMULATION_VALIDATION.md`, `BLOCKCHAIN_BENCHMARK_REPORT.md`, `SECURITY_REPRODUCIBILITY_FAIRNESS_REPORT.md`**: Synchronized numbers, test counts (77), and classifications.
+9. **`research_completion/PROJECT_COMPLETION_REPORT.md`, `MODEL_COMPARISON_REPORT.md`, `PREMIUM_SIMULATION_VALIDATION.md`, `BLOCKCHAIN_BENCHMARK_REPORT.md`, `SECURITY_REPRODUCIBILITY_FAIRNESS_REPORT.md`**: Synchronized numbers, test counts (164 total across ML, benchmark, and security suites), and classifications.
 
 ### 10.2. Verification Test Run
-- **Python ML Tests:** `ml_model/venv/bin/pytest ml_model/tests/` -> `97 passed in 1.45s` (0 failed, 0 skipped).
-- **Backend Node Tests:** `cd backend && npm test` -> `50 passing in 3.12s` (0 failed).
+- **Python ML Tests:** `ml_model/venv/bin/pytest ml_model/tests/` -> `97 passed` (0 failed, 0 skipped).
+- **Caliper Benchmark Tests:** `ml_model/venv/bin/pytest caliper-benchmark/tests/` -> `17 passed` (0 failed, 0 skipped).
+- **Backend Node Tests:** `cd backend && npm test` -> `50 passing` (0 failed).
 - **Validation Scripts:** `validate_hc256.py` and `validate_hc257.py` both passed cleanly with exit code 0.
 - **Syntactic & Security Checks:** `node --check backend/server.js` clean, `git diff --check` clean.
 
@@ -319,7 +320,7 @@ Prior to this verification pass, working tree modifications consisted of:
 ## 12. Four Final Readiness Judgments
 
 ### 1. Software and Pipeline Readiness: **READY (HIGH ASSURANCE)**
-The data ingestion pipeline, feature transformation semantics, model inference engine, API routing, and test suite are robust, bug-free, and reproducible. All 77 automated unit and integration tests pass cleanly. Random seeds and dataset SHA-256 hashes are pinned.
+The data ingestion pipeline, feature transformation semantics, model inference engine, API routing, and test suite are robust, bug-free, and reproducible. All 164 automated unit, integration, benchmark, and security tests pass cleanly. Random seeds and dataset SHA-256 hashes are pinned.
 
 ### 2. Predictive Modeling and External-Validation Readiness: **READY (HIGH ASSURANCE)**
 The 11-feature observable model family demonstrates reliable, out-of-year generalizability for high-cost ordinal risk discrimination across MEPS HC-251, HC-256, and HC-257. Econometric baselines are honestly reported. Model applicability is strictly bounded to adult chronic risk stratification, with explicit exclusion of pediatric screening.

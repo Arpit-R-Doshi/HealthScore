@@ -5,7 +5,7 @@ Hyperledger Fabric Performance Profiles: Write Consensus vs Local State Queries
 Reconciles:
 1. Historical Empirical Baseline (commit 944fb0d, 8 rounds, 24,500 txs)
 2. Live Isolated Caliper Rerun (Run 20261018-010200, 5 workers, 11 rounds, 31,500 txs)
-3. Corrected Stress & Saturation Rerun (Run 20261018-230500, 8 workers, 7 rounds, 25,480 txs)
+3. Corrected Stress & Saturation Rerun (Run 20261018-230500, 8 workers, 7 rounds, 25,480 measured txs + 400 pre-seeding setup writes)
 
 Fixes:
 - Horizontal-axis semantics: Consistently plots actual Caliper send rate across all series.
