@@ -269,3 +269,59 @@ def test_no_stale_contradictory_classifier_metrics():
             text = f.read()
         for stale in stale_fragments:
             assert stale not in text, f"Stale fragment '{stale}' found in {filepath}"
+
+
+def test_no_unsupported_statistical_significance_claims():
+    """
+    Verify that neither the manuscript nor the model report claims that marginal CI overlap
+    establishes 'no statistically significant' difference or advantage, and that both explicitly
+    qualify the descriptive comparison as not being a formal paired statistical hypothesis test.
+    """
+    files_to_check = [
+        os.path.join(REPO_ROOT, "research_completion", "paper", "REVISED_PAPER.md"),
+        os.path.join(REPO_ROOT, "research_completion", "MODEL_COMPARISON_REPORT.md"),
+    ]
+
+    disallowed_phrases = [
+        "no statistically significant discriminative advantage",
+        "no statistically significant discriminative gain",
+        "no statistically significant gain",
+        "statistically significant discriminative advantage",
+        "statistically significant discriminative gain",
+    ]
+
+    for filepath in files_to_check:
+        with open(filepath, "r") as f:
+            text = f.read()
+        for phrase in disallowed_phrases:
+            assert phrase not in text, f"Unsupported significance claim '{phrase}' found in {filepath}"
+        # Assert explicit disclosure that paired statistical tests were not performed
+        assert "paired statistical" in text
+        assert "no claims of statistical significance or non-significance" in text
+
+
+def test_off_chain_inference_architecture_consistency():
+    """
+    Verify that model selection rationale correctly reflects off-chain ML inference and
+    does NOT claim on-chain inference verification or tree-traversal avoidance during transaction validation.
+    """
+    files_to_check = [
+        os.path.join(REPO_ROOT, "research_completion", "paper", "REVISED_PAPER.md"),
+        os.path.join(REPO_ROOT, "research_completion", "MODEL_COMPARISON_REPORT.md"),
+    ]
+
+    disallowed_implementation_claims = [
+        "direct on-chain verification",
+        "tree traversal in transaction validation",
+        "tree-based computational overhead in transaction validation",
+        "smart contract auditability, avoiding the higher compute overhead",
+    ]
+
+    for filepath in files_to_check:
+        with open(filepath, "r") as f:
+            text = f.read()
+        for claim in disallowed_implementation_claims:
+            assert claim not in text, f"Inconsistent on-chain implementation claim '{claim}' found in {filepath}"
+        # Assert proper framing around off-chain inference and auditable ledger milestones
+        assert "off-chain Python inference" in text
+        assert "auditable risk-score milestones" in text
