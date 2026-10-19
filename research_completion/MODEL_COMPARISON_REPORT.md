@@ -52,17 +52,17 @@ All models were evaluated on the survey-weighted top-decile target ($P_{90, \tex
 
 ### 3.1. Classifier Performance Comparison Table
 
-| Candidate Model | Features | Mean Prob | ROC-AUC [95% CI] | PR-AUC [95% CI] | Unw Brier | Unw BSS | Weighted Brier | Weighted BSS | CITL ($\alpha$) | Cal Slope ($\beta$) | Precision @ 0.10 | Recall @ 0.10 | F1 Score |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Constant Baseline** | 0 | 0.0999 | 0.5000 [0.5000, 0.5000] | 0.1198 [0.1111, 0.1308] | 0.1059 | -0.0036 | 0.0941 | +0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
-| **Demographic Baseline** | 2 | 0.1156 | 0.7099 [0.6856, 0.7319] | 0.2182 [0.1928, 0.2489] | 0.0996 | +0.0561 | 0.0893 | +0.0506 | +0.0388 | 0.8859 | 0.1949 | 0.7867 | 0.3124 |
-| **Clinical Only (No Demo)** | 8 | 0.1119 | 0.7619 [0.7393, 0.7847] | 0.3083 [0.2794, 0.3464] | 0.0941 | +0.1083 | 0.0847 | +0.0996 | +0.0768 | 0.9539 | 0.2291 | 0.7622 | 0.3523 |
-| **Logistic (11-Feat Observable, Unweighted Fit)** | 11 | 0.1165 | 0.7652 [0.7433, 0.7882] | 0.3192 [0.2869, 0.3582] | 0.0936 | +0.1129 | 0.0845 | +0.1025 | +0.0570 | 0.9008 | 0.2278 | 0.7644 | 0.3510 |
-| **Logistic (11-Feat Wtd Fit)** | 11 | 0.1151 | **0.7654** [0.7444, 0.7881] | **0.3184** [0.2876, 0.3556] | **0.0936** | **+0.1123** | **0.0845** | **+0.1025** | **+0.0646** | **0.9438** | **0.2318** | **0.7733** | **0.3567** |
-| **Random Forest (11-Feat)** | 11 | 0.1154 | 0.7693 [0.7458, 0.7928] | 0.3157 [0.2823, 0.3550] | 0.0935 | +0.1136 | 0.0841 | **+0.1062** | +0.0601 | 0.9736 | 0.2342 | 0.7556 | 0.3575 |
-| **XGBoost (Uncalibrated)** | 11 | 0.1157 | 0.7705 [0.7482, 0.7940] | 0.3196 [0.2853, 0.3598] | 0.0932 | +0.1166 | 0.0838 | **+0.1093** | +0.0572 | 0.9926 | 0.2262 | 0.8022 | 0.3529 |
-| **XGBoost (Platt Calibrated)** | 11 | 0.1139 | 0.7702 [0.7472, 0.7936] | 0.3183 [0.2872, 0.3580] | 0.0944 | +0.1048 | 0.0847 | +0.0998 | +0.0617 | 1.0335 | 0.2535 | 0.6778 | 0.3690 |
-| **Logistic (14-Feat Oracle)** | 14 | 0.1172 | **0.7904** [0.7684, 0.8121] | **0.3472** [0.3143, 0.3917] | **0.0922** | **+0.1265** | **0.0832** | **+0.1159** | +0.0493 | 1.0609 | **0.2806** | **0.6822** | **0.3977** |
+| Candidate Model | Features | Weighting Policy | Mean Prob | ROC-AUC [95% CI] | PR-AUC [95% CI] | Unw Brier | Unw BSS | Weighted Brier | Weighted BSS | CITL ($\alpha$) | Cal Slope ($\beta$) | Precision @ 0.10 | Recall @ 0.10 | F1 Score |
+| :--- | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Constant Baseline** | 0 | None (Constant $\hat{p}=0.0999$) | 0.0999 | 0.5000 [0.5000, 0.5000] | 0.1198 [0.1111, 0.1308] | 0.1059 | -0.0036 | 0.0941 | +0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| **Demographic Baseline** | 2 | Normalized Person Weights | 0.1156 | 0.7099 [0.6856, 0.7319] | 0.2182 [0.1928, 0.2489] | 0.0996 | +0.0561 | 0.0893 | +0.0506 | +0.0388 | 0.8859 | 0.1949 | 0.7867 | 0.3124 |
+| **Clinical Only (No Demo)** | 8 | Normalized Person Weights | 0.1119 | 0.7619 [0.7393, 0.7847] | 0.3083 [0.2794, 0.3464] | 0.0941 | +0.1083 | 0.0847 | +0.0996 | +0.0768 | 0.9539 | 0.2291 | 0.7622 | 0.3523 |
+| **Logistic (11-Feat Observable, Unweighted Fit)** | 11 | Unweighted Fit (Weighting Ablation) | 0.1165 | 0.7652 [0.7433, 0.7882] | 0.3192 [0.2869, 0.3582] | 0.0936 | +0.1129 | 0.0845 | +0.1025 | +0.0570 | 0.9008 | 0.2278 | 0.7644 | 0.3510 |
+| **Logistic (11-Feat Observable, Weighted Fit)** | 11 | Frozen Normalized Weights (Serving) | 0.1151 | **0.7654** [0.7444, 0.7881] | **0.3184** [0.2876, 0.3556] | **0.0936** | **+0.1123** | **0.0845** | **+0.1025** | **+0.0646** | **0.9438** | **0.2318** | **0.7733** | **0.3567** |
+| **Random Forest (11-Feat Observable)** | 11 | Normalized Person Weights | 0.1154 | 0.7693 [0.7458, 0.7928] | 0.3157 [0.2823, 0.3550] | 0.0935 | +0.1136 | 0.0841 | **+0.1062** | +0.0601 | 0.9736 | 0.2342 | 0.7556 | 0.3575 |
+| **XGBoost (Uncalibrated)** | 11 | Normalized Person Weights | 0.1157 | 0.7705 [0.7482, 0.7940] | 0.3196 [0.2853, 0.3598] | 0.0932 | +0.1166 | 0.0838 | **+0.1093** | +0.0572 | 0.9926 | 0.2262 | 0.8022 | 0.3529 |
+| **XGBoost (Platt Calibrated)** | 11 | Observable, Sigmoid CV=5 | 0.1139 | 0.7702 [0.7472, 0.7936] | 0.3183 [0.2872, 0.3580] | 0.0944 | +0.1048 | 0.0847 | +0.0998 | +0.0617 | 1.0335 | 0.2535 | 0.6778 | 0.3690 |
+| **Logistic (14-Feat Oracle)** | 14 | Observable + SAQ Survey | 0.1172 | **0.7904** [0.7684, 0.8121] | **0.3472** [0.3143, 0.3917] | **0.0922** | **+0.1265** | **0.0832** | **+0.1159** | +0.0493 | 1.0609 | **0.2806** | **0.6822** | **0.3977** |
 
 ---
 
@@ -73,7 +73,7 @@ HealthScore separates model selection according to deployment constraints and in
 
 1. **Primary Operational Classifier:** **11-Feature Observable Logistic Regression (Weighted Fit)**
    - **Artifact:** `artifacts/risk_model_classifier_observable_weighted_p90.pkl` (SHA-256: `3632f8201136a2740c3d5a564bbdbb29bc8511db51709fb42c1f8e271bf28c2a`).
-   - **Rationale:** Strictly satisfies **Input Availability Parity** without requiring unverifiable survey imputations. Achieves Weighted BSS of **$+0.1025$** ($+10.25\%$ improvement over baseline), unweighted BSS $+0.1123$, ROC-AUC **0.7654** [95% CI: $0.7444$, $0.7881$], PR-AUC **0.3184** [95% CI: $0.2876$, $0.3556$], calibration slope ($b = 0.9438$), exact calibration-in-the-large ($\text{CITL} = +0.0646$; bivariate intercept $a = -0.0409$), and transparent linear interpretability for on-chain auditability. At $\hat{p} \ge 0.10$, it achieves Precision $0.2318$ ($1.93\text{x}$ unweighted test prevalence, $2.20\text{x}$ weighted test prevalence, $2.32\text{x}$ training weighted prevalence), Recall $0.7733$, and F1 $0.3567$.
+   - **Rationale:** Strictly satisfies **Input Availability Parity** without requiring unverifiable survey imputations. Achieves Weighted BSS of **$+0.1025$** ($+10.25\%$ improvement over baseline), unweighted BSS $+0.1123$, ROC-AUC **0.7654** [95% CI: $0.7444$, $0.7881$], PR-AUC **0.3184** [95% CI: $0.2876$, $0.3556$], calibration slope ($b = 0.9438$), exact calibration-in-the-large ($\text{CITL} = +0.0646$; bivariate intercept $a = -0.0409$), and transparent linear interpretability for on-chain auditability. At $\hat{p} \ge 0.10$, it achieves Precision $0.2318$ (an unweighted enrichment of approximately $1.93\text{x}$ over unweighted test prevalence $0.119840$), Recall $0.7733$, and F1 $0.3567$. While tree ensembles (Random Forest and XGBoost) achieve marginally higher point discrimination (ROC-AUC $0.7693$–$0.7705$ vs $0.7654$) and skill (Weighted BSS $+0.1062$–$+0.1093$ vs $+0.1025$), their 95% bootstrap confidence intervals overlap substantially with the logistic fit, indicating no statistically significant discriminative gain. Logistic regression is selected because it strictly satisfies input availability parity, provides transparent closed-form coefficients for on-chain auditability, and avoids tree-based computational overhead in transaction validation.
 2. **Primary Dollar Expenditure Regressor:** **11-Feature Observable Tweedie GLM ($p=1.5$)**
    - **Rationale:** Only evaluated estimator that directly predicts dollar scale with positive $R^2$ ($0.0798$, weighted $R^2 = 0.0832$), tracking nominal dollar totals ($Mean Pred = \$8,177.92$ vs $\$8,764.62$) and preserving monotone decile ranking across validation cohorts.
 3. **Secondary Percentile Risk Scoring:** **11-Feature Observable XGBoost Regressor**

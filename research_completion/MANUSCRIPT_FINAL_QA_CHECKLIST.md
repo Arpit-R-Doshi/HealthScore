@@ -41,19 +41,17 @@
   - Test unweighted prevalence: $11.98\%$ ($0.119840$, $450$ individuals).
   - Constant baseline weighted Brier score: $0.0941$.
   - Constant baseline unweighted Brier score: $0.1059$.
-- [x] **Classifier Metrics:**
-  - ROC-AUC: $0.7654$ [95% CI: $0.7444$, $0.7881$].
-  - PR-AUC: $0.3184$ [95% CI: $0.2876$, $0.3556$].
-  - Weighted Brier: $0.0845$ (Weighted BSS: $+0.1025$, $+10.25\%$).
-  - Unweighted Brier: $0.0936$ (Unweighted BSS: $+0.1123$).
-  - Calibration diagnostics: Calibration slope $b = 0.9438$, bivariate intercept $a = -0.0409$, exact Calibration-in-the-Large $\text{CITL} = +0.0646$ (exact Brent's root). (Ablation unweighted fit achieves slope $0.9008$, CITL $+0.0570$, intercept $-0.1271$).
-- [x] **Explicit Metric Distinction (`Precision @ 0.10`):**
-  - Confirmed via inspection of `run_comprehensive_benchmarks.py` that `pred_label_10 = (prob >= 0.10).astype(int)` evaluates a **predicted-probability decision threshold of $\hat{p} \ge 0.10$**, NOT a top-10%-ranked cohort selection cutoff.
+- [x] **Classifier Metrics & Comparison Completeness (Table 6b):**
+  - All 9 canonical models present in Table 6b (Constant Baseline, Demographic Baseline, Clinical Conditions Only, Logistic 11-Feat Observable Weighted Fit, Logistic 11-Feat Observable Unweighted Fit, Random Forest 11-Feat Observable, XGBoost Uncalibrated, Platt-Calibrated XGBoost, Logistic 14-Feat Oracle).
+  - Restored Random Forest (11-Feat Observable): ROC-AUC $0.7693$ [$0.7458, 0.7928$], PR-AUC $0.3157$ [$0.2823, 0.3550$], Unw Brier $0.0935$, Wtd Brier $0.0841$, Wtd BSS $+0.1062$, CITL $+0.0601$, Slope $0.9736$, Prec $0.2342$, Rec $0.7556$, F1 $0.3575$.
+  - Restored XGBoost (Uncalibrated): ROC-AUC $0.7705$ [$0.7482, 0.7940$], PR-AUC $0.3196$ [$0.2853, 0.3598$], Unw Brier $0.0932$, Wtd Brier $0.0838$, Wtd BSS $+0.1093$, CITL $+0.0572$, Slope $0.9926$, Prec $0.2262$, Rec $0.8022$, F1 $0.3529$.
+  - Approved Serving Candidate: Logistic 11-Feat Observable (Weighted Fit): ROC-AUC $0.7654$ [95% CI: $0.7444$, $0.7881$], PR-AUC $0.3184$ [95% CI: $0.2876$, $0.3556$], Weighted Brier $0.0845$ (Wtd BSS: $+0.1025$, $+10.25\%$), Unweighted Brier $0.0936$ (Unw BSS: $+0.1123$).
+  - Calibration diagnostics: Calibration slope $b = 0.9438$, bivariate intercept $a = -0.0409$, exact Calibration-in-the-Large $\text{CITL} = +0.0646$ (exact Brent's root).
+  - Selection rationale: Defensible multifactorial balance of input availability parity, calibration quality, clinical interpretability, and deterministic on-chain auditability; overlapping bootstrap CIs with tree ensembles explicitly noted without claiming statistical significance.
+- [x] **Explicit Metric Distinction & Unweighted Enrichment (`Precision @ 0.10`):**
+  - Confirmed via inspection of `run_comprehensive_benchmarks.py` that `pred_label_10 = (prob >= 0.10).astype(int)` evaluates an unweighted **predicted-probability decision threshold of $\hat{p} \ge 0.10$**, NOT a top-10%-ranked cohort selection cutoff.
   - Practical performance: Precision = $0.2318$, Recall = $0.7733$, F1 = $0.3567$.
-  - Explicit enrichment breakdown:
-    - $1.93\text{x}$ over unweighted test prevalence ($11.98\%$, $450/3,755$),
-    - $2.20\text{x}$ over survey-weighted test prevalence ($10.51\%$, $0.105134$),
-    - $2.32\text{x}$ over survey-weighted training prevalence ($9.99\%$, $0.099888$).
+  - Unweighted enrichment: Evaluated strictly against the unweighted held-out test prevalence ($\bar{y}_{\text{test, unw}} = 0.119840$, $450/3,755$), yielding an unweighted enrichment of **approximately $1.93\text{x}$** ($0.231845 / 0.119840 \approx 1.934\text{x}$). Incompatible mixed-base comparisons against survey-weighted prevalences ($10.51\%$ test, $9.99\%$ train) are completely removed.
   - Clearly contrasted with a top-10% ranked-cohort selection cutoff (where precision $\approx 42\%$, recall $\le 35\%$).
 - [x] **Disclosed Model Weaknesses:**
   - Direct dollar prediction: Tweedie GLM achieves $R^2 = 0.0798$ (weighted $0.0832$). Log-transformed models (XGBoost, OLS) underpredict dollar mean by $72.8\%$.
