@@ -103,7 +103,185 @@ def verify_benchmark_semantics(bench_yaml):
     return len(all_errors) == 0, all_errors
 
 
-def verify_live_run(directory):
+def compute_transaction_accounting(configured, successful, failed, workers=1):
+    """
+    Computes rigorous transaction accounting metrics distinguishing allocation shortfalls from failures:
+    - submitted = successful + failed
+    - allocation_shortfall = configured - submitted
+    - reported_failures = failed
+    - success_rate_among_submitted = (successful / submitted * 100.0) if submitted > 0 else 0.0
+    - configured_proposal_completion = (submitted / configured * 100.0) if configured > 0 else 0.0
+
+    Handles zero denominators safely. Does not classify transaction failures as worker-allocation shortfalls.
+    """
+    configured = int(configured)
+    successful = int(successful)
+    failed = int(failed)
+    workers = int(workers) if workers > 0 else 1
+
+    submitted = successful + failed
+    allocation_shortfall = configured - submitted
+    reported_failures = failed
+
+    success_rate_among_submitted = (successful / submitted * 100.0) if submitted > 0 else 0.0
+    configured_proposal_completion = (submitted / configured * 100.0) if configured > 0 else 0.0
+
+    return {
+        'configured': configured,
+        'successful': successful,
+        'failed': failed,
+        'submitted': submitted,
+        'allocation_shortfall': allocation_shortfall,
+        'reported_failures': reported_failures,
+        'success_rate_among_submitted_percent': success_rate_among_submitted,
+        'configured_proposal_completion_percent': configured_proposal_completion,
+        'workers': workers
+    }
+
+
+def validate_transaction_accounting_metadata(manifest_data, yaml_total_tx, total_html_succ, total_html_fail, workers=1):
+    """
+    Validates manifest transaction accounting fields and pre-seeding metadata against
+    YAML configuration and empirical results.
+    Returns (is_valid, list_of_errors).
+    """
+    errors = []
+    acct = compute_transaction_accounting(yaml_total_tx, total_html_succ, total_html_fail, workers)
+    submitted = acct['submitted']
+    allocation_shortfall = acct['allocation_shortfall']
+    reported_failures = acct['reported_failures']
+
+    # 1. Top-level manifest validations if present
+    if 'total_transactions_configured' in manifest_data:
+        m_cfg = manifest_data['total_transactions_configured']
+        if m_cfg != yaml_total_tx:
+            errors.append(f"Manifest total_transactions_configured ({m_cfg}) != YAML configured ({yaml_total_tx})")
+
+    if 'total_transactions_submitted' in manifest_data:
+        m_sub = manifest_data['total_transactions_submitted']
+        if m_sub != submitted:
+            errors.append(f"Manifest total_transactions_submitted ({m_sub}) != actual submitted ({submitted})")
+
+    if 'total_transactions_successful' in manifest_data:
+        m_succ = manifest_data['total_transactions_successful']
+        if m_succ != total_html_succ:
+            errors.append(f"Manifest total_transactions_successful ({m_succ}) != actual successful ({total_html_succ})")
+
+    if 'total_transactions_failed' in manifest_data:
+        m_fail = manifest_data['total_transactions_failed']
+        if m_fail != total_html_fail:
+            errors.append(f"Manifest total_transactions_failed ({m_fail}) != actual failed ({total_html_fail})")
+
+    if 'submitted_transaction_success_rate_percent' in manifest_data:
+        m_rate = float(manifest_data['submitted_transaction_success_rate_percent'])
+        if abs(m_rate - acct['success_rate_among_submitted_percent']) > 0.05:
+            errors.append(
+                f"Manifest submitted_transaction_success_rate_percent ({m_rate:.2f}%) != "
+                f"computed ({acct['success_rate_among_submitted_percent']:.2f}%)"
+            )
+
+    if 'configured_proposal_completion_percent' in manifest_data:
+        m_comp = float(manifest_data['configured_proposal_completion_percent'])
+        if abs(m_comp - acct['configured_proposal_completion_percent']) > 0.05:
+            errors.append(
+                f"Manifest configured_proposal_completion_percent ({m_comp:.2f}%) != "
+                f"computed ({acct['configured_proposal_completion_percent']:.2f}%)"
+            )
+
+    if 'success_rate_denominator' in manifest_data:
+        denom = manifest_data['success_rate_denominator']
+        if denom != 'submitted_transactions':
+            errors.append(f"Manifest success_rate_denominator must be 'submitted_transactions', got '{denom}'")
+
+    # 2. Nested transaction_accounting validation (if present)
+    ta = manifest_data.get('transaction_accounting')
+    if ta is not None:
+        if not isinstance(ta, dict):
+            errors.append(f"Manifest transaction_accounting must be a dictionary, got {type(ta).__name__}")
+        else:
+            if 'configured_round_transactions' in ta and ta['configured_round_transactions'] != yaml_total_tx:
+                errors.append(
+                    f"transaction_accounting.configured_round_transactions ({ta['configured_round_transactions']}) != "
+                    f"YAML configured ({yaml_total_tx})"
+                )
+            if 'submitted_round_transactions' in ta and ta['submitted_round_transactions'] != submitted:
+                errors.append(
+                    f"transaction_accounting.submitted_round_transactions ({ta['submitted_round_transactions']}) != "
+                    f"actual submitted ({submitted})"
+                )
+            if 'shortfall_proposals' in ta and ta['shortfall_proposals'] != allocation_shortfall:
+                errors.append(
+                    f"transaction_accounting.shortfall_proposals ({ta['shortfall_proposals']}) != "
+                    f"computed allocation shortfall ({allocation_shortfall})"
+                )
+            if 'reported_failures_among_submitted' in ta and ta['reported_failures_among_submitted'] != reported_failures:
+                errors.append(
+                    f"transaction_accounting.reported_failures_among_submitted ({ta['reported_failures_among_submitted']}) != "
+                    f"actual failed ({reported_failures})"
+                )
+            if 'submitted_transaction_success_rate_percent' in ta:
+                ta_rate = float(ta['submitted_transaction_success_rate_percent'])
+                if abs(ta_rate - acct['success_rate_among_submitted_percent']) > 0.05:
+                    errors.append(
+                        f"transaction_accounting.submitted_transaction_success_rate_percent ({ta_rate:.2f}%) != "
+                        f"computed ({acct['success_rate_among_submitted_percent']:.2f}%)"
+                    )
+            if 'configured_proposal_completion_percent' in ta:
+                ta_comp = float(ta['configured_proposal_completion_percent'])
+                if abs(ta_comp - acct['configured_proposal_completion_percent']) > 0.05:
+                    errors.append(
+                        f"transaction_accounting.configured_proposal_completion_percent ({ta_comp:.2f}%) != "
+                        f"computed ({acct['configured_proposal_completion_percent']:.2f}%)"
+                    )
+
+            if 'success_rate_denominator' in ta:
+                ta_denom = ta['success_rate_denominator']
+                if ta_denom != 'submitted_transactions':
+                    errors.append(
+                        f"transaction_accounting.success_rate_denominator must be 'submitted_transactions', got '{ta_denom}'"
+                    )
+
+            if 'total_recorded_requests_processed' in ta:
+                ta_pre_seed = ta.get('pre_seeding_write_requests', 0)
+                expected_reqs = submitted + (ta_pre_seed or 0)
+                if ta['total_recorded_requests_processed'] != expected_reqs:
+                    errors.append(
+                        f"transaction_accounting.total_recorded_requests_processed ({ta['total_recorded_requests_processed']}) != "
+                        f"computed ({expected_reqs})"
+                    )
+
+    # 3. Pre-seeding accounting validation (if present)
+    psa = manifest_data.get('pre_seeding_accounting')
+    if psa is not None:
+        if not isinstance(psa, dict):
+            errors.append(f"Manifest pre_seeding_accounting must be a dictionary, got {type(psa).__name__}")
+        else:
+            psa_pre_seed = psa.get('pre_seeding_write_requests', 0)
+            if 'measured_round_transactions' in psa and psa['measured_round_transactions'] != submitted:
+                errors.append(
+                    f"pre_seeding_accounting.measured_round_transactions ({psa['measured_round_transactions']}) != "
+                    f"actual submitted ({submitted})"
+                )
+            if 'total_fabric_requests_including_setup' in psa:
+                expected_tot = submitted + (psa_pre_seed or 0)
+                if psa['total_fabric_requests_including_setup'] != expected_tot:
+                    errors.append(
+                        f"pre_seeding_accounting.total_fabric_requests_including_setup ({psa['total_fabric_requests_including_setup']}) != "
+                        f"computed ({expected_tot})"
+                    )
+            if ta is not None and isinstance(ta, dict):
+                ta_pre_seed = ta.get('pre_seeding_write_requests')
+                if ta_pre_seed is not None and psa.get('pre_seeding_write_requests') is not None:
+                    if ta_pre_seed != psa.get('pre_seeding_write_requests'):
+                        errors.append(
+                            f"transaction_accounting.pre_seeding_write_requests ({ta_pre_seed}) != "
+                            f"pre_seeding_accounting.pre_seeding_write_requests ({psa.get('pre_seeding_write_requests')})"
+                        )
+
+    return len(errors) == 0, errors
+
+
+def verify_live_run(directory, require_zero_failures=True):
     print(f"=== Auditing Benchmark Artifacts in {directory} ===")
     html_file = os.path.join(directory, "report.html")
     json_file = os.path.join(directory, "live_benchmark_results.json")
@@ -188,19 +366,41 @@ def verify_live_run(directory):
         shortfall_initial = yaml_total_tx - caliper_expected_tx
         print(f"ℹ Note: Caliper partitioned {yaml_total_tx} configured transactions across {workers} workers, yielding {caliper_expected_tx} submitted transactions due to worker integer division (shortfall: {shortfall_initial} unsubmitted proposals).")
 
-    # Check totals in manifest
-    assert manifest_data['total_rounds_configured'] == len(yaml_rounds), "Manifest rounds count mismatch"
-    if 'total_transactions_configured' in manifest_data:
-        assert manifest_data['total_transactions_configured'] == yaml_total_tx, "Manifest configured tx mismatch"
-    assert manifest_data['total_transactions_submitted'] in (yaml_total_tx, caliper_expected_tx), "Manifest submitted tx mismatch"
-    assert manifest_data['total_transactions_successful'] in (yaml_total_tx, caliper_expected_tx), "Manifest successful tx mismatch"
-    assert manifest_data['total_transactions_failed'] == 0, "Manifest failed tx mismatch"
+    # 6. Parse and aggregate empirical transaction counts
+    total_html_succ = sum(int(r['Succ']) for r in html_data)
+    total_html_fail = sum(int(r['Fail']) for r in html_data)
+
+    acct = compute_transaction_accounting(yaml_total_tx, total_html_succ, total_html_fail, workers)
+    submitted = acct['submitted']
+    allocation_shortfall = acct['allocation_shortfall']
+    reported_failures = acct['reported_failures']
+
+    # 7. Check Manifest Totals and Accounting Metadata
+    mismatches = 0
+    is_valid_acct, acct_errors = validate_transaction_accounting_metadata(
+        manifest_data, yaml_total_tx, total_html_succ, total_html_fail, workers
+    )
+    if not is_valid_acct:
+        print("\n❌ TRANSACTION ACCOUNTING METADATA MISMATCH:")
+        for err in acct_errors:
+            print(f"  - {err}")
+            mismatches += 1
+
+    if manifest_data.get('total_rounds_configured') != len(yaml_rounds):
+        print(f"❌ Manifest total_rounds_configured ({manifest_data.get('total_rounds_configured')}) != YAML rounds ({len(yaml_rounds)})")
+        mismatches += 1
+    if manifest_data.get('total_transactions_submitted') != submitted:
+        print(f"❌ Manifest total_transactions_submitted ({manifest_data.get('total_transactions_submitted')}) != empirical submitted ({submitted})")
+        mismatches += 1
+    if manifest_data.get('total_transactions_successful') != total_html_succ:
+        print(f"❌ Manifest total_transactions_successful ({manifest_data.get('total_transactions_successful')}) != empirical successful ({total_html_succ})")
+        mismatches += 1
+    if manifest_data.get('total_transactions_failed') != total_html_fail:
+        print(f"❌ Manifest total_transactions_failed ({manifest_data.get('total_transactions_failed')}) != empirical failed ({total_html_fail})")
+        mismatches += 1
 
     # Cross-Reconciliation Check across all artifacts
     print("\n--- Cross-Reconciling Round-by-Round Metrics ---")
-    mismatches = 0
-    total_html_succ = 0
-    total_html_fail = 0
 
     for lbl, cfg_tx in yaml_dict.items():
         if lbl not in html_dict:
@@ -214,19 +414,17 @@ def verify_live_run(directory):
 
         succ = int(h['Succ'])
         fail = int(h['Fail'])
+        submitted_round = succ + fail
         send_rate = float(h['Send Rate (TPS)'])
         throughput = float(h['Throughput (TPS)'])
         avg_lat = float(h['Avg Latency (s)'])
         max_lat = float(h['Max Latency (s)'])
         min_lat = float(h['Min Latency (s)'])
 
-        total_html_succ += succ
-        total_html_fail += fail
-
         # Check configured vs actual
         caliper_round_expected = (cfg_tx // workers) * workers
-        if succ + fail not in (cfg_tx, caliper_round_expected):
-            print(f"❌ {lbl}: Total txs ({succ+fail}) != configured ({cfg_tx}) or worker-partitioned ({caliper_round_expected})")
+        if submitted_round not in (cfg_tx, caliper_round_expected):
+            print(f"❌ {lbl}: Submitted txs ({submitted_round}) != configured ({cfg_tx}) or worker-partitioned ({caliper_round_expected})")
             mismatches += 1
 
         # Check parity across JSON, CSV, Manifest
@@ -261,28 +459,32 @@ def verify_live_run(directory):
                 print(f"❌ {lbl}: Manifest targetFunction '{m['targetFunction']}' != YAML targetFunction '{expected_fn}'")
                 mismatches += 1
 
-    shortfall = yaml_total_tx - total_html_succ
     print("\n--- Transaction Accounting Summary ---")
-    print(f"Configured Benchmark-Round Txs:  {yaml_total_tx}")
-    print(f"Submitted/Recorded Round Txs:    {total_html_succ}")
-    if shortfall > 0:
-        print(f"Per-Worker Allocation Shortfall: {shortfall} txs (Caliper integer division across {workers} workers)")
+    print(f"Configured Benchmark-Round Txs:      {acct['configured']}")
+    print(f"Submitted/Recorded Round Txs:        {acct['submitted']} (Completion: {acct['configured_proposal_completion_percent']:.2f}%)")
+    if acct['allocation_shortfall'] > 0:
+        print(f"Per-Worker Allocation Shortfall:     {acct['allocation_shortfall']} txs (Caliper integer division across {workers} workers)")
     else:
-        print(f"Per-Worker Allocation Shortfall: 0 txs (full 1:1 allocation across {workers} workers)")
-    print(f"Reported Failures (Submitted):   {total_html_fail}")
+        print(f"Per-Worker Allocation Shortfall:     0 txs (full 1:1 allocation across {workers} workers)")
+    print(f"Successful Benchmark Transactions:   {acct['successful']} (Success Rate: {acct['success_rate_among_submitted_percent']:.2f}% among submitted)")
+    print(f"Reported Failures (Submitted):       {acct['reported_failures']}")
 
     # Inspect manifest transaction / pre-seeding accounting if present
     pre_seeding_accounting = manifest_data.get('pre_seeding_accounting') or manifest_data.get('transaction_accounting')
     if isinstance(pre_seeding_accounting, dict) and pre_seeding_accounting.get('pre_seeding_write_requests'):
         pre_seed_tx = pre_seeding_accounting['pre_seeding_write_requests']
-        total_requests = total_html_succ + pre_seed_tx
-        print(f"Pre-Seeding Setup Write Txs:     {pre_seed_tx}")
-        print(f"Total Testbed Workload Requests: {total_requests}")
+        total_requests = acct['submitted'] + pre_seed_tx
+        print(f"Pre-Seeding Setup Write Txs:         {pre_seed_tx}")
+        print(f"Total Testbed Workload Requests:     {total_requests}")
 
-    if mismatches == 0 and total_html_succ in (yaml_total_tx, caliper_expected_tx) and total_html_fail == 0:
-        if shortfall > 0:
+    if require_zero_failures and acct['reported_failures'] > 0:
+        print(f"❌ Reported failures ({acct['reported_failures']}) > 0 while require_zero_failures=True")
+        mismatches += 1
+
+    if mismatches == 0 and acct['submitted'] in (yaml_total_tx, caliper_expected_tx):
+        if acct['allocation_shortfall'] > 0:
             print(f"\n✓ ALL {len(yaml_rounds)} ROUNDS AND SUBMITTED METRICS RECONCILE 100% BYTE-FOR-BYTE ACROSS ALL ARTIFACTS!")
-            print(f"  (Accounting: {total_html_succ} submitted of {yaml_total_tx} configured due to {workers}-worker integer allocation; {shortfall} shortfall; 0 reported failures among submitted transactions).")
+            print(f"  (Accounting: {acct['submitted']} submitted of {acct['configured']} configured ({acct['configured_proposal_completion_percent']:.2f}% completion) due to {workers}-worker integer allocation; {acct['allocation_shortfall']} allocation shortfall; {acct['reported_failures']} reported failures among submitted transactions).")
         else:
             print(f"\n✓ ALL {len(yaml_rounds)} ROUNDS AND METRICS RECONCILE 100% BYTE-FOR-BYTE ACROSS ALL ARTIFACTS!")
         return True
