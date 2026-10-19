@@ -33,7 +33,7 @@
 
 ## 3. Machine Learning Reporting & Artifact Alignment
 
-- [x] **Chosen Classifier:** 11-Feature Observable Logistic Regression (L2 regularization, unweighted fit with normalized survey weights for evaluation).
+- [x] **Chosen Classifier:** 11-Feature Observable Logistic Regression (Weighted Fit, serialized artifact `risk_model_classifier_observable_weighted_p90.pkl` with normalized person weights `normalized_person_weights`).
 - [x] **Target Definition & Rationale:** High-expenditure survey-weighted P90 ($TOTEXP23 \ge \$17,827.41$). Rationale documented: Pareto distribution of healthcare costs (top 10% consume ~65–70% of resources); arbitrary 15% threshold rejected.
 - [x] **Class Prevalence & Baselines:**
   - Training weighted prevalence: $9.99\%$ ($0.099888$).
@@ -42,14 +42,18 @@
   - Constant baseline weighted Brier score: $0.0941$.
   - Constant baseline unweighted Brier score: $0.1059$.
 - [x] **Classifier Metrics:**
-  - ROC-AUC: $0.7654$ [95% CI: $0.7433$, $0.7882$].
-  - PR-AUC: $0.3192$ [95% CI: $0.2882$, $0.3564$].
+  - ROC-AUC: $0.7654$ [95% CI: $0.7444$, $0.7881$].
+  - PR-AUC: $0.3184$ [95% CI: $0.2876$, $0.3556$].
   - Weighted Brier: $0.0845$ (Weighted BSS: $+0.1025$, $+10.25\%$).
   - Unweighted Brier: $0.0936$ (Unweighted BSS: $+0.1123$).
-  - Calibration slope $\beta$: $0.9014$, CITL: $-0.038$.
+  - Calibration diagnostics: Calibration slope $b = 0.9438$, bivariate intercept $a = -0.0409$, exact Calibration-in-the-Large $\text{CITL} = +0.0646$ (exact Brent's root). (Ablation unweighted fit achieves slope $0.9008$, CITL $+0.0570$, intercept $-0.1271$).
 - [x] **Explicit Metric Distinction (`Precision @ 0.10`):**
   - Confirmed via inspection of `run_comprehensive_benchmarks.py` that `pred_label_10 = (prob >= 0.10).astype(int)` evaluates a **predicted-probability decision threshold of $\hat{p} \ge 0.10$**, NOT a top-10%-ranked cohort selection cutoff.
-  - Practical performance: Precision = $0.2318$, Recall = $0.7733$, F1 = $0.3566$ (2.2-fold enrichment over base prevalence).
+  - Practical performance: Precision = $0.2318$, Recall = $0.7733$, F1 = $0.3567$.
+  - Explicit enrichment breakdown:
+    - $1.93\text{x}$ over unweighted test prevalence ($11.98\%$, $450/3,755$),
+    - $2.20\text{x}$ over survey-weighted test prevalence ($10.51\%$, $0.105134$),
+    - $2.32\text{x}$ over survey-weighted training prevalence ($9.99\%$, $0.099888$).
   - Clearly contrasted with a top-10% ranked-cohort selection cutoff (where precision $\approx 42\%$, recall $\le 35\%$).
 - [x] **Disclosed Model Weaknesses:**
   - Direct dollar prediction: Tweedie GLM achieves $R^2 = 0.0798$ (weighted $0.0832$). Log-transformed models (XGBoost, OLS) underpredict dollar mean by $72.8\%$.
