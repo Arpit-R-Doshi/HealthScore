@@ -1,51 +1,51 @@
 # HealthScore: Model Experiment & Research Evaluation Report (Phase D & E)
 
-**Document Version:** 5.1 (Synchronized Authoritative Run, Qualified Dollar Stratification, Input Availability Parity Table & Updated AHRQ Status)  
-**Date:** October 2026  
-**Auditor / Healthcare Data Scientist:** Senior Healthcare Data Scientist & Research-Methodology Reviewer  
-**Dataset:** MEPS HC-251 (2023 Full Year Consolidated Data File; N = 18,771 eligible individuals)  
-**Partition Protocol:** Reproducible 80/20 Train/Test Split (Train N = 15,016; Held-Out Test N = 3,755; Seed = 42)  
-**Target Population:** Civilian noninstitutionalized U.S. population in calendar year 2023.  
+**Document Version:** 5.1 (Synchronized Authoritative Run, Qualified Dollar Stratification, Input Availability Parity Table & Updated AHRQ Status)
+**Date:** October 2026
+**Auditor / Healthcare Data Scientist:** Senior Healthcare Data Scientist & Research-Methodology Reviewer
+**Dataset:** MEPS HC-251 (2023 Full Year Consolidated Data File; N = 18,771 eligible individuals)
+**Partition Protocol:** Reproducible 80/20 Train/Test Split (Train N = 15,016; Held-Out Test N = 3,755; Seed = 42)
+**Target Population:** Civilian noninstitutionalized U.S. population in calendar year 2023.
 
 > [!NOTE]
-> **Methodological Scope & Validation Protocol Notice:**  
+> **Methodological Scope & Validation Protocol Notice:**
 > - **Exploratory Held-Out Evaluation:** All model comparisons reported below were performed on the exact same fixed held-out test partition ($N=3,755$, Population Variance $\text{Var}_{\text{pop}}(y_{\text{test}}) = \$602,354,051.95$ [$\text{ddof}=0$], Sample Variance $\text{Var}_{\text{sample}}(y_{\text{test}}) = \$602,514,508.54$ [$\text{ddof}=1$], Observed Test Mean = **$\$8,764.62$**). Because this held-out partition was repeatedly accessed during iterative development, these metrics represent exploratory held-out benchmarks rather than a pristine confirmatory validation.
-> - **Future AHRQ Validation Roadmap:** Both files have been released by AHRQ; neither validation is claimed as complete until executed:
->   - **MEPS HC-256 (2024 Full Year Consolidated Data File):** Released by AHRQ; designated for **out-of-year contemporaneous external validation** (evaluating cross-sectional model stability across CY 2024).
->   - **MEPS HC-257 (2023–2024 Longitudinal Data File, Panel 28):** Released by AHRQ; designated for **prospective multi-year forecasting** (evaluating 2023 baseline survey predictors against 2024 annual expenditure outcomes, subject to checking variable coverage and predictor timing).
+> - **Completed Phase 2 AHRQ Validation (Roadmap Completed):** The Phase 2 validation roadmap has been fully executed and reported in [`EXTERNAL_VALIDATION_REPORT.md`](EXTERNAL_VALIDATION_REPORT.md):
+>   - **MEPS HC-256 (2024 Full Year Consolidated Data File):** Evaluated contemporaneous out-of-year external transfer across $N = 18,979$ individuals (ROC-AUC $0.7828$, PR-AUC $0.3229$, Weighted BSS $+0.1266$).
+>   - **MEPS HC-257 (2023–2024 Longitudinal Data File, Panel 28):** Evaluated true prospective multi-year forecasting across $N = 8,708$ individuals (ROC-AUC $0.7807$, PR-AUC $0.3296$, Weighted BSS $+0.1263$).
 > - **Variance Convention Reconciliation:** Scikit-learn's `r2_score(y_true, y_pred)` evaluates $R^2 = 1 - \frac{\text{SS}_{\text{res}}}{\text{SS}_{\text{tot}}}$. Because $\text{SS}_{\text{tot}} = N \cdot \text{Var}_{\text{pop}} (\text{ddof}=0)$ and $\text{SS}_{\text{res}} = N \cdot \text{RMSE}^2$, the identity $R^2 = 1 - \frac{\text{RMSE}^2}{\text{Var}}$ strictly holds against population variance ($\text{ddof}=0$, $\$602,354,051.95$). Using sample variance ($\text{ddof}=1$, $\$602,514,508.54$) produces a mathematical discrepancy.
-> - **Bootstrap Confidence Intervals:** Reported 95% confidence intervals were generated via an ordinary row-level percentile bootstrap (1,000 resamples with replacement). They reflect sample resampling uncertainty on the exploratory test split; they do **not** account for the complex survey design (clustering via `VARPSU` or stratification via `VARSTR`) and must not be interpreted as design-based population standard errors.
+> - **Bootstrap Confidence Interval Reconciliation:** While this historical training report utilized $B=1,000$ resamples for initial development diagnostics, the canonical comprehensive benchmark suite (`run_comprehensive_benchmarks.py`) and manuscript reporting utilize $B=200$ resamples ($n\_boot=200$, seed 42) for computational consistency with the benchmark registry. Both reflect ordinary row-level percentile resampling uncertainty on the exploratory test split; they do **not** account for the complex survey design (clustering via `VARPSU` or stratification via `VARSTR`) and must not be interpreted as design-based population standard errors.
 > - **Exploratory Loss Simulation Notice:** Monte Carlo parametric loss simulations and "premium" outputs are exploratory Value-at-Risk heuristics for technical demonstration; current MEPS prediction metrics do **not** validate commercial insurance pricing, premium calculation, underwriting adequacy, or reserve solvency.
 
 ---
 
 ## 1. Executive Summary & Methodological Findings
 
-1. **Reconciliation of Survey-Weighted Classifier Baseline Arithmetic:**  
+1. **Reconciliation of Survey-Weighted Classifier Baseline Arithmetic:**
    The exact values are audited, reconciled, and verified by unit test assertions:
    - **Training Survey-Weighted Prevalence:** $\hat{p} = \frac{\sum w_{i,\text{train}} y_{i,\text{train}}}{\sum w_{i,\text{train}}} = \mathbf{0.0999}$ ($0.099888$).
    - **Constant Baseline Prediction:** Predicts constant $\hat{p} = 0.099888$ for all test instances.
    - **Test Survey-Weighted Outcome Prevalence:** $\bar{y}_{\text{test, wtd}} = \frac{\sum w_{i,\text{test}} y_{i,\text{test}}}{\sum w_{i,\text{test}}} = \mathbf{0.1051}$ ($0.105134$).
    - **Test Unweighted Outcome Prevalence:** $\bar{y}_{\text{test, unw}} = \frac{1}{N_{\text{test}}} \sum y_{i,\text{test}} = \mathbf{0.1198}$ ($0.119840$).
-   - **Test Survey-Weighted Baseline Brier Score:**  
+   - **Test Survey-Weighted Baseline Brier Score:**
      $$\text{Brier}_{\text{wtd}}(\hat{p}) = \bar{y}_{\text{test, wtd}}(1 - 2\hat{p}) + \hat{p}^2 = 0.105134(1 - 2(0.099888)) + (0.099888)^2 = \mathbf{0.0941} \quad (0.094108)$$
-   - **Test Unweighted Baseline Brier Score:**  
+   - **Test Unweighted Baseline Brier Score:**
      $$\text{Brier}_{\text{unw}}(\hat{p}) = \bar{y}_{\text{test, unw}}(1 - 2\hat{p}) + \hat{p}^2 = 0.119840(1 - 2(0.099888)) + (0.099888)^2 = \mathbf{0.1059} \quad (0.105877)$$
    All Brier Skill Scores for Target 2 are evaluated against these exact baselines.
 
-2. **Evaluation of Exact Deployment Candidates & Qualified Dollar Stratification:**  
+2. **Evaluation of Exact Deployment Candidates & Qualified Dollar Stratification:**
    The 11-feature Observable Tweedie Compound Poisson-Gamma GLM is evaluated separately from the 14-feature models across all tables:
    - **Observable Tweedie GLM (11 Features, Input Availability Parity):** Overall predicted mean = **$\$8,177.92$** (vs. observed $\$8,764.62$; aggregate underprediction $6.7\%$), Dollar RMSE = **$\$23,542.97$**, Dollar $R^2 = \mathbf{0.0798}$, Weighted Dollar $R^2 = \mathbf{0.0832}$.
    - **Qualified Dollar-Scale Stratification Analysis:** The decile stratification of the Observable Tweedie model was evaluated using its own predictions (`p_tw_obs`). Decile counts sum exactly to $3,755$, count-weighted observed mean equals **$\$8,764.62$**, and count-weighted predicted mean equals **$\$8,177.92$** ($\Delta = 0.0022 < 0.05$). While aggregate and top-decile spending are tracked closely (Decile 10 predicted $\$23,846.37$ vs observed $\$24,659.24$, ratio 1.034x), observed-to-predicted ratios vary from 1.766x in Decile 1 to 0.789x in Decile 4. Tweedie is the leading candidate for un-logged dollar prediction, but cannot be described as fully calibrated across all deciles.
    - **Observable XGBoost Regressor:** Retained strictly for relative expenditure ranking ($\ln(1+y)$ objective; overall dollar mean predicted $\$2,384.13$, underpredicting observed dollar mean by $72.8\%$).
 
-3. **Classifier Input Conditions & Declared Targets:**  
+3. **Classifier Input Conditions & Declared Targets:**
    - **11-Feature Observable Logistic Regression:** Achieves Target 2 Weighted Brier = $0.0845$, Weighted Brier Skill Score = **$+0.1025$** ($+10.25\%$), ROC-AUC = $0.7654$, PR-AUC = $0.3184$.
    - **14-Feature Deployment-Imputed Logistic Regression:** Evaluated with unobserved SAQ variables imputed via age/comorbidity conditional expectations. Achieves Weighted Brier = $0.0849$, Weighted BSS = **$+0.0978$** ($+9.78\%$).
    - **14-Feature Oracle Ground Truth Logistic Regression:** Achieves Weighted Brier = $0.0817$, Weighted BSS = $+0.1314$ ($+13.14\%$).
    - **Inference Recommendation:** Observable 11-feature Logistic Regression ($+0.1025$ Wtd BSS) strictly outperforms the 14-feature model under zero imputation ($+0.0978$ Wtd BSS), justifying the 11-feature model as the leading classifier candidate for integration testing. Every serialized artifact declares its target explicitly in `training_metadata.json`.
 
-4. **Condition-Level Negation Handling & Explicit Distinction:**  
+4. **Condition-Level Negation Handling & Explicit Distinction:**
    The clinical text parser (`risk_engine.py`) preserves condition-level negation and affirmation before cluster aggregation:
    - Same-cluster mixed statements (e.g. `"no hypertension, but prior stroke"`, `"no asthma, but COPD"`) correctly preserve affirmed conditions (e.g. stroke $\implies \text{cardio}=2$, COPD $\implies \text{respiratory}=2$).
    - Statements with negative qualifiers evaluate to $0$ and never trigger positive condition flags.
@@ -77,10 +77,10 @@ All models were evaluated on the fixed held-out test partition ($N=3,755$, obser
 | **Ridge Regression (14-Feat, α=10)** | 14 | 14 features, $\ln(1+y)$, L2 penalty | $7,529.85 [$6,778.33, $8,331.60] | $24,524.27 [$19,656.65, $29,192.33] | 0.0015 | $2,692.32 | $6,480.62 | $20,450.32 | -0.0018 |
 
 > [!NOTE]
-> **Variance Identity Check:**  
-> For the Observable XGBoost model, $\text{RMSE} = \$24,706.50$.  
-> Evaluating against population variance ($\text{ddof}=0$, $\$602,354,051.95$):  
-> $$R^2 = 1 - \frac{(24,706.50)^2}{602,354,051.95} = 1 - 1.013376 = -0.013376 \approx \mathbf{-0.0134}$$  
+> **Variance Identity Check:**
+> For the Observable XGBoost model, $\text{RMSE} = \$24,706.50$.
+> Evaluating against population variance ($\text{ddof}=0$, $\$602,354,051.95$):
+> $$R^2 = 1 - \frac{(24,706.50)^2}{602,354,051.95} = 1 - 1.013376 = -0.013376 \approx \mathbf{-0.0134}$$
 > This strictly reconciles with `sklearn.metrics.r2_score(y_test, y_pred) = -0.013376`.
 
 ---
@@ -116,7 +116,7 @@ Target-specific constant baseline probability is $\hat{p} = 0.1000$ (test baseli
 | **XGBoost (Platt, 14-Feat, Oracle)** | 14 | Survey Ground Truth | 0.1172 | 0.0922 | +0.1296 | 0.0832 | +0.1159 | **0.7904** [0.7676, 0.8119] | 0.3472 [0.3086, 0.3911] | 1.016 |
 
 > [!IMPORTANT]
-> **Inference Recommendation Grounding:**  
+> **Inference Recommendation Grounding:**
 > When evaluated on deployment-accessible inputs, the **11-feature Observable-Only Logistic Regression** achieves a higher survey-weighted Brier Skill Score (**$+0.1025$**) than the 14-feature model under deployment imputation (**$+0.0978$**). The higher performance of the 14-feature oracle model ($+0.1314$) is driven entirely by survey variables that cannot be collected at runtime. Therefore, the 11-feature Observable model is mathematically and methodologically justified as the leading classifier candidate for integration testing.
 
 ---
@@ -147,7 +147,7 @@ Evaluated by binning held-out test predictions generated directly by the 11-feat
 - **Status:** **STRICTLY RECONCILED (< 0.05)**
 
 > [!NOTE]
-> **Dollar Calibration Qualification:**  
+> **Dollar Calibration Qualification:**
 > The Observable Tweedie GLM predicts directly on the raw dollar scale without logarithmic retransformation. While its count-weighted mean ($8,177.92 vs $8,764.62 observed) and top-decile mean ($23,846.37 vs $24,659.24, ratio 1.034x) track upper-tail expenditures closely, group-level calibration varies considerably across the spending spectrum. In Decile 1, it substantially underpredicts low spending (1.766x observed-to-predicted ratio), while in Decile 4 it overpredicts (0.789x ratio). Tweedie is designated as the leading candidate for dollar-scale expenditure prediction, but claims of full dollar calibration are not statistically justified.
 
 ---
@@ -218,37 +218,37 @@ Equal feature counts do **not** establish semantic equivalence. The table below 
 
 ### 5.3. Clinical NLP Parser: Same-Cluster Negation & Missing-versus-Negative Handling
 The clinical text parsing engine (`ml_model/risk_engine.py`) preserves condition-level semantics before cluster aggregation:
-1. **Preservation of Same-Cluster Mixed Statements:**  
+1. **Preservation of Same-Cluster Mixed Statements:**
    Negating one condition within a cluster does not suppress an affirmed condition in that same cluster:
    - `"no hypertension, but prior stroke"`: Hypertension is negated, but stroke is affirmed. The cardiovascular cluster resolves to `2` (not suppressed to 0).
    - `"no asthma, but COPD"`: Asthma is negated, but COPD is affirmed. The respiratory cluster resolves to `2` (not suppressed to 0).
    - `"no diabetes, but high cholesterol"`: Diabetes is negated, but hyperlipidemia is affirmed. The metabolic cluster resolves to `1`.
-2. **Explicit Negation vs. Missing/Unmentioned Inputs:**  
+2. **Explicit Negation vs. Missing/Unmentioned Inputs:**
    - **Explicit Absence:** Statements like `"Healthy patient, no chronic medical conditions"` or `"denies all medical conditions"` set all 6 clusters to 0 with `input_status = "explicitly_negated_general"`.
    - **Missing / Unparseable Inputs:** Empty text `""` or non-clinical text ("patient walks in the park") sets all clusters to 0 with `input_status = "missing_or_empty"` or `"unparseable_or_unmentioned"`. All 6 clusters are marked `unmentioned`.
    - **Diagnostic Warnings:** When conditions are unmentioned, the engine flags `input_completeness_warning`: *"Absence of condition mentions in diseaseInput does not imply confirmed clinical absence. Zero comorbidity cluster scores were assigned as an uninformative numerical default for regression input, NOT a clinically confirmed healthy profile."*
    - **Strict Input Mode:** If `require_structured_inputs=True` is requested, the engine returns `{"status": "insufficient_input", "unmentioned_clusters": [...]}` rather than generating an unverified baseline.
-3. **Unresolved Semantic Limitations:**  
+3. **Unresolved Semantic Limitations:**
    Regex pattern matching cannot assess complex syntactic dependencies, family medical history (e.g. "mother has cancer"), temporal chronicity ("childhood asthma resolved"), or diagnostic uncertainty. Regex flags remain heuristic intake features and must not be described as clinically equivalent to MEPS physician diagnoses.
 
 ---
 
-## 6. AHRQ Validation Roadmap (HC-256 vs. HC-257)
+## 6. AHRQ Validation Roadmap (Executed & Superseded by Phase 2 Report)
 
-Both target files have been released by AHRQ. They are designated as the Phase 2 external validation roadmap (neither validation is claimed as complete until executed):
+> [!NOTE]
+> **Status Update (October 2026):**
+> The Phase 2 external and prospective validation evaluations outlined below have been **fully executed and completed**. Comprehensive results, cohort flows, and metric evaluations are documented in [`EXTERNAL_VALIDATION_REPORT.md`](EXTERNAL_VALIDATION_REPORT.md). The original roadmap descriptions are retained below for historical provenance:
 
 1. **MEPS HC-256 (2024 Full Year Consolidated Data File):**
-   - **File Type:** Annual cross-sectional consolidated file covering calendar year 2024.
-   - **Current Status:** **Released by AHRQ**.
-   - **Next Validation Phase:** **Out-of-year contemporaneous external validation**.
-   - **Methodology & Protocol:** Evaluates whether cross-sectional models trained on 2023 data generalize to an unaccessed population in 2024 with similar contemporaneous predictors (annual demographics, full-year condition flags, annual SAQ responses), subject to variable harmonization and coding consistency checks.
+   - **File Type:** Annual cross-sectional consolidated file covering calendar year 2024 ($N = 18,979$).
+   - **Validation Phase:** **Out-of-year contemporaneous external validation** (**Completed** in Phase 2).
+   - **Empirical Findings:** The frozen 2023 Weighted P90 Classifier achieved survey-weighted ROC-AUC $0.7828$, PR-AUC $0.3229$, and Weighted Brier Skill Score $+0.1266$ (cal slope $1.0554$). Tweedie GLM tracked the rising population mean ($$9,266.75$ observed) with predicted mean $\$8,473.71$.
 
 2. **MEPS HC-257 (2023–2024 Longitudinal Data File, Panel 28):**
-   - **File Type:** Longitudinal two-year panel file tracking Panel 28 respondents across both calendar years (2023 and 2024).
-   - **Current Status:** **Released by AHRQ**.
-   - **Next Validation Phase:** **Prospective multi-year healthcare expenditure forecasting**.
-   - **Methodology & Protocol:** Links 2023 baseline survey predictors (Year 1 demographics, clinical diagnoses, functional limitations) to 2024 annual expenditure outcomes (`TOTEXP24` in Year 2), subject to checking variable coverage and predictor timing.
-   - **Critical Distinction:** Contemporaneous external validation (HC-256) evaluates model stability across temporal cross-sections; prospective forecasting (HC-257) evaluates actual temporal forecasting power where expenditures occur in the subsequent calendar year. Neither evaluation is complete until data preparation and model scoring have been performed.
+   - **File Type:** Longitudinal two-year panel file tracking Panel 28 respondents across 2023 and 2024 ($N = 8,708$).
+   - **Validation Phase:** **Prospective multi-year healthcare expenditure forecasting** (**Completed** in Phase 2).
+   - **Empirical Findings:** Baseline 2023 predictors forecast Year 2 high-cost status with prospective ROC-AUC $0.7807$ (Adult SAQ subcohort: $0.7466$). Econometric persistence benchmark confirmed that lagged Year 1 spending (`TOTEXPY1`) achieves $R^2 = 0.1204$, outperforming static diagnosis-only Tweedie ($R^2 = 0.0652$).
+
 
 ---
 
@@ -271,7 +271,7 @@ SHAP attributions computed via `TreeExplainer` on the 11-feature Observable XGBo
 | 11 | `Respiratory_ACG` | 0.0071 | Contribution of asthma/COPD indicator. |
 
 > [!IMPORTANT]
-> **Custom Condition-Cluster Disclaimer:**  
+> **Custom Condition-Cluster Disclaimer:**
 > The six condition clusters (`Cardio_ACG`, `Metabolic_ACG`, etc.) are custom heuristic condition indicator sums built from MEPS priority condition survey flags. They were **NOT** produced using the proprietary Johns Hopkins ACG® Case-Mix System software.
 
 ---

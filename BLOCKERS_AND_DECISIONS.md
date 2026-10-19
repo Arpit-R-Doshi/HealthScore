@@ -1,9 +1,9 @@
 # HealthScore: Blockers, Decisions & Methodology Audit Report (Phase 1)
 
-**Document Version:** 5.1 (Synchronized Authoritative Run, Qualified Dollar Stratification, Candidate Integration Recommendations & Released AHRQ Roadmap)  
-**Date:** October 2026  
-**Auditor / Reviewer:** Senior Healthcare Data Scientist & Research-Methodology Reviewer  
-**Status:** Documented for Review — No Merges, Commits, Remote Pushes, or File Deletions  
+**Document Version:** 5.1 (Synchronized Authoritative Run, Qualified Dollar Stratification, Candidate Integration Recommendations & Released AHRQ Roadmap)
+**Date:** October 2026
+**Auditor / Reviewer:** Senior Healthcare Data Scientist & Research-Methodology Reviewer
+**Status:** Documented for Review — No Merges, Commits, Remote Pushes, or File Deletions
 
 ---
 
@@ -21,7 +21,7 @@ In strict adherence to instructions:
 ## 2. Reconciled Decisions & Methodological Audits
 
 ### Decision 1: Reconciled Overall Metrics, Decile Stratification & Variance Convention
-- **Exact Metric Reconciliation:**  
+- **Exact Metric Reconciliation:**
   All overall test-set metrics and decile summaries are verified to derive from the identical held-out test labels and model predictions ($N_{\text{test}} = 3,755$):
   - **Overall Observed Test Mean:** **$\$8,764.62$** (Count-weighted decile mean: **$\$8,764.62$**, $\Delta = \$0.00$)
   - **Observable Tweedie GLM Mean Prediction:** **$\$8,177.92$** (Count-weighted decile prediction: **$\$8,177.92$**, $\Delta = \$0.0022 < 0.05$)
@@ -29,13 +29,13 @@ In strict adherence to instructions:
   - **14-Feature Tweedie GLM Mean Prediction:** **$\$8,216.41$** (Count-weighted decile prediction: **$\$8,216.41$**, $\Delta = \$0.00$)
   - **Two-Part Model Mean Prediction:** **$\$9,781.06$** (Count-weighted decile prediction: **$\$9,781.06$**, $\Delta = \$0.00$)
   - All decile counts sum to $3,755$, and count-weighted decile means equal overall test means within a floating-point tolerance of $< 0.003$, verified via automated unit test `test_decile_reconciliation_and_count_weighted_means`.
-- **Variance Convention Reconciliation:**  
+- **Variance Convention Reconciliation:**
   - Population Variance ($\text{ddof}=0$): **$\$602,354,051.95$**.
   - Sample Variance ($\text{ddof}=1$): **$\$602,514,508.54$**.
   - Scikit-learn's `r2_score(y_true, y_pred)` evaluates $R^2 = 1 - \frac{\text{SS}_{\text{res}}}{\text{SS}_{\text{tot}}}$. Because $\text{SS}_{\text{tot}} = N \cdot \text{Var}_{\text{pop}} (\text{ddof}=0)$ and $\text{SS}_{\text{res}} = N \cdot \text{RMSE}^2$, the identity $R^2 = 1 - \frac{\text{RMSE}^2}{\text{Var}}$ strictly holds against population variance ($\text{ddof}=0$, $\$602,354,051.95$). Evaluated against sample variance ($\text{ddof}=1$), $1 - \frac{\text{RMSE}^2}{\text{Var}_{\text{sample}}}$ produces a mathematical discrepancy.
-- **Tweedie Status Formulation:**  
+- **Tweedie Status Formulation:**
   Tweedie Compound Poisson-Gamma GLM ($p=1.5$) is documented as the **leading candidate for dollar-scale expenditure prediction**, not as a certified or fully calibrated estimator. Its group-level calibration was evaluated using its own predictions (`p_tw_obs`). While tracking upper-tail spending relatively well (Decile 10 mean predicted $\$23,846.37$ vs. observed $\$24,659.24$, ratio 1.034), observed-to-predicted ratios vary across deciles (1.766x in Decile 1 to 0.789x in Decile 4). Tweedie achieves Dollar RMSE of **$\$23,542.97$** and Dollar $R^2$ of **$0.0798$** (Observable 11-feature model); claims of full dollar calibration are not statistically justified.
-- **XGBoost Status Formulation:**  
+- **XGBoost Status Formulation:**
   Observable XGBoost on $\ln(1+y)$ is retained strictly as an **ordinal ranking and log-cost benchmark**. It must never be described as providing calibrated expected dollar expenditure due to severe Jensen's inequality underprediction (~3.68x overall underprediction).
 
 ---
@@ -52,7 +52,7 @@ In strict adherence to instructions:
 ---
 
 ### Decision 3: Clinical NLP Disease-Parser Parity, Negation & Semantic Limitations
-- **Data Generation Discrepancy:**  
+- **Data Generation Discrepancy:**
   MEPS diagnosis flags and frontend free-text parsing are fundamentally different input-generation processes:
   - MEPS condition flags derive from household-reported doctor diagnoses followed by medical-provider event followback and mapping to ICD-10-CM / CCSR categories.
   - The frontend parser uses regex substring matching on unstructured free-text descriptions.
@@ -92,22 +92,21 @@ In strict adherence to instructions:
 
 ---
 
-## 3. AHRQ Validation Roadmap (HC-256 vs. HC-257)
+## 3. AHRQ Validation Roadmap (Executed & Completed in Phase 2)
 
-Both target files have been released by AHRQ and are designated as the Phase 2 external validation roadmap (neither validation is claimed as complete until executed):
+> [!NOTE]
+> **Status Update (October 2026):**
+> The Phase 2 external cross-year validation and prospective forecasting evaluations designated below have been **fully executed and completed**. Comprehensive results and provenance are documented in [`EXTERNAL_VALIDATION_REPORT.md`](EXTERNAL_VALIDATION_REPORT.md). The original roadmap descriptions are retained below for historical reference:
 
 1. **MEPS HC-256 (2024 Full Year Consolidated Data File):**
-   - **Nature:** Annual cross-sectional consolidated data file for calendar year 2024.
-   - **Current Status:** **Released by AHRQ**.
-   - **Next Validation Phase:** **Out-of-year contemporaneous external validation**.
-   - **Methodology & Protocol:** Assesses whether models fitted on 2023 survey variables generalize to an unaccessed population in calendar year 2024 under contemporaneous cross-sectional predictors, subject to variable harmonization and coding consistency checks.
+   - **Nature:** Annual cross-sectional consolidated data file for calendar year 2024 ($N = 18,979$).
+   - **Validation Phase:** **Out-of-year contemporaneous external validation** (**Completed** in Phase 2).
+   - **Empirical Findings:** The frozen 2023 Weighted P90 Classifier achieved survey-weighted ROC-AUC $0.7828$, PR-AUC $0.3229$, and Weighted Brier Skill Score $+0.1266$ (cal slope $1.0554$). Tweedie GLM tracked the rising population mean ($$9,266.75$ observed) with predicted mean $\$8,473.71$.
 
 2. **MEPS HC-257 (2023–2024 Longitudinal Data File, Panel 28):**
-   - **Nature:** Two-year longitudinal panel following Panel 28 respondents across consecutive calendar years (2023 to 2024).
-   - **Current Status:** **Released by AHRQ**.
-   - **Next Validation Phase:** **True prospective healthcare expenditure forecasting**.
-   - **Methodology & Protocol:** Evaluates models predicting Year 2 (2024) annual medical spending (`TOTEXP24`) from Year 1 (2023) baseline demographic, clinical, and functional predictors, subject to checking variable coverage and predictor timing.
-   - **Critical Distinction:** Contemporaneous external evaluation (HC-256) measures cross-sectional generalization across cohorts; prospective forecasting (HC-257) measures actual multi-year risk forecasting where expenditure occurs in a subsequent calendar year. Neither evaluation is complete until data preparation and model scoring have been performed.
+   - **Nature:** Two-year longitudinal panel following Panel 28 respondents across consecutive calendar years (2023 to 2024, $N = 8,708$).
+   - **Validation Phase:** **True prospective healthcare expenditure forecasting** (**Completed** in Phase 2).
+   - **Empirical Findings:** Baseline 2023 predictors forecast Year 2 high-cost status with prospective ROC-AUC $0.7807$ (Adult SAQ subcohort: $0.7466$). Econometric persistence benchmark confirmed that lagged Year 1 spending (`TOTEXPY1`) achieves $R^2 = 0.1204$, outperforming static diagnosis-only Tweedie ($R^2 = 0.0652$).
 
 ---
 
