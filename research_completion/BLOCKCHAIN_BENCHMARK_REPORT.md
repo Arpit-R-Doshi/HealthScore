@@ -184,7 +184,7 @@ The performance simulator (`caliper-benchmark/simulate_benchmark.py`) implements
 ## 6. Architectural Distinction: Chaincode TPS vs. End-to-End API Capacity
 
 A critical systems distinction must be maintained:
-- **Chaincode Protocol Throughput:** Hyperledger Fabric achieves $350$–$515.8$ write TPS and $500.3$ read TPS at the gateway level.
+- **Chaincode Protocol Throughput:** Hyperledger Fabric achieves $350.1$–$515.8$ write TPS (across empirical stress runs) and $500.3$–$500.6$ read TPS at the gateway level.
 - **End-to-End HTTP API Capacity:** In synchronous execution, client requests to `/api/predict-score` trigger JWT verification, JSON parsing, Python subprocess initialization (`run_engine.py`), model unpickling, ML inference, loss simulation, and subsequent ledger submission.
 - **Analytical Bound:** Because the Python inference process requires $\approx 40$–$50$ ms per invocation, a single synchronous worker process is analytically bounded to:
   $$\text{Capacity}_{\text{single-worker}} \approx \frac{1.0}{0.045\text{s}} \approx 20\text{–}25\text{ requests/second}$$

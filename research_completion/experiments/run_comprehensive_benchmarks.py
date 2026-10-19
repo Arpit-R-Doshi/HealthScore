@@ -901,7 +901,7 @@ def main():
 
     # Panel A: Committed Throughput vs Actual Caliper Send Rate
     ax1.plot(write_send_rates[:3], write_throughputs[:3], 'o-', color='#1f77b4', lw=2.2, label="Write Txs: Linear Operating Regime (< 200 TPS)")
-    ax1.plot(write_send_rates[2:], write_throughputs[2:], 's--', color='#d62728', lw=2.2, label="Write Txs: Saturation Ceiling (350.1 TPS)")
+    ax1.plot(write_send_rates[2:], write_throughputs[2:], 's--', color='#d62728', lw=2.2, label="Historical Writes: 350.1 TPS Knee (963.6 send)")
     ax1.plot(query_send_rates, query_throughputs, '^-.', color='#2ca02c', lw=2.2, label="Read Queries: Linear Scaling (500.3 TPS, No Consensus)")
     ax1.plot([0, 1000], [0, 1000], 'k:', alpha=0.4, label="Ideal 1:1 Scaling Reference")
     ax1.set_xlabel("Actual Caliper Send Rate (TPS)", fontsize=11)
