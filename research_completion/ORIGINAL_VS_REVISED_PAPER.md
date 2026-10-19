@@ -68,7 +68,7 @@ Every material modification is categorized by type (Numerical, Methodological, C
 
 ### 3.7. Blockchain Performance
 - **Original Working Claims:** Reported high TPS without workload specifications, test duration, or failure analysis.
-- **Revised Manuscript:** Details exact Caliper benchmark parameters across $24,500$ transactions in 8 rounds and subsequent live reruns. Reports linear regime up to $200$ TPS ($0.03$–$0.06$s latency), historical saturation knee at $350.1$ TPS ($470$–$516$ TPS in multi-worker live reruns) under $1,000$ TPS stress load with zero transaction failures ($0.00\%$). Clarifies that ledger block storage is immutable while CouchDB provides mutable latest world-state caching.
+- **Revised Manuscript:** Details exact Caliper benchmark parameters across $24,500$ transactions in 8 rounds and subsequent live reruns. Reports linear regime up to $200$ TPS ($0.03$–$0.06$s latency), historical saturation knee at $350.1$ TPS ($470$–$516$ TPS in multi-worker live reruns) under $1,000$ TPS stress load with zero reported failures among submitted transactions ($0.00\%$ failure rate; disclosing 25,480 submitted vs 25,500 configured in 8-worker runs due to worker integer division). Clarifies that ledger block storage is immutable while CouchDB provides mutable latest world-state caching.
 
 ### 3.8. Algorithmic Fairness & Limitations
 - **Original Working Claims:** Absent from the original draft.

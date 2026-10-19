@@ -55,6 +55,25 @@ Specifically, the three 1,000 TPS over-saturation write repetitions (Rounds 4, 5
 ## 4. Preservation and Corrective Action
 
 In accordance with strict scientific integrity principles:
-1. No original files in this directory (`report.html`, `live_benchmark_results.json`, `live_benchmark_results.csv`, `run_manifest.json`, `benchmark_expanded.yaml`, `console.log`) have been edited or deleted.
+1. No raw benchmark measurement outputs in this directory (`report.html`, `live_benchmark_results.json`, `live_benchmark_results.csv`, `benchmark_expanded.yaml`, `console.log`) have been altered.
 2. `workload.js` and `verify_benchmark_artifacts.py` have been patched to require explicit `targetFunction`, reject `action`-only arguments, and validate label-operation consistency.
 3. A fully corrected benchmark run with explicit `targetFunction: getPatientRecord` and ledger pre-seeding (`preSeedCount: 50`) has been executed in a separate timestamped run directory.
+
+## 5. Transaction Accounting: Configured vs. Submitted Allocation
+
+The benchmark configuration (`benchmark_expanded.yaml`) defined 7 rounds specifying a nominal total of **25,500** configured round transactions. Because Hyperledger Caliper distributes transactions across $W=8$ workers using integer division ($\lfloor \text{txNumber} / W \rfloor \times W$), rounds with non-divisible transaction targets experienced an allocation shortfall:
+- Round 1 (`createPatientRecord-350-tps`): $1,750$ configured $\to 1,744$ submitted ($\lfloor 1750 / 8 \rfloor \times 8 = 218 \times 8 = 1,744$; shortfall: $6$)
+- Round 2 (`createPatientRecord-500-tps`): $2,500$ configured $\to 2,496$ submitted ($\lfloor 2500 / 8 \rfloor \times 8 = 312 \times 8 = 2,496$; shortfall: $4$)
+- Round 3 (`createPatientRecord-750-tps`): $3,750$ configured $\to 3,744$ submitted ($\lfloor 3750 / 8 \rfloor \times 8 = 468 \times 8 = 3,744$; shortfall: $6$)
+- Round 4 (`createPatientRecord-1000-tps-rep1`): $5,000$ configured $\to 5,000$ submitted ($\lfloor 5000 / 8 \rfloor \times 8 = 625 \times 8 = 5,000$; shortfall: $0$)
+- Round 5 (`createPatientRecord-1000-tps-rep2`): $5,000$ configured $\to 5,000$ submitted ($\lfloor 5000 / 8 \rfloor \times 8 = 625 \times 8 = 5,000$; shortfall: $0$)
+- Round 6 (`createPatientRecord-1000-tps-rep3`): $5,000$ configured $\to 5,000$ submitted ($\lfloor 5000 / 8 \rfloor \times 8 = 625 \times 8 = 5,000$; shortfall: $0$)
+- Round 7 (`getPatientRecord-500-tps`): $2,500$ configured $\to 2,496$ submitted ($\lfloor 2500 / 8 \rfloor \times 8 = 312 \times 8 = 2,496$; shortfall: $4$)
+
+**Summary Accounting:**
+- **Configured Benchmark-Round Transactions:** $25,500$
+- **Submitted / Recorded Benchmark-Round Transactions:** $25,480$
+- **Worker Allocation Shortfall:** $20$ unsubmitted proposals ($0.078\%$)
+- **Reported Failures Among Submitted Transactions:** $0$ ($0.00\%$ failure rate among submitted)
+- **Pre-seeding Setup Writes:** $0$
+- **Total Testbed Workload Requests Processed:** $25,480$

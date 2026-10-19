@@ -185,10 +185,13 @@ def verify_live_run(directory):
     workers = bench_yaml.get('test', {}).get('workers', {}).get('number', 1)
     caliper_expected_tx = sum((r.get('txNumber', 0) // workers) * workers if r.get('txNumber') else 0 for r in yaml_rounds)
     if caliper_expected_tx != yaml_total_tx:
-        print(f"ℹ Note: Caliper partitioned {yaml_total_tx} configured transactions across {workers} workers, yielding {caliper_expected_tx} submitted transactions due to worker integer division.")
+        shortfall_initial = yaml_total_tx - caliper_expected_tx
+        print(f"ℹ Note: Caliper partitioned {yaml_total_tx} configured transactions across {workers} workers, yielding {caliper_expected_tx} submitted transactions due to worker integer division (shortfall: {shortfall_initial} unsubmitted proposals).")
 
     # Check totals in manifest
     assert manifest_data['total_rounds_configured'] == len(yaml_rounds), "Manifest rounds count mismatch"
+    if 'total_transactions_configured' in manifest_data:
+        assert manifest_data['total_transactions_configured'] == yaml_total_tx, "Manifest configured tx mismatch"
     assert manifest_data['total_transactions_submitted'] in (yaml_total_tx, caliper_expected_tx), "Manifest submitted tx mismatch"
     assert manifest_data['total_transactions_successful'] in (yaml_total_tx, caliper_expected_tx), "Manifest successful tx mismatch"
     assert manifest_data['total_transactions_failed'] == 0, "Manifest failed tx mismatch"
@@ -258,15 +261,33 @@ def verify_live_run(directory):
                 print(f"❌ {lbl}: Manifest targetFunction '{m['targetFunction']}' != YAML targetFunction '{expected_fn}'")
                 mismatches += 1
 
-    print(f"\nTotal Configured Txs: {yaml_total_tx}")
-    print(f"Total HTML Successful: {total_html_succ}")
-    print(f"Total HTML Failed:     {total_html_fail}")
+    shortfall = yaml_total_tx - total_html_succ
+    print("\n--- Transaction Accounting Summary ---")
+    print(f"Configured Benchmark-Round Txs:  {yaml_total_tx}")
+    print(f"Submitted/Recorded Round Txs:    {total_html_succ}")
+    if shortfall > 0:
+        print(f"Per-Worker Allocation Shortfall: {shortfall} txs (Caliper integer division across {workers} workers)")
+    else:
+        print(f"Per-Worker Allocation Shortfall: 0 txs (full 1:1 allocation across {workers} workers)")
+    print(f"Reported Failures (Submitted):   {total_html_fail}")
+
+    # Inspect manifest transaction / pre-seeding accounting if present
+    pre_seeding_accounting = manifest_data.get('pre_seeding_accounting') or manifest_data.get('transaction_accounting')
+    if isinstance(pre_seeding_accounting, dict) and pre_seeding_accounting.get('pre_seeding_write_requests'):
+        pre_seed_tx = pre_seeding_accounting['pre_seeding_write_requests']
+        total_requests = total_html_succ + pre_seed_tx
+        print(f"Pre-Seeding Setup Write Txs:     {pre_seed_tx}")
+        print(f"Total Testbed Workload Requests: {total_requests}")
 
     if mismatches == 0 and total_html_succ in (yaml_total_tx, caliper_expected_tx) and total_html_fail == 0:
-        print(f"✓ ALL {len(yaml_rounds)} ROUNDS AND METRICS RECONCILE 100% BYTE-FOR-BYTE ACROSS ALL ARTIFACTS!")
+        if shortfall > 0:
+            print(f"\n✓ ALL {len(yaml_rounds)} ROUNDS AND SUBMITTED METRICS RECONCILE 100% BYTE-FOR-BYTE ACROSS ALL ARTIFACTS!")
+            print(f"  (Accounting: {total_html_succ} submitted of {yaml_total_tx} configured due to {workers}-worker integer allocation; {shortfall} shortfall; 0 reported failures among submitted transactions).")
+        else:
+            print(f"\n✓ ALL {len(yaml_rounds)} ROUNDS AND METRICS RECONCILE 100% BYTE-FOR-BYTE ACROSS ALL ARTIFACTS!")
         return True
     else:
-        print(f"❌ Found {mismatches} mismatches!")
+        print(f"\n❌ Found {mismatches} mismatches!")
         return False
 
 

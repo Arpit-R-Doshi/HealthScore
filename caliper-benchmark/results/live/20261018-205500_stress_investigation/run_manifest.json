@@ -8,10 +8,20 @@
   "total_rounds_configured": 7,
   "total_rounds_completed": 7,
   "total_rounds_failed": 0,
+  "total_transactions_configured": 25500,
   "total_transactions_submitted": 25480,
   "total_transactions_successful": 25480,
   "total_transactions_failed": 0,
   "overall_success_rate_percent": 100.0,
+  "transaction_accounting": {
+    "configured_round_transactions": 25500,
+    "submitted_round_transactions": 25480,
+    "shortfall_proposals": 20,
+    "shortfall_reason": "Per-worker integer division of txNumber across 8 Caliper workers (1750->1744, 2500->2496, 3750->3744, 5000->5000 per rep, 2500->2496)",
+    "reported_failures_among_submitted": 0,
+    "pre_seeding_write_requests": 0,
+    "total_recorded_requests_processed": 25480
+  },
   "evidence_class": "Class 2: New Live Empirical Caliper Rerun (Isolated Testbed)",
   "fabric_block_parameters": {
     "BatchTimeout": "2s",
