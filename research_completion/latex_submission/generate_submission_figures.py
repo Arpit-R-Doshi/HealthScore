@@ -111,51 +111,94 @@ print("✓ Saved fig5_blockchain_benchmarks (.pdf and .png)")
 # Figure 5b: Caliper Simulation Projection
 # -----------------------------------------------------------------------------
 print("Generating Figure 5b (Caliper Simulation Projection)...")
-rates = np.array([50, 100, 200, 350, 500, 750, 1000, 1200])
-hist_rates = np.array([50.5, 100.5, 200.5, 963.6])
+sim_results_path = os.path.join(REPO_ROOT, "caliper-benchmark", "results", "simulated", "20261018-011500", "simulation_results.json")
+with open(sim_results_path, "r") as f:
+    sim_data = json.load(f)
+
+# Authoritative recorded createPatientRecord simulation scenarios
+cpr_sim = [r for r in sim_data["results"] if r.get("target_function") == "createPatientRecord"]
+cpr_sim = sorted(cpr_sim, key=lambda x: x["offered_tps"])
+
+sim_offered = np.array([r["offered_tps"] for r in cpr_sim])
+sim_med_tps = np.array([r["simulated_throughput"]["median_tps"] for r in cpr_sim])
+sim_p5_tps = np.array([r["simulated_throughput"]["p5_tps"] for r in cpr_sim])
+sim_p95_tps = np.array([r["simulated_throughput"]["p95_tps"] for r in cpr_sim])
+
+sim_med_lat = np.array([r["simulated_avg_latency"]["median_sec"] for r in cpr_sim])
+sim_p5_lat = np.array([r["simulated_avg_latency"]["p5_sec"] for r in cpr_sim])
+sim_p95_lat = np.array([r["simulated_avg_latency"]["p95_sec"] for r in cpr_sim])
+
+# Empirical Caliper benchmark observations plotted consistently at configured target loads
+hist_target_tps = np.array([50, 100, 200, 1000])
 hist_tps = np.array([50.3, 100.2, 199.9, 350.1])
 hist_lat = np.array([0.10, 0.06, 0.04, 18.00])
 
-sim_median_tps = np.array([49.99, 99.98, 199.96, 349.40, 350.25, 351.10, 351.53, 351.60])
-sim_p5_tps = np.array([49.50, 99.00, 197.80, 345.20, 346.00, 347.10, 347.50, 347.60])
-sim_p95_tps = np.array([50.40, 100.80, 201.50, 352.80, 353.90, 354.80, 355.20, 355.40])
-
-sim_median_lat = np.array([0.133, 0.084, 0.060, 0.065, 1.850, 5.200, 9.268, 11.500])
-sim_p5_lat = np.array([0.110, 0.070, 0.050, 0.055, 1.500, 4.300, 7.800, 9.700])
-sim_p95_lat = np.array([0.160, 0.105, 0.075, 0.080, 2.250, 6.100, 10.900, 13.500])
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.5), dpi=600)
+bbox_props = lambda color: dict(boxstyle="round,pad=0.25", facecolor="white", alpha=0.92, edgecolor=color, lw=0.6)
 
-ax1.fill_between(rates, sim_p5_tps, sim_p95_tps, color='#4575b4', alpha=0.2, label='Simulation Sensitivity Envelope (P5–P95, 100 seeds)')
-ax1.plot(rates, sim_median_tps, color='#4575b4', lw=2.2, linestyle='-', label='Simulated Median Throughput (Fluid Queueing)')
-ax1.scatter(hist_rates, hist_tps, color='#d73027', s=70, zorder=5, label='Historical Caliper Benchmark (Commit 944fb0d)')
-ax1.scatter([615.7], [515.8], color='#1b9e77', s=80, marker='^', zorder=6, label='Live Rerun Stress (5 Workers: 515.8 TPS)')
-ax1.scatter([742.70], [485.27], color='#7570b3', s=80, marker='D', zorder=6, label='Corrected Stress Rerun (8 Workers: 485.3 TPS)')
-ax1.plot([0, 1200], [0, 1200], color='gray', linestyle=':', lw=1.2, label='Ideal 1:1 Scaling Reference')
-ax1.set_title('(A) Committed Throughput: Linear Tracking & Capacity Knee', fontsize=12, fontweight='bold')
-ax1.set_xlabel('Offered Rate / Target Load (TPS)', fontsize=11)
-ax1.set_ylabel('Committed Throughput (TPS)', fontsize=11)
-ax1.set_xlim(0, 1250)
+# Panel A: Throughput
+ax1.fill_between(sim_offered, sim_p5_tps, sim_p95_tps, color="#4575b4", alpha=0.20,
+                 label="Simulation Sensitivity Envelope (P5–P95)")
+ax1.plot(sim_offered, sim_med_tps, color="#4575b4", lw=2.2, linestyle="-", marker="o", markersize=6,
+         label="Simulated Median Throughput (Fluid Queueing)")
+ax1.scatter(hist_target_tps, hist_tps, color="#d73027", s=70, zorder=5,
+            label="Historical Caliper Benchmark (Commit 944fb0d)")
+ax1.scatter([1000], [515.8], color="#1b9e77", s=85, marker="^", zorder=6,
+            label="Live Rerun Stress (5 Workers)")
+ax1.scatter([1000], [485.27], color="#7570b3", s=85, marker="D", zorder=6,
+            label="Corrected Stress Rerun (8 Workers)")
+ax1.plot([0, 600], [0, 600], color="gray", linestyle=":", lw=1.2, label="Ideal 1:1 Scaling Reference")
+
+ax1.annotate("Live Rerun Stress:\n515.8 TPS (Send: 615.7)", xy=(1000, 515.8), xytext=(650, 520),
+             arrowprops=dict(facecolor="#1b9e77", shrink=0.08, width=1, headwidth=5),
+             fontsize=8.5, fontweight="bold", color="#1b9e77", bbox=bbox_props("#1b9e77"))
+ax1.annotate("Corrected Stress:\n485.3 TPS (Send: 742.7)", xy=(1000, 485.27), xytext=(680, 430),
+             arrowprops=dict(facecolor="#7570b3", shrink=0.08, width=1, headwidth=5),
+             fontsize=8.5, fontweight="bold", color="#7570b3", bbox=bbox_props("#7570b3"))
+ax1.annotate("Historical Saturation:\n350.1 TPS (Send: 963.6)", xy=(1000, 350.1), xytext=(680, 270),
+             arrowprops=dict(facecolor="#d73027", shrink=0.08, width=1, headwidth=5),
+             fontsize=8.5, fontweight="bold", color="#d73027", bbox=bbox_props("#d73027"))
+
+ax1.set_title("(A) Committed Throughput vs. Configured Target Load", fontsize=12, fontweight="bold")
+ax1.set_xlabel("Configured Offered Load / Target Rate (TPS)", fontsize=11)
+ax1.set_ylabel("Committed Throughput (TPS)", fontsize=11)
+ax1.set_xlim(-20, 1100)
 ax1.set_ylim(0, 600)
-ax1.legend(loc='upper left', fontsize=8.5, frameon=True)
-ax1.grid(True, linestyle='--', alpha=0.5)
+ax1.legend(loc="upper left", fontsize=8.5, frameon=True)
+ax1.grid(True, linestyle="--", alpha=0.5)
 
-ax2.fill_between(rates, sim_p5_lat, sim_p95_lat, color='#4575b4', alpha=0.2, label='Simulation Sensitivity Envelope (P5–P95, 100 seeds)')
-ax2.plot(rates, sim_median_lat, color='#4575b4', lw=2.2, linestyle='-', label='Simulated Confirmation Latency')
-ax2.scatter(hist_rates, hist_lat, color='#d73027', s=70, zorder=5, label='Historical Caliper Latency (Commit 944fb0d)')
-ax2.scatter([1000], [6.98], color='#1b9e77', s=80, marker='^', zorder=6, label='Live Rerun Stress (5 Workers: 6.98s)')
-ax2.scatter([1000], [5.36], color='#7570b3', s=80, marker='D', zorder=6, label='Corrected Stress Rerun (8 Workers: 5.36s)')
-ax2.annotate('Historical Backlog Drain:\n18.00s Avg (963.6 send rate)', xy=(963.6, 18.00), xytext=(650, 17.5),
-             arrowprops=dict(facecolor='#d73027', shrink=0.08, width=1, headwidth=6), fontsize=8.5, fontweight='bold', color='#d73027')
-ax2.annotate('Live Rerun Stress:\n6.98s (615.7 send rate)', xy=(1000, 6.98), xytext=(800, 4.5),
-             arrowprops=dict(facecolor='#1b9e77', shrink=0.08, width=1, headwidth=6), fontsize=8.5, fontweight='bold', color='#1b9e77')
-ax2.set_title('(B) Confirmation Latency: Sub-100ms Linear vs. Queueing Regime', fontsize=12, fontweight='bold')
-ax2.set_xlabel('Offered Rate / Target Load (TPS)', fontsize=11)
-ax2.set_ylabel('Average Confirmation Latency (seconds)', fontsize=11)
-ax2.set_xlim(0, 1250)
-ax2.set_ylim(-0.5, 22.0)
-ax2.legend(loc='upper left', fontsize=8.5, frameon=True)
-ax2.grid(True, linestyle='--', alpha=0.5)
+# Panel B: Latency
+ax2.fill_between(sim_offered, sim_p5_lat, sim_p95_lat, color="#4575b4", alpha=0.20,
+                 label="Simulation Sensitivity Envelope (P5–P95)")
+ax2.plot(sim_offered, sim_med_lat, color="#4575b4", lw=2.2, linestyle="-", marker="o", markersize=6,
+         label="Simulated Confirmation Latency (Fluid Queueing)")
+ax2.scatter(hist_target_tps, hist_lat, color="#d73027", s=70, zorder=5,
+            label="Historical Caliper Latency (Commit 944fb0d)")
+ax2.scatter([1000], [6.98], color="#1b9e77", s=85, marker="^", zorder=6,
+            label="Live Rerun Stress (5 Workers)")
+ax2.scatter([1000], [5.36], color="#7570b3", s=85, marker="D", zorder=6,
+            label="Corrected Stress Rerun (8 Workers)")
+
+ax2.annotate("Historical Backlog Drain:\n18.00s Avg (Send: 963.6)", xy=(1000, 18.00), xytext=(650, 17.5),
+             arrowprops=dict(facecolor="#d73027", shrink=0.08, width=1, headwidth=5),
+             fontsize=8.5, fontweight="bold", color="#d73027", bbox=bbox_props("#d73027"))
+ax2.annotate("Simulated Median:\n9.27s (P5: 8.23s, P95: 10.35s)", xy=(1000, 9.268), xytext=(630, 11.8),
+             arrowprops=dict(facecolor="#4575b4", shrink=0.08, width=1, headwidth=5),
+             fontsize=8.5, fontweight="bold", color="#2b5c9e", bbox=bbox_props("#4575b4"))
+ax2.annotate("Live Rerun Stress:\n6.98s (Send: 615.7)", xy=(1000, 6.98), xytext=(690, 4.8),
+             arrowprops=dict(facecolor="#1b9e77", shrink=0.08, width=1, headwidth=5),
+             fontsize=8.5, fontweight="bold", color="#1b9e77", bbox=bbox_props("#1b9e77"))
+ax2.annotate("Corrected Stress:\n5.36s (Send: 742.7)", xy=(1000, 5.36), xytext=(690, 1.2),
+             arrowprops=dict(facecolor="#7570b3", shrink=0.08, width=1, headwidth=5),
+             fontsize=8.5, fontweight="bold", color="#7570b3", bbox=bbox_props("#7570b3"))
+
+ax2.set_title("(B) Confirmation Latency vs. Configured Target Load", fontsize=12, fontweight="bold")
+ax2.set_xlabel("Configured Offered Load / Target Rate (TPS)", fontsize=11)
+ax2.set_ylabel("Average Confirmation Latency (seconds)", fontsize=11)
+ax2.set_xlim(-20, 1100)
+ax2.set_ylim(-0.5, 21.0)
+ax2.legend(loc="upper left", fontsize=8.2, frameon=True)
+ax2.grid(True, linestyle="--", alpha=0.5)
 
 plt.tight_layout()
 fig5b_pdf = os.path.join(OUT_FIG_DIR, "fig5b_caliper_simulation_projection.pdf")
@@ -279,7 +322,7 @@ plt.close()
 print("✓ Saved fig6_premium_sensitivity (.pdf and .png)")
 
 # -----------------------------------------------------------------------------
-# Figure 1 & Figure 2: Publication Quality Vector PDF Wrappers & 600 DPI PNGs
+# Figure 1 & Figure 2: High-Resolution Raster-Backed PDF Wrappers & 600 DPI PNGs
 # -----------------------------------------------------------------------------
 print("Processing Figure 1 & Figure 2...")
 for fname in ["fig1_roc_pr_curves", "fig2_calibration_deciles"]:

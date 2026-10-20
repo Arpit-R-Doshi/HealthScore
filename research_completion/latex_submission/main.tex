@@ -260,7 +260,7 @@ Read: 500 TPS              & 500.3                   & \textbf{500.00}          
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{fig5b_caliper_simulation_projection.pdf}
-\caption{Synthetic fluid-queueing simulation projections vs.\ empirical Caliper benchmarks across offered load. The blue shaded band represents the P5--P95 simulation envelope across 100 seeds.}\label{fig:sim_projection}
+\caption{Synthetic fluid-queueing simulation projections vs.\ empirical Caliper benchmarks plotted across configured target load (50, 100, 200, 350, and 1,000 TPS). Blue points and solid line depict median simulated performance across 100 PRNG seeds, with the shaded band representing the empirical P5--P95 sensitivity envelope loaded directly from machine-readable simulation records (\url{caliper-benchmark/results/simulated/20261018-011500/simulation_results.json}). Distinct empirical benchmark runs are plotted at their configured target load with observed send rates annotated for the 1,000 TPS stress condition: historical single-client baseline (963.6 TPS send), 5-worker isolated testbed rerun (615.7 TPS send), and corrected 8-worker stress repetitions (742.7 TPS send).}\label{fig:sim_projection}
 \end{figure}
 
 \paragraph{Critical Residual and Modeling Boundaries Analysis.}
@@ -365,13 +365,13 @@ Without Psychiatric Condition & 10 & 11 Features minus \texttt{Psychiatric\_ACG}
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.88\textwidth]{fig3_shap_importance.pdf}
-\caption{SHAP TreeExplainer global feature importance rankings across 11 observable features.}\label{fig:shap_importance}
+\caption{SHAP TreeExplainer global feature importance rankings across 11 observable features~\cite{lundberg2017unified}.}\label{fig:shap_importance}
 \end{figure}
 
 \paragraph{Key Scientific Findings from the Ablation Experiments.}
 \begin{enumerate}
     \item \textbf{Primary Explanatory Lift from Chronic Clusters:} Moving from demographics alone to the 6 chronic-condition clusters provides the primary predictive improvement: dollar $R^2$ increases from $0.0395$ to $0.0771$ ($\Delta R^2 = +0.0376$), and weighted BSS increases from $+0.0506$ to $+0.1005$ ($\Delta \text{BSS} = +0.0499$).
-    \item \textbf{Modest Incremental Value of Interaction Composites:} While tree-based SHAP attributions assign $39.0\%$ of model importance to \texttt{Age\_x\_Comorbidity}, linear regression ablation demonstrates that composite terms provide modest incremental variance explanation ($\Delta R^2 = +0.0027$ between 8-feature clusters alone and the 11-feature full design). In fact, removing \texttt{Age\_x\_Comorbidity} yields $R^2 = 0.0804$, showing that collinearity between age, count, and interaction absorbs variance without improving generalized linear fit.
+    \item \textbf{Modest Incremental Value of Interaction Composites:} While tree-based SHAP attributions~\cite{lundberg2017unified} assign $39.0\%$ of model importance to \texttt{Age\_x\_Comorbidity}, linear regression ablation demonstrates that composite terms provide modest incremental variance explanation ($\Delta R^2 = +0.0027$ between 8-feature clusters alone and the 11-feature full design). In fact, removing \texttt{Age\_x\_Comorbidity} yields $R^2 = 0.0804$, showing that collinearity between age, count, and interaction absorbs variance without improving generalized linear fit.
     \item \textbf{Clinical Cluster Sensitivity:} \texttt{Respiratory\_ACG} accounts for the largest individual condition drop ($\Delta R^2 = -0.0035$), reflecting high hospitalization and prescription costs associated with chronic respiratory illness.
 \end{enumerate}
 
@@ -385,10 +385,10 @@ In health economics and actuarial science, healthcare expenditures follow an ext
     \item \textbf{Locked Historical Unweighted P90 Threshold (Target 1):} $\text{TOTEXP23} \ge \$20,360.50$ (derived from unweighted training sample 90th percentile).
 \end{itemize}
 
-On the held-out test partition ($N=3,755$), training survey-weighted prevalence is $\hat{p} = 0.0999$ ($9.99\%$), test survey-weighted prevalence is $\bar{y}_{\text{test, wtd}} = 0.1051$ ($10.51\%$), and test unweighted prevalence is $\bar{y}_{\text{test, unw}} = 0.1198$ ($11.98\%$, $450$ high-cost individuals). A model predicting constant $\hat{p} = 0.0999$ yields a survey-weighted baseline Brier score of $0.0941$ and unweighted baseline Brier score of $0.1059$.
+On the held-out test partition ($N=3,755$), training survey-weighted prevalence is $\hat{p} = 0.0999$ ($9.99\%$), test survey-weighted prevalence is $\bar{y}_{\text{test, wtd}} = 0.1051$ ($10.51\%$), and test unweighted prevalence is $\bar{y}_{\text{test, unw}} = 0.1198$ ($11.98\%$, $450$ high-cost individuals). A model predicting constant $\hat{p} = 0.0999$ yields a survey-weighted baseline Brier score~\cite{brier1950verification} of $0.0941$ and unweighted baseline Brier score of $0.1059$.
 
 \paragraph{Classifier Comparison and Selection Rationale.}
-Table~\ref{tab:classifier_comparison} summarizes the comparative evaluation across candidate classification models, and Fig.~\ref{fig:roc_pr_curves} and Fig.~\ref{fig:calibration_deciles} illustrate discrimination and calibration.
+Table~\ref{tab:classifier_comparison} summarizes the comparative evaluation across candidate classification models, and Fig.~\ref{fig:roc_pr_curves} and Fig.~\ref{fig:calibration_deciles} illustrate discrimination and calibration within the predictive model assessment framework~\cite{steyerberg2010assessing}.
 
 \begin{table}[t]
 \centering
@@ -431,7 +431,7 @@ The 11-feature Observable Logistic Regression (Weighted Fit) was selected as the
 \begin{enumerate}
     \item \textbf{Input Availability Parity:} It requires only demographic and observable clinical intake variables, eliminating reliance on unobservable survey instruments without requiring synthetic imputation.
     \item \textbf{Superior Skill Over Imputation:} Under zero-imputation testing, the 11-feature model achieved a higher survey-weighted BSS ($+0.1025$) than the 14-feature model under synthetic conditional-expectation imputation ($+0.0978$).
-    \item \textbf{Calibration Quality:} The approved weighted serving candidate achieves a calibration slope of $b = 0.9438$ (approaching ideal 1.0) and exact calibration-in-the-large of $\text{CITL} = +0.0646$ (bivariate intercept $a = -0.0409$). The positive CITL indicates a slight, acceptable empirical underprediction on average.
+    \item \textbf{Calibration Quality:} The approved weighted serving candidate achieves a calibration slope of $b = 0.9438$ (approaching ideal 1.0) and exact calibration-in-the-large of $\text{CITL} = +0.0646$ (bivariate intercept $a = -0.0409$), adhering to clinical prediction model calibration standards~\cite{steyerberg2010assessing}. The positive CITL indicates a slight, acceptable empirical underprediction on average.
     \item \textbf{Multifactorial Deployment Trade-Off:} Tree ensemble estimators (Random Forest and XGBoost) achieve marginally higher point estimates for discrimination and skill on the test partition (ROC-AUC $0.7693$--$0.7705$ vs $0.7654$; Weighted BSS $+0.1062$--$+0.1093$ vs $+0.1025$). While the point estimates are close and their marginal 95\% bootstrap confidence intervals overlap substantially (e.g., ROC-AUC CI $[0.7444, 0.7881]$ vs $[0.7482, 0.7940]$), this descriptive overlap does not constitute a formal paired statistical hypothesis test of differences between model predictions, and we make no claims of statistical significance or non-significance because such tests were not performed. Crucially, candidate selection in HealthScore is governed by the documented balance of input-availability parity, calibration quality, clinical interpretability, and operational considerations: the transparent linear coefficients of logistic regression provide closed-form interpretability, exact reproducibility, and operational simplicity in the off-chain Python inference pipeline, while the permissioned ledger is reserved for immutably recording auditable risk-score milestones and transaction metadata rather than evaluating model graphs or feature vectors.
 \end{enumerate}
 

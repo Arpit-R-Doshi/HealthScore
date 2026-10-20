@@ -17,20 +17,20 @@ research_completion/latex_submission/
 ├── llncs.cls                           # Official Springer LNCS document class
 ├── splncs04.bst                        # Official Springer LNCS BibTeX style
 ├── generate_submission_figures.py      # Automated publication figure generator
-├── figures/                            # Vector PDF and >=600 DPI PNG assets
-│   ├── fig1_roc_pr_curves.pdf          # ROC and PR curves (Vector PDF)
+├── figures/                            # High-resolution PDF and >=600 DPI PNG assets
+│   ├── fig1_roc_pr_curves.pdf          # ROC and PR curves (Raster-backed PDF, 812.5 effective DPI)
 │   ├── fig1_roc_pr_curves.png          # ROC and PR curves (600 DPI, 3900x1500 px)
-│   ├── fig2_calibration_deciles.pdf    # Calibration & decile stratification (Vector PDF)
+│   ├── fig2_calibration_deciles.pdf    # Calibration & decile stratification (Raster-backed PDF, 812.5 effective DPI)
 │   ├── fig2_calibration_deciles.png    # Calibration & decile stratification (600 DPI, 3900x1500 px)
-│   ├── fig3_shap_importance.pdf        # Global SHAP feature importance (Vector PDF)
+│   ├── fig3_shap_importance.pdf        # Global SHAP feature importance (True Vector PDF)
 │   ├── fig3_shap_importance.png        # Global SHAP feature importance (600 DPI, 5940x3540 px)
-│   ├── fig4_feature_ablations.pdf      # Systematic feature ablations (Vector PDF)
+│   ├── fig4_feature_ablations.pdf      # Systematic feature ablations (True Vector PDF)
 │   ├── fig4_feature_ablations.png      # Systematic feature ablations (600 DPI, 7447x4440 px)
-│   ├── fig5_blockchain_benchmarks.pdf  # Fabric throughput/latency profiles (Vector PDF)
+│   ├── fig5_blockchain_benchmarks.pdf  # Fabric throughput/latency profiles (True Vector PDF)
 │   ├── fig5_blockchain_benchmarks.png  # Fabric throughput/latency profiles (600 DPI, 8340x3264 px)
-│   ├── fig5b_caliper_simulation_projection.pdf # Caliper queueing simulation vs empirical (Vector PDF)
-│   ├── fig5b_caliper_simulation_projection.png # Caliper queueing simulation vs empirical (600 DPI, 8352x3240 px)
-│   ├── fig6_premium_sensitivity.pdf    # Value-at-Risk premium sensitivity (Vector PDF)
+│   ├── fig5b_caliper_simulation_projection.pdf # Caliper queueing simulation vs empirical (True Vector PDF)
+│   ├── fig5b_caliper_simulation_projection.png # Caliper queueing simulation vs empirical (600 DPI, 8340x3240 px)
+│   ├── fig6_premium_sensitivity.pdf    # Value-at-Risk premium sensitivity (True Vector PDF)
 │   └── fig6_premium_sensitivity.png    # Value-at-Risk premium sensitivity (600 DPI, 9540x3243 px)
 ├── README.md                           # This documentation and verification manifest
 └── final_paper.pdf                     # Successfully compiled camera-ready PDF
@@ -65,17 +65,21 @@ Required LaTeX packages: `graphicx`, `amsmath`, `amssymb`, `amsfonts`, `booktabs
 
 ## 3. Figure Quality and Resolution Verification (>500 DPI Requirement)
 
-All data plots are provided as resolution-independent **vector PDF** files (`.pdf`) and verified **high-resolution PNG** files (`.png`). Every raster figure has a verified resolution of **at least 600 DPI** (target exceeded $\ge 600$ DPI, providing safety margin above 500 DPI):
+Data figures are provided in both print PDF (`.pdf`) and verified companion high-resolution PNG (`.png`) formats:
+- **True Resolution-Independent Vector Plots (Figures 3, 4, 5, 5b, 6):** Generated programmatically via Matplotlib as native vector PDF graphics with smooth scalable bezier curves and fonts, paired with 600+ DPI PNG fallbacks.
+- **High-Resolution Raster-Backed PDFs (Figures 1 and 2):** Created by embedding verified high-resolution source bitmap artwork ($3900 \times 1500$ pixels) within standard PDF containers. At the full Springer LNCS text column placement width of 4.80 inches (122 mm), the effective print resolution is **812.5 DPI** ($3900\text{ px} / 4.8\text{ in} = 812.5\text{ DPI}$), substantially exceeding the $\ge 500$ DPI publication requirement. These are explicitly documented as raster-backed PDFs rather than resolution-independent vector graphics.
 
-| Figure File | Asset Type | Pixel Dimensions | File DPI | Text Width on LNCS Page | Effective Print DPI |
+Every raster asset exceeds the $\ge 500$ DPI publication requirement:
+
+| Figure File | Asset / Format Type | Pixel Dimensions | File DPI | Text Width on LNCS Page | Effective Print DPI |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| `fig1_roc_pr_curves` | Vector PDF + PNG | $3900 \times 1500$ px | 600.0 DPI | 4.80 in (122 mm) | **812.5 DPI** |
-| `fig2_calibration_deciles` | Vector PDF + PNG | $3900 \times 1500$ px | 600.0 DPI | 4.80 in (122 mm) | **812.5 DPI** |
-| `fig3_shap_importance` | Vector PDF + PNG | $5940 \times 3540$ px | 600.0 DPI | 4.22 in (107 mm) | **1407.6 DPI** |
-| `fig4_feature_ablations` | Vector PDF + PNG | $7447 \times 4440$ px | 600.0 DPI | 4.80 in (122 mm) | **1551.5 DPI** |
-| `fig5_blockchain_benchmarks` | Vector PDF + PNG | $8340 \times 3264$ px | 600.0 DPI | 4.80 in (122 mm) | **1737.5 DPI** |
-| `fig5b_caliper_simulation_projection` | Vector PDF + PNG | $8352 \times 3240$ px | 600.0 DPI | 4.80 in (122 mm) | **1740.0 DPI** |
-| `fig6_premium_sensitivity` | Vector PDF + PNG | $9540 \times 3243$ px | 600.0 DPI | 4.80 in (122 mm) | **1987.5 DPI** |
+| `fig1_roc_pr_curves` | Raster-backed PDF + PNG | $3900 \times 1500$ px | 600.0 DPI | 4.80 in (122 mm) | **812.5 DPI** |
+| `fig2_calibration_deciles` | Raster-backed PDF + PNG | $3900 \times 1500$ px | 600.0 DPI | 4.80 in (122 mm) | **812.5 DPI** |
+| `fig3_shap_importance` | True Vector PDF + PNG | $5940 \times 3540$ px | 600.0 DPI | 4.22 in (107 mm) | **1407.6 DPI** |
+| `fig4_feature_ablations` | True Vector PDF + PNG | $7447 \times 4440$ px | 600.0 DPI | 4.80 in (122 mm) | **1551.5 DPI** |
+| `fig5_blockchain_benchmarks` | True Vector PDF + PNG | $8340 \times 3264$ px | 600.0 DPI | 4.80 in (122 mm) | **1737.5 DPI** |
+| `fig5b_caliper_simulation_projection` | True Vector PDF + PNG | $8340 \times 3240$ px | 600.0 DPI | 4.80 in (122 mm) | **1737.5 DPI** |
+| `fig6_premium_sensitivity` | True Vector PDF + PNG | $9540 \times 3243$ px | 600.0 DPI | 4.80 in (122 mm) | **1987.5 DPI** |
 
 ### Automated Figure Regeneration
 To regenerate all figures from source data and registries:
@@ -111,6 +115,11 @@ All canonical metrics reported in `final_paper.pdf` strictly match the authorita
    - Zero reported failures among submitted transactions ($0/24,500$ historical, $0/31,500$ live 11-round, $0/25,480$ 8-worker rounds).
    - End-to-end analytical single-worker bottleneck: $\approx 20$--$25$ req/s due to Python subprocess overhead ($40$--$50$ ms).
 6. **Exploratory Loss Simulation:** $X_\alpha = B + (1+\alpha)G$, verified against analytical Gamma quantiles within $0.68\%$--$0.71\%$ across 60 scenarios, with explicit disclaimers regarding commercial pricing certification.
+7. **Canonical Caliper Simulation Alignment (Figure 5b):** Figure 5b dynamically loads canonical simulation outputs from `caliper-benchmark/results/simulated/20261018-011500/simulation_results.json` without fabrication of intermediate points. Canonical simulation medians, P5, and P95 (e.g., 1,000 TPS row: Median 351.53, P5 326.58, P95 379.06 TPS; Median Latency 9.268s, P5 8.2288s, P95 10.3473s) and empirical Caliper benchmark runs are plotted consistently on a unified horizontal axis (`Configured Offered Load / Target Rate (TPS)`) across both throughput and latency panels, with measured send rates (historical 963.6 TPS, live 615.7 TPS, 8-worker 742.7 TPS) explicitly annotated.
+8. **Complete Bibliography Reconciliation:** All 10 entries in `references.bib` are actively cited in `main.tex` and resolve without warning:
+   - Ledgers and benchmarks: `androulaki2018hyperledger`, `caliper2022`.
+   - Health economics and actuarial standards: `ahrq_meps_2023`, `cms2024report`, `kronick2000improving`, `weiner1991development`, `tweedie1984index`.
+   - Machine learning evaluation and interpretability: `lundberg2017unified` (SHAP TreeExplainer), `brier1950verification` (Brier score definition), `steyerberg2010assessing` (discrimination, calibration, and prediction model evaluation framework).
 
 ---
 
