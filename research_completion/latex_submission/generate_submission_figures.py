@@ -133,17 +133,22 @@ hist_target_tps = np.array([50, 100, 200, 1000])
 hist_tps = np.array([50.3, 100.2, 199.9, 350.1])
 hist_lat = np.array([0.10, 0.06, 0.04, 18.00])
 
+# Compute asymmetric error bars: [median - p5, p95 - median]
+yerr_tps = np.array([sim_med_tps - sim_p5_tps, sim_p95_tps - sim_med_tps])
+yerr_lat = np.array([sim_med_lat - sim_p5_lat, sim_p95_lat - sim_med_lat])
+
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.5), dpi=600)
 bbox_props = lambda color: dict(boxstyle="round,pad=0.25", facecolor="white", alpha=0.92, edgecolor=color, lw=0.6)
 
 # Panel A: Throughput
-ax1.fill_between(sim_offered, sim_p5_tps, sim_p95_tps, color="#4575b4", alpha=0.20,
-                 label="Simulation Sensitivity Envelope (P5–P95)")
-ax1.plot(sim_offered, sim_med_tps, color="#4575b4", lw=2.2, linestyle="-", marker="o", markersize=6,
-         label="Simulated Median Throughput (Fluid Queueing)")
-ax1.scatter(hist_target_tps, hist_tps, color="#d73027", s=70, zorder=5,
+ax1.errorbar(sim_offered, sim_med_tps, yerr=yerr_tps, fmt="s", markersize=8,
+             color="#1f78b4", markerfacecolor="#a6cee3", markeredgecolor="#1f78b4",
+             markeredgewidth=1.8, capsize=5, capthick=1.5, elinewidth=1.8,
+             linestyle="None", zorder=4,
+             label="Simulated Median & P5–P95 Range (Fluid Model)")
+ax1.scatter(hist_target_tps, hist_tps, color="#d73027", s=75, marker="o", zorder=5,
             label="Historical Caliper Benchmark (Commit 944fb0d)")
-ax1.scatter([1000], [515.8], color="#1b9e77", s=85, marker="^", zorder=6,
+ax1.scatter([1000], [515.8], color="#1b9e77", s=90, marker="^", zorder=6,
             label="Live Rerun Stress (5 Workers)")
 ax1.scatter([1000], [485.27], color="#7570b3", s=85, marker="D", zorder=6,
             label="Corrected Stress Rerun (8 Workers)")
@@ -168,13 +173,14 @@ ax1.legend(loc="upper left", fontsize=8.5, frameon=True)
 ax1.grid(True, linestyle="--", alpha=0.5)
 
 # Panel B: Latency
-ax2.fill_between(sim_offered, sim_p5_lat, sim_p95_lat, color="#4575b4", alpha=0.20,
-                 label="Simulation Sensitivity Envelope (P5–P95)")
-ax2.plot(sim_offered, sim_med_lat, color="#4575b4", lw=2.2, linestyle="-", marker="o", markersize=6,
-         label="Simulated Confirmation Latency (Fluid Queueing)")
-ax2.scatter(hist_target_tps, hist_lat, color="#d73027", s=70, zorder=5,
+ax2.errorbar(sim_offered, sim_med_lat, yerr=yerr_lat, fmt="s", markersize=8,
+             color="#1f78b4", markerfacecolor="#a6cee3", markeredgecolor="#1f78b4",
+             markeredgewidth=1.8, capsize=5, capthick=1.5, elinewidth=1.8,
+             linestyle="None", zorder=4,
+             label="Simulated Median & P5–P95 Range (Fluid Model)")
+ax2.scatter(hist_target_tps, hist_lat, color="#d73027", s=75, marker="o", zorder=5,
             label="Historical Caliper Latency (Commit 944fb0d)")
-ax2.scatter([1000], [6.98], color="#1b9e77", s=85, marker="^", zorder=6,
+ax2.scatter([1000], [6.98], color="#1b9e77", s=90, marker="^", zorder=6,
             label="Live Rerun Stress (5 Workers)")
 ax2.scatter([1000], [5.36], color="#7570b3", s=85, marker="D", zorder=6,
             label="Corrected Stress Rerun (8 Workers)")
