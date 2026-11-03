@@ -1,0 +1,377 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+\graphicspath{{../figures/}}
+
+\begin{document}
+
+\title{HealthScore: A Blockchain-Anchored Healthcare Risk Stratification and Actuarial Pricing Framework}
+
+\author{
+\IEEEauthorblockN{Arpit Doshi\IEEEauthorrefmark{1}, Dhruv Gandhi\IEEEauthorrefmark{1}, Harshkumar Padhiyar\IEEEauthorrefmark{1}, Hetam Patel\IEEEauthorrefmark{1},\\ Stevina Correia\IEEEauthorrefmark{2}, Monali Sankhe\IEEEauthorrefmark{2} and Monika Mangla\IEEEauthorrefmark{2}}
+\IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Information Technology, Dwarkadas J. Sanghvi College of Engineering, Mumbai, India}
+\IEEEauthorblockA{\IEEEauthorrefmark{2}Department of Information Technology (Professor), Dwarkadas J. Sanghvi College of Engineering, Mumbai, India}
+}
+
+\maketitle
+
+\begin{abstract}
+Rising medical expenditure volatility and opaque underwriting practices create persistent trust deficits between healthcare payers, clinical providers, and insured enrollees. Existing risk-adjustment frameworks often rely on retrospective utilization variables that introduce simultaneous-year target circularity during cold-start enrollment, while executing risk scoring inside centralized black-box silos with no cryptographic auditability. This paper presents \textbf{HealthScore}, a two-stage survey-weighted clinical risk stratification and dynamic actuarial pricing framework anchored to a permissioned \textbf{Hyperledger Fabric v2.5} blockchain. Using nationally representative adult cohorts across three Agency for Healthcare Research and Quality (AHRQ) Medical Expenditure Panel Survey (MEPS) releases---\texttt{HC-251} (2023 Full-Year Consolidated, $N=18,771$), \texttt{HC-256} (2024 Full-Year Consolidated, $N=18,979$, including the strictly unseen Panel 29 subcohort of $N=10,037$), and \texttt{HC-257} (Panel 28 Two-Year Longitudinal file, $N=8,708$)---we decouple intake-observable cold-start predictors from retrospective utilization proxies. Stage 1 employs a survey-weighted $L_2$-regularized logistic regression classifier to identify high-expenditure patients exceeding the survey-weighted 90th percentile ($\ge \$17,827.41$), achieving a held-out test ROC-AUC of $0.7654$ ($95\%$ CI: $[0.7444, 0.7881]$), PR-AUC of $0.3184$ ($2.66\times$ baseline), and a Weighted Brier Skill Score of $+0.1025$. To address the precision--recall trade-off inherent in skewed population screening, we conduct a rigorous fixed-model probability threshold sensitivity analysis across $\tau \in [0.05, 0.90]$ validated via leak-free 5-fold Out-of-Fold (OOF) cross-validation ($N=15,016$). We demonstrate that while the reference screening threshold ($\tau = 0.10$) maximizes Balanced Accuracy ($0.7122$) with $77.33\%$ recall and $23.18\%$ precision ($1.93\times$ base rate, achieving $77.3\%$ of the $29.98\%$ theoretical oracle precision ceiling at a $39.97\%$ flagged volume), selecting the validation F1-optimal primary threshold ($\tau = 0.20$) increases test precision to $30.49\%$ ($2.54\times$ enrichment; $33.91\%$ on unseen 2024 Panel 29), improves F1-score to $0.3695$, and reduces false positives by $58.3\%$ while retaining $46.89\%$ recall; a targeted cutoff of $\tau = 0.30$ further increases precision to $40.00\%$ ($3.34\times$ enrichment, $94.83\%$ specificity) and cuts false positives by $85.2\%$. Stage 2 models continuous medical expenditure via a survey-weighted Tweedie Generalized Linear Model ($p=1.5$), achieving an honest intake-observable $R^2$ of $0.1257$ ($\text{MAE} = \$6,462$, $\text{RMSE} = \$23,040$) and $R^2 = 0.2581$ ($\text{ROC-AUC} = 0.8407$) when Year-1 lagged utilization is available longitudinally. Off-chain ML predictions are cryptographically committed via SHA-256 provenance hashes to Hyperledger Fabric Go chaincode, sustaining $586.5\text{ TPS}$ ($6.0\text{ ms}$ latency) for reads and $181.6\text{--}315.4\text{ TPS}$ for state writes under single-host Hyperledger Caliper v0.6.0 benchmarks, while a $10,000$-iteration Monte Carlo bootstrap simulation quantifies pool solvency ($\text{VaR}_{99}$ and $\text{TVaR}_{99}$) across dynamic wellness rebate schedules.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Healthcare Risk Stratification, Medical Expenditure Panel Survey (MEPS), Probability Threshold Sensitivity, Survey-Weighted Logistic Regression, Tweedie Generalized Linear Model, Hyperledger Fabric, Actuarial Solvency Simulation.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Healthcare expenditure in the United States and globally exhibits extreme right-skewness and heavy-tailed kurtosis: approximately $10\%$ of the population accounts for nearly $65\%\text{--}70\%$ of total annual medical spending \cite{ahrq_meps_2023, kronick2000improving}. Accurately identifying high-expenditure claimants prior to catastrophic clinical deterioration---and pricing insurance risk pools equitably without inducing adverse selection or moral hazard---remains a foundational challenge in health informatics and actuarial science \cite{weiner1991development, pope2004risk}.
+
+Traditional health insurance underwriting and clinical risk adjustment face three interconnected methodological and architectural limitations:
+\begin{enumerate}
+    \item \textbf{Simultaneous-Year Target-Proxy Circularity:} Many published machine learning studies on the Medical Expenditure Panel Survey (MEPS) include concurrent-year healthcare utilization counts---such as annual inpatient hospital nights (\texttt{IPNGTD}), emergency department visits (\texttt{ERTOT}), outpatient consultations (\texttt{OBTOTV}), and prescription medication fills (\texttt{RXTOT})---as input features to predict the same year's total medical expenditure (\texttt{TOTEXP}) \cite{ahrq_meps_2023}. Because annual expenditure is mathematically the price-weighted sum of those exact utilization events, simultaneous-year models achieve artificially inflated $R^2$ values ($0.70\text{--}0.80$) that collapse during real-world cold-start insurance onboarding when current-year utilization has not yet occurred.
+    \item \textbf{Rigid Single-Threshold Classification Under Severe Class Imbalance:} High-expenditure patient identification is typically formulated as a binary classification problem at the 90th percentile of spending ($\sim 10\%$ positive base rate) \cite{saito2015precision, davis2006relationship}. Evaluating such classifiers at an uncalibrated default cutoff ($\tau = 0.50$) causes severe recall collapse, whereas operating at a low screening threshold ($\tau = 0.10$) flags roughly $40\%$ of the population and generates substantial false positives. Without a systematic probability threshold sensitivity analysis and an explicit investigation of theoretical volume ceilings, calibration, and feature granularity, clinical decision-makers cannot align model cutoffs with tiered care-management capacities.
+    \item \textbf{Opaque, Unauditable Risk Scoring and Static Premium Schedules:} Conventional insurer scoring pipelines operate as centralized black boxes. Enrollees have no verifiable guarantee that their risk score was computed using an approved, non-discriminatory model version, and static annual premiums provide no transparent mechanism for rewarding verified preventive wellness behaviors \cite{androulaki2018hyperledger, azaria2016medrec}.
+\end{enumerate}
+
+To address these challenges, we present \textbf{HealthScore}, an end-to-end, reproducible framework that couples a leak-free, survey-weighted two-stage predictive modeling pipeline with permissioned blockchain provenance anchoring and empirical actuarial solvency simulation. Specifically, this paper makes the following contributions:
+\begin{itemize}
+    \item \textbf{Leak-Free Two-Stage Survey-Weighted Risk Modeling Across Three MEPS Releases:} We construct and validate a strict intake-observable feature pipeline on \texttt{MEPS HC-251} (2023, $N=18,771$ adults, retaining all $2,665$ zero-expenditure enrollees to eliminate selection bias), separating cold-start demographic and comorbidity predictors from retrospective utilization benchmarks across nine model architectures. We further evaluate temporal generalization on \texttt{MEPS HC-256} (2024, $N=18,979$), explicitly isolating the newly enrolled \textbf{2024 Panel 29 subcohort ($N=10,037$)} with zero person or household overlap, and prospective Year-2 prediction on the longitudinal \texttt{MEPS HC-257} Panel 28 file ($N=8,708$).
+    \item \textbf{Rigorous Probability Threshold Sensitivity and Six-Factor Diagnostic Analysis:} Holding our deployed survey-weighted logistic regression classifier fixed ($\text{ROC-AUC} = 0.7654$, $\text{PR-AUC} = 0.3184$, $\text{Weighted BSS} = +0.1025$), we evaluate 12 probability cutoffs ($\tau \in \{0.05,\allowbreak 0.10,\allowbreak 0.15,\allowbreak 0.20,\allowbreak 0.25,\allowbreak 0.30,\allowbreak 0.40,\allowbreak 0.50,\allowbreak 0.60,\allowbreak 0.70,\allowbreak 0.80,\allowbreak 0.90\}$) using leak-free 5-fold Out-of-Fold (OOF) validation ($N=15,016$, both stratified and household-clustered by \texttt{DUID}). We prove mathematically and empirically why precision at $\tau = 0.10$ ($23.18\%$) is bounded by the $29.98\%$ oracle volume ceiling rather than model overfitting, and establish a three-tier operational threshold framework ($\tau = 0.10$ for broad screening, $\tau = 0.20$ for F1-optimal care-management triage, and $\tau = 0.30$ for high-specificity targeted intervention).
+    \item \textbf{Off-Chain ML Inference with On-Chain Hyperledger Fabric Provenance and Caliper Benchmarking:} We clarify and benchmark a privacy-preserving hybrid architecture in which ML inference executes off-chain in Python while SHA-256 hashes of feature payloads, model versions, predicted scores, and dynamic premium adjustments are committed on-chain via Go chaincode on \textbf{Hyperledger Fabric v2.5}, evaluated across empirical \textbf{Hyperledger Caliper v0.6.0} runs and fluid-queueing sensitivity simulations.
+    \item \textbf{Empirical Bootstrap Actuarial Solvency ($\text{VaR}_{99}$ / $\text{TVaR}_{99}$) Simulation:} We evaluate dynamic wellness-linked premium rebates across a $1,000$-enrollee risk pool over $10,000$ Monte Carlo bootstrap iterations, demonstrating why heavy-tailed MEPS expenditure requires empirical bootstrap resampling rather than parametric Gamma approximations.
+\end{itemize}
+
+\section{Related Work}
+
+\subsection{Healthcare Expenditure Prediction and Risk Adjustment}
+Population-based risk adjustment systems---such as the Johns Hopkins Adjusted Clinical Groups (ACG) \cite{weiner1991development}, the Chronic Illness and Disability Payment System (CDPS) \cite{kronick2000improving}, and the CMS Hierarchical Condition Categories (CMS-HCC) \cite{cms2024report, pope2004risk}---rely on demographic attributes and diagnostic codes to predict prospective medical spending. Because annual healthcare expenditures exhibit a point mass at zero ($14.2\%$ of US adults in \texttt{MEPS HC-251}) alongside extreme right skewness, ordinary least squares (OLS) regression yields unstable tail estimates, motivating logarithmic transformations, two-part hurdle models, and exponential dispersion Tweedie Generalized Linear Models (GLMs) \cite{tweedie1984index, jorgensen1987exponential}. Recent machine learning studies have applied gradient-boosted decision trees (XGBoost) \cite{chen2016xgboost} and Shapley Additive Explanations (SHAP) \cite{lundberg2017unified} to MEPS cohorts; however, models that incorporate concurrent-year inpatient or prescription counts as predictors suffer from target-proxy circularity and cannot be deployed for prospective intake underwriting.
+
+\subsection{Class Imbalance and Threshold Selection in Clinical Screening}
+In clinical risk stratification for top-decile expenditure ($\pi \approx 10\%$), Receiver Operating Characteristic Area Under the Curve (ROC-AUC) can remain high even when positive predictive value (precision) is modest because ROC-AUC weights false-positive rates against the large majority class ($1 - \pi \approx 90\%$) \cite{saito2015precision, davis2006relationship}. As shown by Saito and Rehmsmeier \cite{saito2015precision} and Steyerberg et al. \cite{steyerberg2010assessing}, evaluating clinical prediction models requires pairing threshold-independent discrimination (ROC-AUC, PR-AUC) and proper scoring rules (Brier score and Brier Skill Score \cite{brier1950verification}) with explicit decision-threshold sensitivity analysis so that sensitivity, specificity, and positive predictive value are matched to intervention resource constraints.
+
+\subsection{Permissioned Blockchains in Healthcare and Insurance}
+Distributed ledger frameworks such as MedRec \cite{azaria2016medrec} and permissioned enterprise architectures built on Hyperledger Fabric \cite{androulaki2018hyperledger} have been proposed to manage electronic health record (EHR) access permissions, clinical trial provenance, and insurance claims auditing \cite{kuo2017blockchain}. Because storing raw protected health information (PHI) on an immutable ledger violates privacy regulations (e.g., HIPAA and GDPR right-to-erasure) and executing floating-point matrix operations inside consensus-driven smart contracts introduces non-determinism and throughput bottlenecks, best practices dictate executing machine learning inference off-chain while anchoring cryptographic hashes and deterministic contract state transitions on-chain \cite{androulaki2018hyperledger, caliper2022}.
+
+\section{Methodology and System Architecture}
+
+\subsection{Data Sources, Cohort Construction, and Multi-Release Overlap Audit}
+We utilize three official public-use files from the AHRQ Medical Expenditure Panel Survey (MEPS) \cite{ahrq_meps_2023}:
+\begin{enumerate}
+    \item \textbf{Primary Development and Internal Test Cohort (\texttt{MEPS HC-251}, 2023 Full-Year Consolidated):} Contains $27,651$ total survey respondents. Filtering solely for adults aged $\ge 18$ years (\texttt{AGE23X >= 18}) yields \textbf{$N = 18,771$ adults}. Crucially, unlike prior studies that discard non-users of healthcare, we retain all \textbf{$2,665$ zero-expenditure adults ($14.20\%$)} (\texttt{filter\_zero\_expenditure=False}) to preserve population calibration and prevent upward selection bias. Using an 80/20 random partition (\texttt{random\_state=42}), \texttt{HC-251} is divided into a \textbf{Training Set ($N = 15,016$)} and a \textbf{Held-Out Test Set ($N = 3,755$)}.
+    \item \textbf{External Cross-Sectional and Unseen Panel Cohort (\texttt{MEPS HC-256}, 2024 Full-Year Consolidated):} Contains \textbf{$N = 18,979$ adults} ($\ge 18$ years) with $2,608$ zero-expenditure records ($13.74\%$). Because MEPS employs an overlapping two-year rotating panel design, our forensic provenance audit of person (\texttt{DUPERSID}) and household dwelling unit (\texttt{DUID}) identifiers revealed that \texttt{HC-256} consists of \textbf{Panel 28} ($N = 8,942$, in their second survey year, of whom $8,775$ [$46.24\%$ of \texttt{HC-256}] also appeared in \texttt{HC-251}) and \textbf{Panel 29} ($N = 10,037$, newly enrolled in 2024). Isolating \textbf{\texttt{HC-256} Panel 29 ($N = 10,037$)} provides a \textbf{100\% unseen external validation cohort with zero person (\texttt{DUPERSID}) and zero household (\texttt{DUID}) overlap} with \texttt{HC-251}.
+    \item \textbf{Longitudinal Prospective Cohort (\texttt{MEPS HC-257}, Panel 28 Two-Year Longitudinal File, 2023--2024):} Tracks \textbf{$N = 8,708$ adults} (\texttt{AGEY1X >= 18}, longitudinal weight \texttt{LONGWT > 0}) across Year 1 (2023) and Year 2 (2024). This cohort enables strict temporal validation where Year-1 baseline characteristics (and optionally Year-1 lagged utilization) predict prospective Year-2 expenditure (\texttt{TOTEXPY2}).
+\end{enumerate}
+
+\textbf{Household (\texttt{DUID}) Clustering Audit:} Within \texttt{HC-251} ($N=18,771$ across $8,851$ unique households \texttt{DUID}), person-level \texttt{DUPERSID} overlap between Train ($N=15,016$) and Test ($N=3,755$) is strictly $0$. Because standard individual-level partitioning allows household members to span splits ($2,198$ households span Train and Test), we evaluate both \textbf{Stratified 5-Fold Out-of-Fold (OOF) validation} and \textbf{Household-Grouped 5-Fold OOF validation (\texttt{GroupKFold} by \texttt{DUID})} on the training split ($N=15,016$) to verify that shared household attributes do not inflate model discrimination.
+
+\subsection{Feature Engineering and Separation of Intake-Observable vs. Utilization Proxies}
+To prevent simultaneous-year target leakage during cold-start underwriting, we strictly partition candidate variables into an \textbf{11-Feature Intake-Observable Serving Set} (available at initial enrollment via applicant questionnaire and baseline medical history) and a \textbf{Retrospective Utilization Benchmark Set} (Table~\ref{tab:features}).
+
+\begin{table}[htbp]
+\caption{Feature Partitioning Across Intake-Observable Serving vs. Retrospective Utilization Regimes}
+\label{tab:features}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.0pt}
+\begin{tabularx}{\columnwidth}{@{}l >{\raggedright\arraybackslash}X l@{}}
+\toprule
+\textbf{Category ($d$)} & \textbf{Variables \& Engineering Formulation} & \textbf{Regime} \\
+\midrule
+Demographics (2) & \texttt{AGE23X} ($\ge 18$ yrs), \texttt{SEX} (\texttt{1=M, 2=F}). & Serving (11) \\
+Socioeconomic (1) & \texttt{POVCAT23}: Family poverty tier (\texttt{1..5}). & Serving (11) \\
+Self-Rated (2) & \texttt{RTHLTH53}, \texttt{MNHLTH53}: Physical \& mental health (\texttt{1=Exc..5=Poor}). & Serving (11) \\
+Chronic (3) & \texttt{Cardio} (\texttt{HIBP, CHD, STRK}), \texttt{Metab} (\texttt{DIAB, CHOL}), \texttt{RespJoint} (\texttt{ASTH, ARTH}). & Serving (11) \\
+Multimorbid (3) & Active cluster count $C_i \in \{0..3\}$, quadratic $C_i^2$, interaction $\text{AGE23X}_i \times C_i$. & Serving (11) \\
+Extended (6) & \texttt{MARRY}, \texttt{EDUC}, \texttt{REGION}, \texttt{INSCOV}, \texttt{BMI}, \texttt{Cancer}; tested in \texttt{Ab-09}. & Ablation (17) \\
+Concurrent Util. (4) & \texttt{IPNGTD23}, \texttt{ERTOT23}, \texttt{OBTOTV23}, \texttt{RXTOT23}; excluded from cold-start serving. & Benchmark \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Survey-Weighted Target Construction}
+MEPS employs a complex, stratified multistage probability design that oversamples policy-relevant subpopulations. To ensure that our high-expenditure classification target reflects the true US civilian noninstitutionalized adult population rather than unweighted sample artifacts, we compute the 90th-percentile expenditure threshold strictly on the \texttt{HC-251} training split ($N=15,016$) using normalized person-level survey weights $w_i = \text{PERWT23F}_i$:
+\begin{equation}
+\tau_{\text{cost}} = Q_{0.90}^{\text{weighted}}\!\left(\{\text{TOTEXP23}_i, w_i\}_{i \in \mathcal{D}_{\text{train}}}\right) = \$17,827.41
+\end{equation}
+By contrast, an unweighted 90th percentile on the training sample would yield $\$19,927.30$ due to the oversampling of older and chronically ill respondents. Under the population-calibrated $\$17,827.41$ threshold (\texttt{Target 2}), the \textbf{survey-weighted positive prevalence} is $9.88\%$ in Train and $10.51\%$ in Test (and $11.24\%$ on unseen 2024 Panel 29), while the \textbf{unweighted sample prevalence} is $11.99\%$ ($1,800 / 15,016$) in Train and $11.98\%$ ($450 / 3,755$) in Test.
+
+\subsection{Two-Stage Predictive Modeling and Leak-Free Threshold Selection}
+Our predictive architecture separates binary tail-risk triage (Stage 1) from continuous expected cost estimation (Stage 2):
+\begin{enumerate}
+    \item \textbf{Stage 1 (Survey-Weighted Logistic Regression Classifier):} Given standardized intake-observable features $\tilde{\mathbf{x}}_i \in \mathbb{R}^{11}$, we fit an $L_2$-regularized logistic regression classifier ($C=1.0$, \texttt{lbfgs}) minimizing survey-weighted binary cross-entropy:
+    \begin{multline}
+    \mathcal{L}_{\text{cls}}(\boldsymbol{\beta}, \beta_0) = -\sum_{i=1}^{N_{\text{train}}} \tilde{w}_i \bigl[ y_i \log \hat{p}_i + (1 - y_i) \log(1 - \hat{p}_i) \bigr] \\ + \frac{1}{2C} \|\boldsymbol{\beta}\|_2^2
+    \end{multline}
+    where $\hat{p}_i = \sigma(\boldsymbol{\beta}^\top \tilde{\mathbf{x}}_i + \beta_0)$ and $\tilde{w}_i = w_i / \bar{w}_{\text{train}}$ are mean-normalized \texttt{PERWT23F} weights. Because no artificial class-rebalancing distortion (\texttt{class\_weight='balanced'}) is applied, $\hat{p}_i \in (0, 1)$ represents a directly calibrated probability of incurring $\ge \$17,827.41$ in annual expenditure.
+    \item \textbf{Leak-Free Operating Threshold Selection ($\tau$):} To convert continuous probabilities $\hat{p}_i$ into binary clinical triage decisions $\hat{y}_i(\tau) = \mathbb{I}(\hat{p}_i \ge \tau)$ without touching the held-out test set, we generate out-of-fold probability predictions $\hat{p}_i^{\text{OOF}}$ across a 5-fold cross-validation partition of $\mathcal{D}_{\text{train}}$ ($N=15,016$) and evaluate candidate thresholds $\tau \in [0.05, 0.90]$ against clinical screening objectives (maximizing Balanced Accuracy for broad screening vs. maximizing F1-score for care-management triage).
+    \item \textbf{Stage 2 (Survey-Weighted Tweedie GLM Expenditure Regressor):} To model continuous annual expenditure $Y_i \ge 0$ (which exhibits an exact point mass at $\$0.00$ alongside a heavy right tail up to $\$488,266$), we fit a compound Poisson--Gamma Tweedie Generalized Linear Model \cite{tweedie1984index, jorgensen1987exponential} with variance power $p = 1.5$, log link $\mu_i = \exp(\boldsymbol{\theta}^\top \tilde{\mathbf{x}}_i + \theta_0)$, and $L_2$ penalty $\alpha = 0.1$, minimizing survey-weighted Tweedie deviance.
+    \item \textbf{Composite HealthScore Index ($0\text{--}1000$):} For smart-contract premium rebate eligibility, predicted risk is mapped to a bounded wellness index $\text{HealthScore}_i = \text{clip}\left(1000 \times (1 - \hat{p}_i), 0, 1000\right)$, while expected actuarial pure premium is governed directly by Stage 2 $\hat{\mu}_i$.
+\end{enumerate}
+
+\subsection{Off-Chain Inference and Permissioned Hyperledger Fabric Architecture}
+To guarantee regulatory privacy compliance (HIPAA/GDPR) and deterministic consensus performance, HealthScore enforces a strict \textbf{off-chain compute / on-chain provenance} separation:
+\begin{itemize}
+    \item \textbf{Off-Chain Scoring Engine (Python):} Raw patient demographic and clinical intake attributes are processed off-chain by the frozen Python scoring pipeline, which computes $(\hat{p}_i, \hat{y}_i(\tau), \hat{\mu}_i, \text{HealthScore}_i)$ and generates a canonical JSON payload salted with a cryptographic nonce.
+    \item \textbf{On-Chain Smart Contract Ledger (Hyperledger Fabric v2.5 Go Chaincode):} Only the SHA-256 digest of the off-chain feature vector, the model artifact SHA-256 hash (\texttt{3632f820...}), the resulting risk tier, and deterministic premium rebate parameters are submitted to the Go chaincode (\texttt{CreatePatientRecord}, \texttt{ReadPatientRecord}, \texttt{UpdateDynamicPremium}) deployed on a two-organization, two-peer (\texttt{2Org2Peer}) Hyperledger Fabric v2.5 network using \texttt{etcdraft} (Raft) ordering and LevelDB state storage \cite{androulaki2018hyperledger}. Raw PHI is never written to the ledger.
+\end{itemize}
+
+\section{Experimental Evaluation and Results}
+
+\subsection{Comprehensive Nine-Model Benchmark Comparison}
+Table~\ref{tab:nine_models} presents the complete benchmark across nine model architectures evaluated on the \texttt{MEPS HC-251} held-out test set ($N=3,755$) and the longitudinal \texttt{HC-257} cohort ($N=8,708$), with $1,000$-iteration bootstrap $95\%$ confidence intervals.
+
+\begin{table*}[htbp]
+\caption{Comprehensive Nine-Model Benchmark Across Stage 1 Classification and Stage 2 Expenditure Regression}
+\label{tab:nine_models}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}l l c c c c c c@{}}
+\toprule
+\textbf{Stage 1 Classification Model} & \textbf{Feature Set ($d$)} & \textbf{Cohort ($N$)} & \textbf{ROC-AUC $[95\% \text{ CI}]$} & \textbf{PR-AUC $[95\% \text{ CI}]$} & \textbf{Unw / Wtd Brier} & \textbf{Wtd BSS} & \textbf{$\tau=0.10$ Prec / Rec / F1} \\
+\midrule
+\textbf{Observable Logistic (Serving)} & \textbf{Observable (11)} & \textbf{\texttt{HC-251} ($3,755$)} & \textbf{0.7654 $[0.7444, 0.7881]$} & \textbf{0.3184 $[0.2876, 0.3556]$} & \textbf{0.0936 / 0.0845} & \textbf{$+$0.1025} & \textbf{23.18\% / 77.33\% / 0.3567} \\
+Observable Tuned XGBoost & Observable (11) & \texttt{HC-251} ($3,755$) & 0.7662 $[0.7440, 0.7885]$ & 0.3119 $[0.2817, 0.3489]$ & 0.0942 / 0.0849 & $+$0.0977 & 22.84\% / 77.11\% / 0.3524 \\
+Full Utilization Logistic \textit{(Upper Bound)} & Obs + Util (15) & \texttt{HC-251} ($3,755$) & 0.8926 $[0.8768, 0.9073]$ & 0.5944 $[0.5535, 0.6353]$ & 0.0687 / 0.0623 & $+$0.3379 & 36.02\% / 80.44\% / 0.4976 \\
+Lagged Utilization Logistic \textit{(Prospective)} & Year-1 Obs+Util (16) & \texttt{HC-257} ($8,708$) & 0.8407 $[0.8286, 0.8524]$ & 0.4959 $[0.4694, 0.5219]$ & 0.0853 / 0.0754 & $+$0.2408 & 31.65\% / 76.20\% / 0.4472 \\
+\midrule
+\textbf{Stage 2 Expenditure Regression Model} & \textbf{Feature Set ($d$)} & \textbf{Cohort ($N$)} & \textbf{$R^2$ $[95\% \text{ CI}]$} & \textbf{MAE (USD) $[95\% \text{ CI}]$} & \textbf{RMSE (USD)} & \textbf{MedAE (USD)} & \textbf{Role / Regime} \\
+\midrule
+\textbf{Observable Tweedie GLM ($p=1.5$, Serving)} & \textbf{Observable (11)} & \textbf{\texttt{HC-251} ($3,755$)} & \textbf{0.1257 $[0.0970, 0.1489]$} & \textbf{\$6,461.82 $[\$5,999, \$6,980]$} & \textbf{\$23,039.89} & \textbf{\$3,261.26} & \textbf{Deployed Cold-Start} \\
+Observable Tuned XGBoost Regressor & Observable (11) & \texttt{HC-251} ($3,755$) & 0.1190 $[0.0764, 0.1516]$ & \$6,256.83 $[\$5,795, \$6,766]$ & \$23,128.43 & \$2,994.33 & Nonlinear Baseline \\
+Observable Linear OLS & Observable (11) & \texttt{HC-251} ($3,755$) & 0.1211 $[0.0933, 0.1422]$ & \$6,620.89 $[\$6,161, \$7,139]$ & \$23,100.78 & \$3,622.39 & Linear Baseline \\
+Observable Log-Linear OLS ($\log(1+y)$) & Observable (11) & \texttt{HC-251} ($3,755$) & $-$0.0309 $[-0.0439, -0.0177]$ & \$5,747.82 $[\$5,263, \$6,294]$ & \$25,018.88 & \$1,434.23 & Log-Transform Baseline \\
+Observable Two-Part Hurdle Model & Observable (11) & \texttt{HC-251} ($3,755$) & 0.1204 $[0.0908, 0.1444]$ & \$6,472.22 $[\$6,008, \$6,994]$ & \$23,110.09 & \$3,218.23 & Two-Part Baseline \\
+Full Utilization XGBoost \textit{(Upper Bound)} & Obs + Util (15) & \texttt{HC-251} ($3,755$) & 0.3917 $[0.2683, 0.4910]$ & \$4,897.45 $[\$4,468, \$5,382]$ & \$19,217.56 & \$1,636.68 & Retrospective Benchmark \\
+Lagged Utilization Tweedie \textit{(Prospective)} & Year-1 Obs+Util (16) & \texttt{HC-257} ($8,708$) & 0.2581 $[0.1613, 0.3471]$ & \$6,506.92 $[\$6,169, \$6,860]$ & \$22,638.80 & \$3,015.49 & Prospective Year-2 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\textbf{Statistical Comparison and Model Selection Justification:} On the 11 intake-observable features, a paired DeLong test \cite{delong1988comparing} between the Observable Logistic Regression classifier ($\text{ROC-AUC} = 0.7654$) and the Observable Tuned XGBoost classifier ($\text{ROC-AUC} = 0.7662$) yields $p > 0.78$ ($\Delta\text{ROC-AUC} = -0.0008$), confirming no statistically significant difference in rank discrimination. Conversely, Observable Logistic Regression achieves superior PR-AUC ($0.3184$ vs. $0.3119$), superior Weighted Brier Skill Score ($+0.1025$ vs. $+0.0977$), and exact log-odds interpretability (Figs.~\ref{fig:roc_pr}--\ref{fig:shap}). Similarly, in Stage 2, the Observable Tweedie GLM ($p=1.5$) achieves higher explained variance ($R^2 = 0.1257$ vs. $0.1190$) and lower tail RMSE ($\$23,040$ vs. $\$23,128$) than Observable Tuned XGBoost, whereas paired Wilcoxon signed-rank testing on absolute errors reflects the expected mean-vs-median trade-off of log-link GLM vs. tree partitioning.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig1_roc_pr_curves.pdf}
+\caption{(A) Receiver Operating Characteristic (ROC) and (B) Precision--Recall (PR) curves on the \texttt{MEPS HC-251} held-out test set ($N=3,755$), comparing the 11-feature Observable Logistic Regression serving model ($\text{ROC-AUC} = 0.7654$, $\text{PR-AUC} = 0.3184$) against Observable Tuned XGBoost and the retrospective 15-feature Full Utilization upper bound.}
+\label{fig:roc_pr}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig2_calibration_deciles.pdf}
+\caption{Reliability calibration curve and decile risk stratification on the \texttt{HC-251} held-out test set ($N=3,755$). The survey-weighted logistic classifier achieves a Weighted Brier Skill Score of $+0.1025$.}
+\label{fig:calibration}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig3_shap_importance.pdf}
+\caption{Standardized log-odds coefficients and SHAP feature attributions for the 11-feature intake-observable classification and Tweedie expenditure models.}
+\label{fig:shap}
+\end{figure}
+
+\subsection{Classification Probability Threshold Sensitivity Analysis and Root-Cause Investigation}
+At the original reference decision threshold of $\tau = 0.10$, the serving classifier achieves $77.33\%$ recall ($348 / 450$ true high-expenditure patients captured) but $23.18\%$ precision ($348 / 1,501$ flagged patients, generating $1,153$ false positives). To determine whether adjusting the classification decision boundary $\tau$ yields a superior precision--recall balance---and to rigorously diagnose the root causes of the $23.18\%$ precision at $\tau = 0.10$---we evaluated the frozen serving classifier across 12 probability thresholds ($\tau \in \{0.05,\allowbreak 0.10,\allowbreak 0.15,\allowbreak 0.20,\allowbreak 0.25,\allowbreak 0.30,\allowbreak 0.40,\allowbreak 0.50,\allowbreak 0.60,\allowbreak 0.70,\allowbreak 0.80,\allowbreak 0.90\}$) on both the \textbf{5-Fold Stratified Out-of-Fold (OOF) validation set ($N=15,016$)} and the \textbf{\texttt{HC-251} Held-Out Test Set ($N=3,755$)} without retraining the underlying model (Table~\ref{tab:threshold_sweep}).
+
+\begin{table*}[htbp]
+\caption{Probability Threshold Sensitivity Analysis Across 5-Fold Out-of-Fold Validation ($N=15,016$) and Held-Out Test Set ($N=3,755$)}
+\label{tab:threshold_sweep}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}c c c c c c c c c c c@{}}
+\toprule
+\textbf{Threshold ($\tau$)} & \textbf{OOF Val ($N=15,016$)} & \multicolumn{4}{c}{\textbf{Held-Out Test Confusion Counts ($N=3,755$, $P=450$)}} & \textbf{Test Flagged} & \textbf{Test Unw. Prec} & \textbf{Test Unw. Rec / Spec / NPV} & \textbf{Test Unw.} & \textbf{Test Survey-Wtd} \\
+\cmidrule(lr){3-6}
+\textbf{(Grid Role)} & \textbf{Prec / Rec / F1 / BalAcc} & \textbf{TP} & \textbf{FP} & \textbf{TN} & \textbf{FN} & \textbf{$N$ (Unw\% / Wtd\%)} & \textbf{(\% / Enrich. / Ceil.)} & \textbf{(\% / \% / \%)} & \textbf{F1 / BalAcc} & \textbf{Prec / Rec / F1 / BalAcc} \\
+\midrule
+0.05 \textit{(Interm.)} & 17.8\% / 90.1\% / 0.2971 / 0.6669 & 401 & 1,880 & 1,425 & 49 & 2,281 (60.8\% / 55.0\%) & 17.58\% ($1.47\times$ / 19.7\%) & 89.11\% / 43.12\% / 96.68\% & 0.2936 / 0.6611 & 16.6\% / 85.4\% / 0.2777 / 0.6749 \\
+\textbf{0.10 \textit{(Ref. Screen)}} & \textbf{23.5\% / 77.2\% / 0.3600 / 0.7146} & \textbf{348} & \textbf{1,153} & \textbf{2,152} & \textbf{102} & \textbf{1,501 (40.0\% / 33.5\%)} & \textbf{23.18\% ($1.93\times$ / 30.0\%)} & \textbf{77.33\% / 65.11\% / 95.47\%} & \textbf{0.3567 / 0.7122} & \textbf{22.5\% / 71.9\% / 0.3433 / 0.7145} \\
+0.15 \textit{(Fine F1)} & 27.8\% / 63.8\% / \textbf{0.3873} / 0.7061 & 281 & 771 & 2,534 & 169 & 1,052 (28.0\% / 22.0\%) & 26.71\% ($2.23\times$ / 42.8\%) & 62.44\% / 76.67\% / 93.75\% & \textbf{0.3742} / 0.6956 & 26.8\% / 56.1\% / \textbf{0.3625} / 0.6904 \\
+\textbf{0.20 \textit{(Prim. F1-Opt)}} & \textbf{31.4\% / 49.7\% / 0.3846 / 0.6744} & \textbf{211} & \textbf{481} & \textbf{2,824} & \textbf{239} & \textbf{692 (18.4\% / 14.2\%)} & \textbf{30.49\% ($2.54\times$ / 65.0\%)} & \textbf{46.89\% / 85.45\% / 92.20\%} & \textbf{0.3695 / 0.6617} & \textbf{30.7\% / 41.5\% / 0.3532 / 0.6527} \\
+0.25 \textit{(Breakeven)} & 35.7\% / 36.9\% / 0.3633 / 0.6395 & 154 & 286 & 3,019 & 296 & 440 (11.7\% / 8.8\%) & 35.00\% ($2.92\times$ / 100\%) & 34.22\% / 91.35\% / 91.07\% & 0.3461 / 0.6278 & 34.6\% / 29.1\% / 0.3162 / 0.6132 \\
+\textbf{0.30 \textit{(Targeted)}} & \textbf{39.8\% / 25.4\% / 0.3099 / 0.6008} & \textbf{114} & \textbf{171} & \textbf{3,134} & \textbf{336} & \textbf{285 (7.6\% / 5.7\%)} & \textbf{40.00\% ($3.34\times$ / 100\%)} & \textbf{25.33\% / 94.83\% / 90.31\%} & \textbf{0.3102 / 0.6008} & \textbf{39.2\% / 21.4\% / 0.2769 / 0.5875} \\
+0.40 \textit{(Primary)} & 46.4\% / 11.8\% / 0.1886 / 0.5499 & 46 & 58 & 3,247 & 404 & 104 (2.8\% / 2.0\%) & 44.23\% ($3.69\times$ / 100\%) & 10.22\% / 98.25\% / 88.93\% & 0.1661 / 0.5423 & 42.2\% / 7.9\% / 0.1331 / 0.5331 \\
+0.50 \textit{(Primary)} & 51.9\% / 4.6\% / 0.0838 / 0.5199 & 15 & 21 & 3,284 & 435 & 36 (1.0\% / 0.7\%) & 41.67\% ($3.48\times$ / 100\%) & 3.33\% / 99.36\% / 88.30\% & 0.0617 / 0.5135 & 38.7\% / 2.6\% / 0.0489 / 0.5106 \\
+0.60 \textit{(Primary)} & 63.0\% / 1.6\% / 0.0314 / 0.5074 & 6 & 1 & 3,304 & 444 & 7 (0.19\% / 0.15\%) & 85.71\% ($7.15\times$ / 100\%) & 1.33\% / 99.97\% / 88.15\% & 0.0263 / 0.5065 & 80.2\% / 1.1\% / 0.0218 / 0.5054 \\
+0.70 \textit{(Primary)} & 66.7\% / 0.2\% / 0.0044 / 0.5010 & 2 & 0 & 3,305 & 448 & 2 (0.05\% / 0.05\%) & 100.0\% ($8.34\times$ / 100\%) & 0.44\% / 100.0\% / 88.06\% & 0.0088 / 0.5022 & 100\% / 0.5\% / 0.0089 / 0.5022 \\
+0.80 \textit{(Primary)} & 0.0\% / 0.0\% / 0.0000 / 0.5000 & 1 & 0 & 3,305 & 449 & 1 (0.03\% / 0.02\%) & 100.0\% ($8.34\times$ / 100\%) & 0.22\% / 100.0\% / 88.04\% & 0.0044 / 0.5011 & 100\% / 0.2\% / 0.0045 / 0.5011 \\
+0.90 \textit{(Primary)} & 0.0\% / 0.0\% / 0.0000 / 0.5000 & 0 & 0 & 3,305 & 450 & 0 (0.00\% / 0.00\%) & 0.00\% ($0.00\times$ / 0.0\%) & 0.00\% / 100.0\% / 88.02\% & 0.0000 / 0.5000 & 0.0\% / 0.0\% / 0.0000 / 0.5000 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{fig_t1_precision_recall_f1_vs_threshold.pdf}
+\caption{(A) Precision, Recall, and Specificity and (B) F1-Score and Balanced Accuracy across decision thresholds $\tau \in [0.05, 0.90]$ on 5-Fold OOF Validation ($N=15,016$) and the Held-Out Test Set ($N=3,755$).}
+\label{fig:t1}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{fig_t2_precision_recall_tradeoff.pdf}
+\caption{(A) Precision--Recall curve overlaid with discrete threshold operating points ($\tau = 0.05$ to $0.50$) and (B) comparison of observed model precision against the theoretical oracle maximum precision ceiling $\min(P, \text{Flagged}(\tau))/\text{Flagged}(\tau)$ imposed by flagged cohort volume.}
+\label{fig:t2}
+\end{figure*}
+
+\subsubsection{Six-Factor Diagnostic Investigation of Precision at $\tau = 0.10$}
+Our empirical audit across all six diagnostic hypotheses reveals why precision at $\tau = 0.10$ is $23.18\%$ and how threshold selection governs operational performance:
+\begin{enumerate}
+    \item \textbf{Threshold Sensitivity and Theoretical Volume-Ceiling Bound (Primary Direct Cause):} Because $\tau = 0.10$ equals the approximate population base rate, $39.97\%$ of the test cohort ($1,501 / 3,755$ patients) have a predicted probability $\hat{p}_i \ge 0.10$. However, the entire test cohort contains only $P = 450$ true high-expenditure cases ($11.98\%$). Consequently, \textbf{even a hypothetical perfect oracle classifier ($\text{ROC-AUC} = 1.00$, $100\%$ recall) that flags $1,501$ patients cannot mathematically exceed a precision of:}
+    \begin{equation}
+    \text{Prec}_{\text{oracle}}(1{,}501) = \frac{\min(450, 1{,}501)}{1{,}501} = \frac{450}{1{,}501} = 29.98\%
+    \end{equation}
+    Our serving classifier captures $348$ of the $450$ true positives at $\tau = 0.10$, achieving $348 / 1,501 = 23.18\%$ precision---which represents \textbf{$77.33\%$ of the theoretical maximum precision mathematically possible when screening $40\%$ of the population} (Fig.~\ref{fig:t2}B). Raising the threshold to the validation-selected primary-grid F1 optimum ($\tau = 0.20$) reduces the flagged volume to $18.43\%$ ($692$ patients), \textbf{eliminating $672$ false positives (a $58.28\%$ reduction in $\text{FP}$, from $1,153$ to $481$)} and lifting precision to \textbf{$30.49\%$ ($2.54\times$ unweighted enrichment; $30.73\%$ weighted, $2.93\times$ weighted enrichment)} while retaining $46.89\%$ recall (Figs.~\ref{fig:t3} and \ref{fig:t4}). Raising $\tau$ to $0.30$ further reduces false positives by \textbf{$85.17\%$} (to $171$, $\text{Specificity} = 94.83\%$) and increases precision to \textbf{$40.00\%$ ($3.34\times$ enrichment)}.
+    \item \textbf{Class Imbalance and Bayes Base-Rate Conditioning:} With a positive class prevalence of $\pi = 11.984\%$ unweighted ($10.506\%$ survey-weighted), non-high-cost patients outnumber high-cost patients by $\frac{1-\pi}{\pi} = 7.344 : 1$ ($8.518 : 1$ weighted). By Bayes' theorem, achieving $77.33\%$ recall at $65.11\%$ specificity ($\text{FPR} = 34.89\%$) necessarily produces $3,305 \times 0.3489 = 1,153$ false positives against $450 \times 0.7733 = 348$ true positives.
+    \item \textbf{Model Discrimination Ceiling on Intake-Observable Variables:} While the classifier achieves strong rank discrimination ($\text{ROC-AUC} = 0.7654$, $\text{PR-AUC} = 0.3184$), risk distributions overlap across moderate comorbidity profiles. Crucially, as shown in Table~\ref{tab:nine_models}, nonlinear gradient boosting (\texttt{Observable Tuned XGBoost}, $\text{ROC-AUC} = 0.7662$, $\text{PR-AUC} = 0.3119$) and the expanded 17-feature observable set (\texttt{Ab-09}, $\text{ROC-AUC} = 0.7689$) yield virtually identical discrimination, proving that the ceiling is intrinsic to cold-start survey observables rather than linear underfitting.
+    \item \textbf{Probability Calibration and Score Concentration:} As shown in Fig.~\ref{fig:t5}A, predicted probabilities are well-calibrated across all risk bins ($\text{Test Unweighted Brier} = 0.0936$, $\text{Weighted Brier} = 0.0845$, $\text{Weighted BSS} = +0.1025$). However, $809$ of the $1,501$ patients flagged at $\tau = 0.10$ ($53.9\%$) fall within the intermediate probability band $\hat{p}_i \in [0.10, 0.20)$, where the mean predicted probability is $14.5\%$ and the actual observed high-cost event rate is $16.9\%$ ($137 / 809$). Because a well-calibrated model accurately assigns a $\sim 15\%$ probability to patients who experience high costs $\sim 15\%$ of the time, thresholding at $\tau = 0.10$ inevitably converts the remaining $\sim 85\%$ of patients in that band into binary false positives. Furthermore, because $\max(\hat{p}_{\text{test}}) = 0.8008$ ($\text{P99} = 0.4981$), naive high thresholds ($\tau \ge 0.50$) flag $<1\%$ of the cohort and suffer catastrophic recall collapse ($\le 3.33\%$).
+    \item \textbf{Overfitting Refuted Across Seven Internal and External Splits:} Fig.~\ref{fig:t5}B compares model performance across \texttt{HC-251} In-Sample Train ($N=15,016$, $\text{ROC-AUC} = 0.7815$), 5-Fold Stratified OOF ($N=15,016$, $\text{ROC-AUC} = 0.7795$), 5-Fold Household-Grouped (\texttt{DUID}) OOF ($N=15,016$, $\text{ROC-AUC} = 0.7785$), \texttt{HC-251} Held-Out Test ($N=3,755$, $\text{ROC-AUC} = 0.7654$), \textbf{100\% Unseen 2024 \texttt{HC-256} Panel 29 ($N=10,037$, $\text{ROC-AUC} = 0.7824$, $\text{PR-AUC} = 0.3506$)}, \texttt{HC-256} Full ($N=18,979$, $\text{ROC-AUC} = 0.7852$), and \texttt{HC-257} Prospective Year-2 ($N=8,708$, $\text{ROC-AUC} = 0.7732$ unweighted / $0.7807$ weighted). The near-zero OOF gap ($\Delta = -0.0020$) and superior performance on the completely unseen 2024 Panel 29 cohort ($\text{Precision} = 24.90\%$ at $\tau=0.10$, $33.91\%$ at $\tau=0.20$, $43.49\%$ at $\tau=0.30$) \textbf{conclusively refute overfitting}.
+    \item \textbf{Feature Granularity and Aleatoric Healthcare Expenditure Variance:} In the test set ($N=3,755$), $36.17\%$ ($1,358$) of adults have zero diagnosed chronic comorbidities (\texttt{Comorbidity\_Count = 0}), yet $46$ of them ($10.22\%$ of all high-cost cases) incur $\ge \$17,827.41$ due to stochastic acute events (e.g., trauma, appendicitis, emergency surgery, or obstetric complications). Conversely, among severely multimorbid adults ($\ge 3$ comorbidity clusters, $N=734$), actual 1-year high-cost incidence is $28.20\%$ ($207/734$), as $71.80\%$ are stably managed via low-cost outpatient pharmacotherapy in a given calendar year without inpatient hospitalization.
+\end{enumerate}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{fig_t3_fp_fn_and_flagged_volume.pdf}
+\caption{(A) Absolute False Positives ($\text{FP}$), False Negatives ($\text{FN}$), and True Positives ($\text{TP}$) and (B) unweighted vs. survey-weighted percentage of patients flagged as high-expenditure across thresholds $\tau \in [0.05, 0.90]$ on the held-out test set ($N=3,755$).}
+\label{fig:t3}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{fig_t4_confusion_matrices_comparison.pdf}
+\caption{Held-out test confusion matrices ($N=3,755$) at four representative operating points: $\tau = 0.10$ (Original High-Sensitivity Screening, max Balanced Accuracy $= 0.712$), $\tau = 0.20$ (Validation Primary-Grid F1-Optimal Triage, $\text{F1} = 0.370$, $\text{FP}$ reduced by $58.3\%$), $\tau = 0.30$ (Targeted Intensive Care Management, $\text{Precision} = 40.0\%$, $\text{Specificity} = 94.8\%$), and $\tau = 0.50$ (Naive Default Cutoff, showing severe recall collapse to $3.3\%$).}
+\label{fig:t4}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{fig_t5_calibration_and_overfitting_audit.pdf}
+\caption{(A) Test cohort score distribution and observed vs. predicted high-cost event rate by probability bin ($\max \hat{p}_{\text{test}} = 0.8008$) and (B) 7-cohort cross-split and cross-release generalization audit refuting model overfitting.}
+\label{fig:t5}
+\end{figure*}
+
+\subsubsection{Recommended Three-Tier Operational Threshold Framework}
+Rather than enforcing a single rigid binary cutoff across disparate clinical workflows, HealthScore exposes the calibrated probability $\hat{p}_i$ to support three validated operating tiers:
+\begin{itemize}
+    \item \textbf{Tier 1 ($\tau = 0.10$ --- Broad Preventive Screening / Max Balanced Accuracy):} Captures \textbf{$77.33\%$ recall} ($0.7122$ Balanced Accuracy, $23.18\%$ precision, $39.97\%$ flagged) for low-cost automated digital wellness outreach and actuarial tail-risk monitoring where false negatives are much costlier than false positives.
+    \item \textbf{Tier 2 ($\tau = 0.20$ --- Balanced Care-Management Triage / Validation F1-Optimal):} Selected on 5-Fold OOF validation ($\text{Val F1} = 0.3846$, $\text{Val Wtd F1} = 0.3551$), achieving \textbf{$30.49\%$ test precision ($2.54\times$ enrichment)}, \textbf{$46.89\%$ recall}, \textbf{$85.45\%$ specificity}, and \textbf{$0.3695$ F1} while flagging $18.43\%$ of enrollees and cutting false positives by \textbf{$58.3\%$} (with fine-grid $\tau = 0.15$ available when higher recall [$62.44\%$, $\text{F1} = 0.3742$] is desired).
+    \item \textbf{Tier 3 ($\tau = 0.30$ --- High-Specificity Intensive Case Management):} Achieves \textbf{$40.00\%$ test precision ($3.34\times$ enrichment; $43.49\%$ on unseen 2024 Panel 29)}, \textbf{$94.83\%$ specificity}, and \textbf{$25.33\%$ recall} while flagging only the top \textbf{$7.59\%$} of patients and cutting false positives by \textbf{$85.2\%$}, ideal for capacity-constrained multidisciplinary care navigation.
+\end{itemize}
+
+\subsection{Feature Ablations (17 Configurations) and Multi-Cohort External Validation}
+To quantify the marginal contribution of every feature group and audit selection bias, we evaluated 17 systematic ablation configurations (\texttt{Ab-01} through \texttt{Ab-17}, Fig.~\ref{fig:ablations}). Moving from demographics only (\texttt{Ab-01}: \texttt{AGE23X + SEX}, $\text{ROC-AUC} = 0.6929$, $R^2 = 0.0602$) to add socioeconomic status (\texttt{Ab-02}: $\text{ROC-AUC} = 0.7000$), self-rated health (\texttt{Ab-03}: $\text{ROC-AUC} = 0.7525$, $R^2 = 0.1066$), chronic comorbidity clusters (\texttt{Ab-04}: $\text{ROC-AUC} = 0.7647$), and multimorbidity interactions yields our 11-feature \textbf{Observable Serving Set (\texttt{Ab-08}: $\text{ROC-AUC} = 0.7654$, $\text{PR-AUC} = 0.3184$, $R^2 = 0.1257$)}. Adding 6 extended demographic/insurance variables (\texttt{Ab-09}, 17 features) yields only $\Delta\text{ROC-AUC} = +0.0035$ ($0.7689$) and $\Delta R^2 = +0.0007$ ($0.1264$), confirming that the 11-feature serving set captures $99.5\%$ of all observable discriminative signal. Conversely, Ablation \texttt{Ab-17} confirms that filtering out zero-expenditure enrollees ($N=16,106$, as done in earlier studies) artificially inflates sample prevalence to $13.97\%$ and alters baseline calibration.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig4_feature_ablations.pdf}
+\caption{Systematic 17-configuration feature ablation study (\texttt{Ab-01} through \texttt{Ab-17}) on \texttt{MEPS HC-251} ($N=3,755$), illustrating the progression across intake-observable blocks (\texttt{Ab-01}--\texttt{Ab-09}), retrospective utilization proxies (\texttt{Ab-10}--\texttt{Ab-14}), unweighted training (\texttt{Ab-15}), unweighted P90 target (\texttt{Ab-16}), and zero-expenditure filtering (\texttt{Ab-17}).}
+\label{fig:ablations}
+\end{figure}
+
+\subsection{Permissioned Blockchain Benchmarks (Hyperledger Fabric v2.5 and Caliper v0.6.0)}
+We evaluated the on-chain provenance and dynamic premium smart contract (\texttt{blockchain/chaincode/healthscore.go}) on a single-host Docker deployment of \textbf{Hyperledger Fabric v2.5} (\texttt{2Org2Peer}, \texttt{etcdraft} ordering service, LevelDB state database) using \textbf{Hyperledger Caliper v0.6.0} \cite{caliper2022}. Table~\ref{tab:blockchain} summarizes empirical measurements across three verified benchmark regimes alongside synthetic fluid-queueing sensitivity estimates (Figs.~\ref{fig:caliper_emp} and \ref{fig:caliper_sim}).
+
+\begin{table*}[htbp]
+\caption{Hyperledger Fabric v2.5 Caliper v0.6.0 Empirical Benchmark Results and Synthetic Fluid-Queueing Sensitivity Projections}
+\label{tab:blockchain}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}l c c c c c l@{}}
+\toprule
+\textbf{Benchmark Regime \& Workload} & \textbf{Configured Target (TPS)} & \textbf{Measured Send Rate (TPS)} & \textbf{Achieved Throughput (TPS)} & \textbf{Avg. Latency (s)} & \textbf{Success Rate} & \textbf{Execution Scope \& Provenance} \\
+\midrule
+\textbf{Empirical Baseline:} \texttt{ReadPatientRecord} & $100 \rightarrow 1,000$ & $100.2 \rightarrow 602.4$ & \textbf{$100.1 \rightarrow 586.5$} & \textbf{$0.01\text{ s}$ ($6.0\text{ ms}$)} & $100.0\%$ & Single-host Docker (\texttt{LevelDB} read) \\
+\textbf{Empirical Baseline:} \texttt{CreatePatientRecord} & $100 / 200 / 350 / 1,000$ & $99.6 / 198.8 / 346.5 / 963.6$ & \textbf{$98.2 / 192.4 / 284.1 / 315.4$} & \textbf{$0.18 / 0.42 / 1.85 / 5.36\text{ s}$} & $100.0\%$ & Single-host Docker (\texttt{etcdraft} commit) \\
+\textbf{Empirical Baseline:} \texttt{UpdateDynamicPremium} & $100 / 500$ & $99.8 / 488.2$ & \textbf{$97.5 / 298.6$} & \textbf{$0.21 / 3.12\text{ s}$} & $100.0\%$ & Single-host Docker (\texttt{etcdraft} update) \\
+\textbf{Empirical Live Rerun (5-Worker):} \texttt{CreatePatientRecord} & $50 / 100 / 200 / 350 / 1,000$ & $50.1 / 100.1 / 199.8 / 348.9 / 615.7$ & \textbf{$49.9 / 98.7 / 172.0 / 181.2 / 181.6$} & \textbf{$0.07 / 0.14 / 2.27 / 5.20 / 6.92\text{ s}$} & $100.0\%$ & Run \texttt{20261018-002914} ($5$ workers) \\
+\textbf{Empirical Stress Run (8-Worker, $15\text{k}$ txs):} \texttt{Create} & $1,000$ & $742.7$ & \textbf{$202.3$} & \textbf{$7.10\text{ s}$} & $100.0\%$ & Run \texttt{20261018-131540} ($8$ workers, $0$ fail) \\
+\textbf{Synthetic Queueing Model:} \texttt{create} \textit{(100 Seeds)} & $50 / 100 / 200 / 350 / 1,000$ & $50 / 100 / 200 / 350 / 1,000$ & \textbf{$50.0 / 100.0 / 199.9 / 341.6 / 351.53$} & \textbf{$0.06 / 0.08 / 0.15 / 0.94 / 9.268\text{ s}$} & $100.0\%$ & Synthetic model (\texttt{simulation\_results.json}) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig5_blockchain_benchmarks.pdf}
+\caption{Empirical Hyperledger Caliper v0.6.0 throughput (TPS) and average latency (s) across \texttt{ReadPatientRecord}, \texttt{CreatePatientRecord}, and \texttt{UpdateDynamicPremium} workloads on the single-host Hyperledger Fabric v2.5 network.}
+\label{fig:caliper_emp}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig5b_caliper_simulation_projection.pdf}
+\caption{Comparison of empirical Caliper \texttt{CreatePatientRecord} runs (historical baseline, live 5-worker rerun, and corrected 8-worker stress run plotted at their configured target loads with measured send rates annotated) against discrete synthetic fluid-queueing model estimates at $50, 100, 200, 350$, and $1,000\text{ TPS}$. Asymmetric vertical error bars represent the P5--P95 simulation sensitivity range across 100 pseudo-random seeds (\texttt{simulation\_results.json}), describing synthetic model sensitivity rather than empirical physical-network confidence intervals.}
+\label{fig:caliper_sim}
+\end{figure}
+
+\subsection{Empirical Bootstrap Actuarial Solvency ($\text{VaR}_{99}$ and $\text{TVaR}_{99}$) Simulation}
+To evaluate whether wellness-linked dynamic premium rebates preserve risk-pool solvency under heavy-tailed expenditure realizations, we simulated an $N = 1,000$ enrollee risk pool over \textbf{$10,000$ Monte Carlo bootstrap iterations} drawn from the held-out test distribution ($\text{Mean Pool Cost} = \$7.406\text{M}$ at $0\%$ wellness adoption; $\text{VaR}_{99} = \$8.659\text{M}$, $\text{TVaR}_{99} = \$8.938\text{M}$). Under a conservative scenario where verified preventive care engagement reduces modifiable expenditure by $10\%$ across adoption rates of $10\%$, $25\%$, and $50\%$ and administrative/risk loading factors $\lambda \in [1.05, 1.40]$ (Table~\ref{tab:actuarial} and Fig.~\ref{fig:actuarial}):
+\begin{itemize}
+    \item At \textbf{$25\%$ wellness adoption} ($\text{Mean Pool Cost} = \$7.221\text{M}$, empirical bootstrap $\text{VaR}_{99} = \$8.442\text{M}$, $\text{TVaR}_{99} = \$8.718\text{M}$), pool solvency probability (probability that collected premiums exceed the 99th-percentile tail loss $\text{VaR}_{99}$) transitions from $14.87\%$ at $\lambda = 1.05$ ($\text{Loss Ratio} = 95.24\%$) to \textbf{$99.13\%$ at $\lambda = 1.18$ ($\text{Loss Ratio} = 84.74\%$)} and \textbf{$99.97\%$ at $\lambda = 1.22$ ($\text{Loss Ratio} = 81.97\%$)}.
+    \item Crucially, comparing our empirical bootstrap against a parametric Gamma distribution matched to the same mean and variance (Fig.~\ref{fig:actuarial}B) demonstrates that \textbf{a naive analytical Gamma approximation underestimates $\text{VaR}_{99}$ by $\$1.032\text{M}$} ($\$7.410\text{M}$ analytical vs. $\$8.442\text{M}$ empirical bootstrap at $25\%$ adoption) because parametric Gamma tails fail to capture extreme MEPS multi-hundred-thousand-dollar hospitalizations.
+\end{itemize}
+
+\begin{table}[htbp]
+\caption{Empirical Monte Carlo Bootstrap ($10,000$ Iterations, $N=1,000$ Pool) Actuarial Solvency and Tail Risk}
+\label{tab:actuarial}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}l c c c c c@{}}
+\toprule
+\textbf{Adoption} & \textbf{Mean Pool} & \textbf{Bootstrap $\text{VaR}_{99}$} & \textbf{Bootstrap $\text{TVaR}_{99}$} & \textbf{Gamma $\text{VaR}_{99}$} & \textbf{Solvency Prob.} \\
+\textbf{Scenario} & \textbf{Cost (USD)} & \textbf{(Empirical)} & \textbf{(Empirical)} & \textbf{(Underest.)} & \textbf{($\lambda=1.18 / 1.22$)} \\
+\midrule
+0\% (Base) & \$7,406,120 & \$8,658,864 & \$8,938,448 & \$7,600,257 & 99.13\% / 99.97\% \\
+10\% Adopt & \$7,332,059 & \$8,572,276 & \$8,849,063 & \$7,524,254 & 99.13\% / 99.97\% \\
+\textbf{25\% Adopt} & \textbf{\$7,220,967} & \textbf{\$8,442,393} & \textbf{\$8,717,576} & \textbf{\$7,410,250} & \textbf{99.13\% / 99.97\%} \\
+50\% Adopt & \$7,035,814 & \$8,225,921 & \$8,494,655 & \$7,220,244 & 99.13\% / 99.97\% \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig6_premium_sensitivity.pdf}
+\caption{(A) Pool solvency probability and expected loss ratio across loading factors $\lambda \in [1.05, 1.40]$ and (B) comparison of heavy-tailed empirical bootstrap $\text{VaR}_{99}$ / $\text{TVaR}_{99}$ against analytical Gamma underestimation.}
+\label{fig:actuarial}
+\end{figure}
+
+\section{Discussion, Limitations, and Future Work}
+
+\subsection{Clinical and Operational Implications of the Threshold Sensitivity Findings}
+Our Phase 1 threshold sensitivity investigation resolves a critical question in healthcare machine learning: why a well-calibrated, generalizable risk classifier ($\text{ROC-AUC} = 0.7654$, $\text{Weighted BSS} = +0.1025$) exhibits $23.18\%$ precision when operated at $\tau = 0.10$. As proved in Section IV-B, flagging $39.97\%$ ($1,501$) of a cohort in which only $11.98\%$ ($450$) are true high-cost cases imposes a hard mathematical oracle precision ceiling of $450 / 1,501 = 29.98\%$. By shifting the decision cutoff from $\tau = 0.10$ to the OOF-validated primary-grid F1 optimum ($\tau = 0.20$), healthcare organizations cut false positives by $58.3\%$ and increase precision to $30.49\%$ ($33.91\%$ on unseen 2024 Panel 29) while still capturing nearly half ($46.89\%\text{--}50.16\%$) of all catastrophic claimants. For intensive nurse-led care management with strict caseload caps, operating at $\tau = 0.30$ focuses resources on the top $7.59\%$ of enrollees at $40.00\%$ precision ($3.34\times$ base rate) and $94.83\%$ specificity.
+
+\subsection{Methodological Limitations}
+\begin{enumerate}
+    \item \textbf{Irreducible Aleatoric Variance in Intake-Observable Features:} Because cold-start underwriting intentionally excludes concurrent-year utilization proxies (\texttt{IPNGTD}, \texttt{ERTOT}, \texttt{OBTOTV}, \texttt{RXTOT}), Stage 2 intake-observable regression achieves $R^2 = 0.1257$. As shown by our subgroup audit, $10.22\%$ ($46/450$) of high-cost cases occur in adults with zero baseline chronic conditions due to stochastic acute events (trauma, emergency surgery), while $71.80\%$ of adults with $\ge 3$ chronic conditions do not experience an inpatient crisis in a single 12-month window. Incorporating electronic health record (EHR) laboratory biomarkers (e.g., HbA1c, eGFR, NT-proBNP) is required to further separate stable vs. decompensating multimorbidity.
+    \item \textbf{MEPS Rotating Panel and Household Structure:} Our forensic audit documented that \texttt{MEPS HC-256} (2024) shares rotating Panel 28 ($46.24\%$) with \texttt{HC-251} (2023), and that unclustered person-level splits share household dwelling units (\texttt{DUID}). We mitigated both phenomena by reporting leak-free 5-fold \texttt{GroupKFold(groups=DUID)} validation and isolating the 100\% unseen 2024 Panel 29 cohort ($N=10,037$).
+    \item \textbf{Single-Host Blockchain Testnet Scope:} All empirical Hyperledger Caliper v0.6.0 benchmarks were executed on a single-host Docker deployment (\texttt{2Org2Peer} Raft + LevelDB). Multi-region wide-area network (WAN) propagation delays and hardware security module (HSM) signing overheads will reduce maximum write throughput in production consortium deployments.
+    \item \textbf{Actuarial Simulation Assumptions:} The Monte Carlo solvency analysis models a $10\%$ preventative expenditure reduction among compliant wellness participants; prospective randomized clinical trials are needed to calibrate condition-specific elasticity parameters.
+\end{enumerate}
+
+\subsection{Future Work}
+Future extensions will investigate (1) zero-knowledge range proofs (ZKPs) so applicants can prove their off-chain score satisfies $\text{HealthScore}_i \ge \tau_{\text{tier}}$ without revealing intermediate feature commitments to the insurer, (2) multi-host Kubernetes consortium benchmarking across geographically distributed peers, and (3) multi-year hierarchical Bayesian survival models across five-year MEPS panel linkages.
+
+\section{Conclusion}
+This paper presented \textbf{HealthScore}, a two-stage survey-weighted healthcare risk stratification and blockchain-anchored actuarial pricing framework validated across three national MEPS cohorts ($N=18,771$ in \texttt{HC-251}, $N=18,979$ in \texttt{HC-256} including $N=10,037$ strictly unseen Panel 29 adults, and $N=8,708$ longitudinal adults in \texttt{HC-257}). By decoupling 11 intake-observable predictors from simultaneous-year utilization proxies, our survey-weighted logistic classifier ($\text{ROC-AUC} = 0.7654$, $\text{PR-AUC} = 0.3184$, $\text{Weighted BSS} = +0.1025$) and Tweedie GLM regressor ($R^2 = 0.1257$ cold-start; $R^2 = 0.2581$, $\text{ROC-AUC} = 0.8407$ with Year-1 lagged utilization) provide honest, well-calibrated risk estimates. Through a comprehensive probability threshold sensitivity analysis ($\tau \in [0.05, 0.90]$), we demonstrated that the $23.18\%$ precision at $\tau = 0.10$ is a consequence of high-sensitivity screening ($77.33\%$ recall) bounded by the $29.98\%$ volume ceiling rather than overfitting, and showed that validation-selected operating points at $\tau = 0.20$ ($30.49\%$ precision, $58.3\%$ fewer false positives) and $\tau = 0.30$ ($40.00\%$ precision, $94.83\%$ specificity) enable flexible, resource-aware clinical triage anchored to an auditable Hyperledger Fabric v2.5 ledger.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
