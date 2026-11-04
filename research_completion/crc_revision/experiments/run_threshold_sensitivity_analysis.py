@@ -809,7 +809,7 @@ def generate_all_threshold_figures(
     ax1.plot(taus, fns, "^-", color="#ff7f00", lw=2.3, markersize=6, label="False Negatives (FN Count)")
     ax1.plot(taus, tps, "o--", color="#1f78b4", lw=1.8, markersize=5, label="True Positives (TP Count)")
 
-    ax1.annotate("τ=0.10: 1,153 FP vs. 102 FN\n(High sensitivity screening)",
+    ax1.annotate("τ=0.10: 1,153 FP vs. 102 FN\n(High-sensitivity operating point)",
                  xy=(0.10, 1153), xytext=(0.20, 1320),
                  arrowprops=dict(facecolor="#e31a1c", shrink=0.08, width=1, headwidth=5),
                  fontsize=8.3, fontweight="bold", color="#b10026",
@@ -871,10 +871,10 @@ def generate_all_threshold_figures(
     # -------------------------------------------------------------------------
     fig, axes = plt.subplots(1, 4, figsize=(16, 4.3), dpi=600)
     cm_specs = [
-        (0.10, "τ = 0.10 (Original Screening)\nMax BalAcc = 0.712 | F1 = 0.357"),
-        (0.20, "τ = 0.20 (Validation F1-Opt)\nBalAcc = 0.662 | F1 = 0.370"),
-        (0.30, "τ = 0.30 (Targeted Care)\nBalAcc = 0.601 | F1 = 0.310"),
-        (0.50, "τ = 0.50 (Naive Default)\nBalAcc = 0.514 | F1 = 0.062")
+        (0.10, "τ = 0.10 (High-Sensitivity Pt.)\nMax BalAcc = 0.712 | F1 = 0.357"),
+        (0.20, "τ = 0.20 (Primary-Grid F1-Opt.)\nBalAcc = 0.662 | F1 = 0.370"),
+        (0.30, "τ = 0.30 (Higher-Specificity Pt.)\nBalAcc = 0.601 | F1 = 0.310"),
+        (0.50, "τ = 0.50 (Default Cutoff)\nBalAcc = 0.514 | F1 = 0.062")
     ]
     for ax, (tau_cm, title_cm) in zip(axes, cm_specs):
         row = r_map[tau_cm]
@@ -952,7 +952,7 @@ def generate_all_threshold_figures(
         ("HC-251\nTrain\n(N=15,016)", "HC251_Train_InSample"),
         ("HC-251\nStrat OOF\n(N=15,016)", "HC251_5Fold_Stratified_OOF_Val"),
         ("HC-251\nHH OOF\n(N=15,016)", "HC251_5Fold_HouseholdGroup_OOF_Val"),
-        ("HC-251\nHeld-Out\n(N=3,755)", "HC251_HeldOut_Test"),
+        ("HC-251\nHoldout\n(N=3,755)", "HC251_HeldOut_Test"),
         ("HC-256 P29\nUnseen 24\n(N=10,037)", "HC256_2024_Panel29_Unseen"),
         ("HC-256 Full\nCross-Sec\n(N=18,979)", "HC256_2024_Full"),
         ("HC-257 P28\nProsp Y2\n(N=8,708)", "HC257_Panel28_Prospective_Y2")
@@ -975,7 +975,7 @@ def generate_all_threshold_figures(
             ax2.text(rect.get_x() + rect.get_width() / 2.0, h + 0.012, f"{h:.3f}",
                      ha="center", va="bottom", fontsize=6.8, fontweight="bold", rotation=90)
 
-    ax2.set_title("(B) Overfitting & Generalization Audit Across Splits and Releases", fontsize=11.5, fontweight="bold")
+    ax2.set_title("(B) Cross-Split & Multi-Release Discrimination and Brier Score", fontsize=11.5, fontweight="bold")
     ax2.set_ylabel("Metric Value", fontsize=10.5)
     ax2.set_xticks(x_s)
     ax2.set_xticklabels(s_labels, fontsize=7.5)
